@@ -10,4 +10,3 @@ https://github.com/checkstyle/checkstyle/blob/checkstyle-8.35/src/main/resources
 - Made Javadoc optional for test Classes annotated with `@SpringBootTest`
 - Disable SuppressionFilter module
 - Disable SuppressionXpathFilter module
-- Make copyright header mandatory for source files

@@ -44,11 +44,6 @@
 
   <!-- !!!! START CUSTOM MODIFICATION !!!! : Disable SuppressionFilter module -->
 
-  <module name="Header">
-    <property name="header"
-      value="/*\n * Copyright (C) Recollective Inc. - All Rights Reserved\n * Unauthorized copying of this file, via any medium is strictly prohibited\n * Proprietary and confidential\n */"/>
-  </module>
-
   <!-- !!!! END CUSTOM MODIFICATION !!!! -->
 
   <module name="FileTabCharacter">

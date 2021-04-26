@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e
-cd recollective-api
+cd OrbVPN-back-end-Java
 ./gradlew check test
