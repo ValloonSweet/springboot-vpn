@@ -1,0 +1,73 @@
+plugins {
+    id 'org.springframework.boot' version '2.4.2'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+    id 'checkstyle'
+    id 'war'
+}
+
+checkstyle {
+    toolVersion = 8.39
+    ignoreFailures = false
+    maxWarnings = 0
+}
+static def isLinuxOrMacOs() {
+    def osName = System.getProperty('os.name').toLowerCase(Locale.ROOT)
+    return osName.contains('linux') || osName.contains('mac os') || osName.contains('macos')
+}
+
+// setup git hooks
+task copyGitHooks(type: Copy) {
+    description 'Copies the git hooks from team-props/git-hooks to the .git folder.'
+    from("${rootDir}/githooks/") {
+        include '**/*'
+        fileMode(0777)
+
+    }
+    into "${rootDir}/../.git/hooks"
+    onlyIf { isLinuxOrMacOs() }
+}
+tasks.matching { it.name != 'copyGitHooks' }.all { Task task ->
+    task.dependsOn copyGitHooks
+}
+
+group = 'com.recollective'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '15'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+configurations {
+    all*.exclude module: 'spring-boot-starter-logging'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2'
+
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.4.2'
+    implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
+    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
+
+}
+
+test {
+    useJUnitPlatform()
+}
