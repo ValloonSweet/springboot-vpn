@@ -30,7 +30,7 @@ application:
 
 jwt:
   secret: secret
-  issuer: issuer
+  issuer: iss
   expirationMillis: 1000000000000
   refreshMillis: 100000000000
   resetPasswordSecret: secret
