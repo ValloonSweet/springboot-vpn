@@ -44,11 +44,6 @@ any tests are failing.
 These checks are done via git hooks. The bash files for git hooks are placed in `githooks` directory
 and are copied to the appropriate location when any gradle task is triggered (e.g `gradlew build`)
 
-## Copyright header
-
-All the java files in the project should have a copyright header. The copyright header text should
-be the following.
-
 ## Using Eclipse IDE
 
 These instructions were written for Eclipse 2020-12. The steps may not work with a higher version of

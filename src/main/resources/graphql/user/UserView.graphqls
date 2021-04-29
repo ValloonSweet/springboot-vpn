@@ -1,0 +1,4 @@
+type UserView {
+    id: Int,
+    email: String,
+}

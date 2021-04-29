@@ -1,0 +1,11 @@
+type NewsView {
+    id: Int!
+    title: String!
+    description: String!
+#    createdBy: Int!
+#    isActive: Boolean
+#    sentAt: Int
+#    deletedAt: Int
+#    createdAt: Int
+#    updatedAt: Int
+}

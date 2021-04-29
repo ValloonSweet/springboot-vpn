@@ -1,0 +1,20 @@
+server:
+  port:
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/radius
+    username: root
+    password: ByzRsK28pW
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+application:
+  website-url: http://example.com
+
+jwt:
+  secret: secret
+  issuer: issuer
+  expirationMillis: 1000000000000
+  refreshMillis: 100000000000
