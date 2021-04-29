@@ -11,4 +11,5 @@ import lombok.ToString;
 @AllArgsConstructor
 public class AuthenticatedUser {
   private String accessToken;
+  private UserView user;
 }

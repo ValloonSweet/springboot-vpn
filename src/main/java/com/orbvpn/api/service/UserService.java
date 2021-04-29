@@ -4,7 +4,6 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.orbvpn.api.config.security.JwtTokenUtil;
 import com.orbvpn.api.domain.dto.AuthenticatedUser;
-import com.orbvpn.api.domain.dto.LoginCredentials;
 import com.orbvpn.api.domain.dto.UserCreate;
 import com.orbvpn.api.domain.dto.UserView;
 import com.orbvpn.api.domain.entity.User;
@@ -57,23 +56,22 @@ public class UserService {
     return userView;
   }
 
-  public AuthenticatedUser login(LoginCredentials loginCredentials) {
-    log.info("Authentication user with email {}", loginCredentials);
+  public AuthenticatedUser login(String email, String password) {
+    log.info("Authentication user with email {}", email);
 
     Authentication authenticate = authenticationManager
-      .authenticate(new UsernamePasswordAuthenticationToken(loginCredentials.getEmail(),
-        loginCredentials.getPassword()));
+      .authenticate(new UsernamePasswordAuthenticationToken(email, password));
 
     User user = (User) authenticate.getPrincipal();
 
     UserView userView = userViewMapper.toView(user);
     String token = jwtTokenUtil.generateAccessToken(user);
 
-    AuthenticatedUser authenticatedUser = new AuthenticatedUser(token);
+    AuthenticatedUser authenticatedUser = new AuthenticatedUser(token, userView);
     return authenticatedUser;
   }
 
-  public boolean forgotPassword(String email) {
+  public boolean requestResetPassword(String email) {
     log.info("Resetting password for user: {}", email);
 
     Optional<User> userEntityOptional = userRepository.findByEmail(email);
