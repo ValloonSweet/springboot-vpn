@@ -26,6 +26,12 @@ public class User implements UserDetails {
   @Column
   private String password;
 
+  @Column
+  private String firstName;
+
+  @Column
+  private String lastName;
+
   @Transient
   private boolean isEnabled = true;
 

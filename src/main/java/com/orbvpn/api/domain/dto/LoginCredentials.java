@@ -3,7 +3,7 @@ package com.orbvpn.api.domain.dto;
 import lombok.Data;
 
 @Data
-public class UserCredentials {
+public class LoginCredentials {
   private String email;
   private String password;
 }

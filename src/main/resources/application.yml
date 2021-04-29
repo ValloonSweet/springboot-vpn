@@ -9,6 +9,21 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: testorbdev1234@gmail.com
+    password: testorb1234
+    properties:
+      mail:
+        smtp:
+          auth: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+          starttls:
+            enable: true
+
 
 application:
   website-url: http://example.com
@@ -18,3 +33,6 @@ jwt:
   issuer: issuer
   expirationMillis: 1000000000000
   refreshMillis: 100000000000
+  resetPasswordSecret: secret
+  resetPasswordExpirationMillis: 1000000000000
+

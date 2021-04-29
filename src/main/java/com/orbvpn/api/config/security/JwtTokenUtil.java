@@ -26,9 +26,18 @@ public class JwtTokenUtil {
   public String generateAccessToken(UserDetails user) {
 
     return JWT.create()
-      .withClaim("username", user.getUsername())
+      .withClaim("email", user.getUsername())
       .withIssuedAt(new Date())
       .withExpiresAt(new Date(System.currentTimeMillis() + jwtProperties.getExpirationMillis()))
+      .sign(algorithm);
+  }
+
+  public String generateResetPasswordToken(String email) {
+    return JWT.create()
+      .withClaim("email", email)
+      .withClaim("isReset", true)
+      .withIssuedAt(new Date())
+      .withExpiresAt(new Date(System.currentTimeMillis() + jwtProperties.getResetPasswordExpirationMillis()))
       .sign(algorithm);
   }
 

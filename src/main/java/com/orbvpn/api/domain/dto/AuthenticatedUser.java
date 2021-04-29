@@ -1,5 +1,6 @@
 package com.orbvpn.api.domain.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -7,9 +8,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class UserCreate {
-  private String email;
-  private String password;
-  private String firstName;
-  private String lastName;
+@AllArgsConstructor
+public class AuthenticatedUser {
+  private String accessToken;
 }

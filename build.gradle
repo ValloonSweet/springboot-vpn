@@ -54,6 +54,7 @@ dependencies {
     implementation 'com.graphql-java-kickstart:graphql-java-tools:11.0.0'
     runtimeOnly 'com.graphql-java-kickstart:playground-spring-boot-starter:11.0.0'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     runtimeOnly 'mysql:mysql-connector-java'

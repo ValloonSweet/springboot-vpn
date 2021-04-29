@@ -14,4 +14,6 @@ public class JWTProperties {
     private String issuer;
     private Long expirationMillis;
     private Long refreshMillis;
+    private String resetPasswordSecret;
+    private Long resetPasswordExpirationMillis;
 }
