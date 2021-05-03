@@ -32,16 +32,6 @@ public class JwtTokenUtil {
       .sign(algorithm);
   }
 
-  public String generateResetPasswordToken(String email) {
-    return JWT.create()
-      .withClaim("email", email)
-      .withClaim("isReset", true)
-      .withIssuer(jwtProperties.getIssuer())
-      .withIssuedAt(new Date())
-      .withExpiresAt(new Date(System.currentTimeMillis() + jwtProperties.getResetPasswordExpirationMillis()))
-      .sign(algorithm);
-  }
-
   public String getUsername(String token) {
     DecodedJWT decodedJWT = jwtVerifier.verify(token);
 

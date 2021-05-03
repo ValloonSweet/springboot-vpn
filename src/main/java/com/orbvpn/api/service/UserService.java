@@ -1,18 +1,20 @@
 package com.orbvpn.api.service;
 
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.orbvpn.api.config.security.JwtTokenUtil;
 import com.orbvpn.api.domain.dto.AuthenticatedUser;
 import com.orbvpn.api.domain.dto.UserCreate;
 import com.orbvpn.api.domain.dto.UserView;
+import com.orbvpn.api.domain.entity.PasswordReset;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.exception.BadRequestException;
 import com.orbvpn.api.domain.exception.NotFoundException;
 import com.orbvpn.api.mapper.UserCreateMapper;
 import com.orbvpn.api.mapper.UserViewMapper;
+import com.orbvpn.api.reposiitory.PasswordResetRepository;
 import com.orbvpn.api.reposiitory.UserRepository;
+import java.text.MessageFormat;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
@@ -34,8 +36,8 @@ public class UserService {
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManager authenticationManager;
   private final JwtTokenUtil jwtTokenUtil;
-  private final JWTVerifier jwtVerifier;
   private final JavaMailSender javaMailSender;
+  private final PasswordResetRepository passwordResetRepository;
 
   public UserView register(UserCreate userCreate) {
     log.info("Creating user with data {}", userCreate);
@@ -74,30 +76,52 @@ public class UserService {
   public boolean requestResetPassword(String email) {
     log.info("Resetting password for user: {}", email);
 
-    Optional<User> userEntityOptional = userRepository.findByEmail(email);
-    if (userEntityOptional.isEmpty()) {
-      throw new NotFoundException("User with specified email not exists");
-    }
+    User user = userRepository.findByEmail(email)
+      .orElseThrow(() -> new NotFoundException("User with specified email not exists"));
 
-    String resetPasswordToken = jwtTokenUtil.generateResetPasswordToken(email);
+    String token = UUID.randomUUID().toString();
+
+    PasswordReset passwordReset = new PasswordReset();
+    passwordReset.setUser(user);
+    passwordReset.setToken(token);
+    passwordResetRepository.save(passwordReset);
 
     SimpleMailMessage msg = new SimpleMailMessage();
     msg.setTo(email);
 
-    msg.setSubject("Token");
-    msg.setText(resetPasswordToken);
+    msg.setSubject("Reset your password");
+    msg.setText(MessageFormat.format("Please use code: {} to update yout password", token));
 
     javaMailSender.send(msg);
 
+    passwordResetRepository.deleteByUserAndTokenNot(user, token);
     return true;
   }
 
   public boolean resetPassword(String token, String password) {
-    DecodedJWT decodedJWT = jwtVerifier.verify(token);
 
-    String email = decodedJWT.getClaim("email").asString();
+    PasswordReset passwordReset = passwordResetRepository.findById(token).orElseThrow(() ->
+      new NotFoundException("Token was not found"));
 
-    User user = userRepository.findByEmail(email).orElseThrow();
+    User user = passwordReset.getUser();
+    user.setPassword(passwordEncoder.encode(password));
+    userRepository.save(user);
+    passwordResetRepository.delete(passwordReset);
+
+    return true;
+  }
+
+  public boolean changePassword(int id, String oldPassword, String password) {
+    log.info("Changing password for user with id {}", id);
+
+    User user = userRepository.findById(id)
+      .orElseThrow(() -> new NotFoundException("User not found"));
+
+    String oldPasswordEncoded = user.getPassword();
+    if (!oldPasswordEncoded.equals(passwordEncoder.encode(oldPassword))) {
+      throw new BadRequestException("Wrong password");
+    }
+
     user.setPassword(passwordEncoder.encode(password));
     userRepository.save(user);
 

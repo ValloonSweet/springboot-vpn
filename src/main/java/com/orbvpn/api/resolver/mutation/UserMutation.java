@@ -30,4 +30,8 @@ public class UserMutation implements GraphQLMutationResolver {
   public boolean resetPassword(String token, String password) {
     return userService.resetPassword(token, password);
   }
+
+  public boolean changePassword(int id, String oldPassword, String password) {
+    return userService.changePassword(id, oldPassword, password);
+  }
 }
