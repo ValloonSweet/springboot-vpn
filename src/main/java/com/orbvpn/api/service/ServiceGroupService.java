@@ -10,6 +10,7 @@ import com.orbvpn.api.reposiitory.ServiceGroupRepository;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,14 @@ public class ServiceGroupService {
     serviceGroupRepository.save(serviceGroup);
 
     return serviceGroupViewMapper.toView(serviceGroup);
+  }
+
+
+  public List<ServiceGroupView> getAllServiceGroups() {
+    return serviceGroupRepository.findAll()
+      .stream()
+      .map(serviceGroupViewMapper::toView)
+      .collect(Collectors.toList());
   }
 
 }

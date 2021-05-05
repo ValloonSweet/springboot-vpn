@@ -6,6 +6,7 @@ import com.orbvpn.api.domain.dto.ServiceGroupEdit;
 import com.orbvpn.api.domain.dto.ServiceGroupView;
 import com.orbvpn.api.service.ServiceGroupService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
+import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
