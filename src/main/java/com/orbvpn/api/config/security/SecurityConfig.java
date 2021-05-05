@@ -24,7 +24,6 @@ public class SecurityConfig {
   public JWTVerifier verifier(Algorithm algorithm) {
     return JWT
       .require(algorithm)
-      .withIssuer(jwtProperties.getIssuer())
       .build();
   }
 

@@ -39,6 +39,7 @@ public class UserService {
   private final JavaMailSender javaMailSender;
   private final PasswordResetRepository passwordResetRepository;
 
+
   public UserView register(UserCreate userCreate) {
     log.info("Creating user with data {}", userCreate);
 

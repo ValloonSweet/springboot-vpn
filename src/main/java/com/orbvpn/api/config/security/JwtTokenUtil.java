@@ -35,7 +35,7 @@ public class JwtTokenUtil {
   public String getUsername(String token) {
     DecodedJWT decodedJWT = jwtVerifier.verify(token);
 
-    return decodedJWT.getClaim("username").asString();
+    return decodedJWT.getClaim("email").asString();
   }
 
   public Date getExpirationDate(String token) {

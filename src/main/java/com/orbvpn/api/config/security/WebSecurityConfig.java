@@ -1,7 +1,7 @@
 package com.orbvpn.api.config.security;
 
 
-import java.util.List;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -53,18 +53,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   private CorsConfigurationSource corsConfig() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOrigins(Arrays.asList("*"));
+    configuration.setAllowedMethods(Arrays.asList("*"));
+    configuration.setAllowedHeaders(Arrays.asList("*"));
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    CorsConfiguration corsConfiguration = new CorsConfiguration();
-    corsConfiguration.setAllowedOrigins(List.of(websiteUrl));
-    corsConfiguration
-      .setAllowedMethods(List.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
-    corsConfiguration.setAllowCredentials(Boolean.TRUE);
-    corsConfiguration
-      .setExposedHeaders(List.of("Content-Disposition", "Location", "Authorization"));
-    corsConfiguration.setAllowedHeaders(
-      List.of("Authorization", "Access-Control-Allow-Origin", "Content-Type", "Cache-Control",
-        "X-Requested-With"));
-    source.registerCorsConfiguration("/**", corsConfiguration);
+    source.registerCorsConfiguration("/**", configuration);
     return source;
   }
 

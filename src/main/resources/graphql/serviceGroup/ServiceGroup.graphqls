@@ -1,0 +1,11 @@
+input ServiceGroupEdit {
+    name: String,
+    description: String,
+    gateways: [Int]
+}
+
+type ServiceGroupView {
+    name: String,
+    description: String,
+    gateways: [GatewayView]
+}
