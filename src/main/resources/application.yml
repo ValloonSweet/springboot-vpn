@@ -25,6 +25,9 @@ spring:
             enable: true
 
 
+application:
+  website-url: http://example.com
+
 jwt:
   secret: secret
   issuer: iss

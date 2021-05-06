@@ -5,4 +5,5 @@ type Mutation {
     resetPassword(token: String, password: String): Boolean
     changePassword(id: Int, oldPassword: String, password: String): Boolean
     createServiceGroup(serviceGroup: ServiceGroupEdit): ServiceGroupView
+    createGroup(group: GroupEdit): GroupView
 }

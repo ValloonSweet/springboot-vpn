@@ -1,0 +1,8 @@
+input GroupEdit {
+    name: String
+}
+
+type GroupView {
+    id: Int,
+    name: String
+}
