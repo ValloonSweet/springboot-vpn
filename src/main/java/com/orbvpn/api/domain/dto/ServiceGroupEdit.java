@@ -9,5 +9,9 @@ import lombok.Setter;
 public class ServiceGroupEdit {
   private String name;
   private String description;
+  private String language;
+  private int discount;
   private List<Integer> gateways;
+  private List<Integer> allowedGeolocations;
+  private List<Integer> disAllowedGeolocations;
 }

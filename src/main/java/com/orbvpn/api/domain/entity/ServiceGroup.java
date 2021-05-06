@@ -2,7 +2,6 @@ package com.orbvpn.api.domain.entity;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -41,6 +40,12 @@ public class ServiceGroup {
 
   @ManyToMany(fetch = FetchType.EAGER)
   private List<Gateway> gateways;
+
+  @ManyToMany
+  private List<Geolocation> allowedGeolocations;
+
+  @ManyToMany
+  private List<Geolocation> disAllowedGeolocations;
 
   @Column
   @CreatedDate

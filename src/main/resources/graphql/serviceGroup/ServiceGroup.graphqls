@@ -1,11 +1,20 @@
 input ServiceGroupEdit {
     name: String,
     description: String,
-    gateways: [Int]
+    language: String,
+    discount: Int,
+    gateways: [Int],
+    allowedGeolocations: [Int],
+    disAllowedGeolocations: [Int]
 }
 
 type ServiceGroupView {
+    id: Int,
     name: String,
     description: String,
-    gateways: [GatewayView]
+    language: String,
+    discount: Int,
+    gateways: [GatewayView],
+    allowedGeolocations: [GeolocationView],
+    disAllowedGeolocations: [GeolocationView]
 }

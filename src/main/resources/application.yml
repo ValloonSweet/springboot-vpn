@@ -1,5 +1,5 @@
 server:
-  port:
+  port: 8090
 
 spring:
   datasource:
@@ -24,9 +24,6 @@ spring:
           starttls:
             enable: true
 
-
-application:
-  website-url: http://example.com
 
 jwt:
   secret: secret

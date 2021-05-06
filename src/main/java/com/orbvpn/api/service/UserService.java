@@ -119,7 +119,7 @@ public class UserService {
       .orElseThrow(() -> new NotFoundException("User not found"));
 
     String oldPasswordEncoded = user.getPassword();
-    if (!oldPasswordEncoded.equals(passwordEncoder.encode(oldPassword))) {
+    if (!passwordEncoder.matches(oldPassword, oldPasswordEncoded)) {
       throw new BadRequestException("Wrong password");
     }
 
