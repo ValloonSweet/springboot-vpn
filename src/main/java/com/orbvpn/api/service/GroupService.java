@@ -2,8 +2,6 @@ package com.orbvpn.api.service;
 
 import com.orbvpn.api.domain.dto.GroupEdit;
 import com.orbvpn.api.domain.dto.GroupView;
-import com.orbvpn.api.domain.dto.ServiceGroupEdit;
-import com.orbvpn.api.domain.dto.ServiceGroupView;
 import com.orbvpn.api.domain.entity.Group;
 import com.orbvpn.api.mapper.GroupViewMapper;
 import com.orbvpn.api.reposiitory.GroupRepository;
@@ -27,6 +25,13 @@ public class GroupService {
     groupRepository.save(group);
 
     return groupViewMapper.toView(group);
+  }
+
+  public List<GroupView> getGroups() {
+    return groupRepository.findAll()
+      .stream()
+      .map(groupViewMapper::toView)
+      .collect(Collectors.toList());
   }
 
 }

@@ -3,14 +3,14 @@ package com.orbvpn.api.service;
 import com.orbvpn.api.domain.dto.ServiceGroupEdit;
 import com.orbvpn.api.domain.dto.ServiceGroupView;
 import com.orbvpn.api.domain.entity.Gateway;
+import com.orbvpn.api.domain.entity.Geolocation;
 import com.orbvpn.api.domain.entity.ServiceGroup;
 import com.orbvpn.api.mapper.ServiceGroupViewMapper;
 import com.orbvpn.api.reposiitory.GatewayRepository;
+import com.orbvpn.api.reposiitory.GeolocationRepository;
 import com.orbvpn.api.reposiitory.ServiceGroupRepository;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +20,7 @@ public class ServiceGroupService {
 
   private final ServiceGroupRepository serviceGroupRepository;
   private final GatewayRepository gatewayRepository;
+  private final GeolocationRepository geolocationRepository;
   private final ServiceGroupViewMapper serviceGroupViewMapper;
 
   public ServiceGroupView createServiceGroup(ServiceGroupEdit serviceGroupEdit) {
@@ -30,6 +31,15 @@ public class ServiceGroupService {
 
     List<Gateway> allById = gatewayRepository.findAllById(serviceGroupEdit.getGateways());
     serviceGroup.setGateways(allById);
+
+    List<Geolocation> allowedGeolocations = geolocationRepository
+      .findAllById(serviceGroupEdit.getAllowedGeolocations());
+    serviceGroup.setAllowedGeolocations(allowedGeolocations);
+
+    List<Geolocation> disallowedGeolocations = geolocationRepository
+      .findAllById(serviceGroupEdit.getDisAllowedGeolocations());
+    serviceGroup.setDisAllowedGeolocations(disallowedGeolocations);
+
     serviceGroupRepository.save(serviceGroup);
 
     return serviceGroupViewMapper.toView(serviceGroup);

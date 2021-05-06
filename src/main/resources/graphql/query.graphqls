@@ -2,5 +2,6 @@ type Query {
     news(count: Int, offset: Int ): [NewsView]!
     gateways: [GatewayView]
     serviceGroups: [ServiceGroupView]
+    groups: [GroupView]
     geolocations: [GeolocationView]
 }
