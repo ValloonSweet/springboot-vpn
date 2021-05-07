@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class ServiceGroupMutation implements GraphQLMutationResolver {
   private final ServiceGroupService serviceGroupService;
 
-  @RolesAllowed(ADMIN)
+
   ServiceGroupView createServiceGroup(ServiceGroupEdit serviceGroup) {
     return serviceGroupService.createServiceGroup(serviceGroup);
   }

@@ -1,0 +1,8 @@
+input ServerEdit {
+    hostName: String
+}
+
+type ServerView {
+    id: Int,
+    hostName: String
+}

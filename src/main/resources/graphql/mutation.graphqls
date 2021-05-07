@@ -6,4 +6,5 @@ type Mutation {
     changePassword(id: Int, oldPassword: String, password: String): Boolean
     createServiceGroup(serviceGroup: ServiceGroupEdit): ServiceGroupView
     createGroup(group: GroupEdit): GroupView
+    createServer(server: ServerEdit): ServerView
 }

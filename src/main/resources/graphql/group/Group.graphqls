@@ -1,8 +1,28 @@
 input GroupEdit {
-    name: String
+    serviceGroupId: Int,
+    name: String,
+    description: String,
+    tagName: String,
+    duration: Int,
+    price: String,
+    usernamePostfix: String,
+    usernamePostfixId: String,
+    dailyBandwidth: Int,
+    multiLoginCount: Int,
+    downloadUpload: Int
 }
 
 type GroupView {
     id: Int,
-    name: String
+    serviceGroup: ServiceGroupView,
+    name: String,
+    description: String,
+    tagName: String,
+    duration: Int,
+    price: String,
+    usernamePostfix: String,
+    usernamePostfixId: String,
+    dailyBandwidth: Int,
+    multiLoginCount: Int,
+    downloadUpload: Int,
 }
