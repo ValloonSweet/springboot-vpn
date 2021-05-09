@@ -25,6 +25,7 @@ spring:
             enable: true
 
 
+
 application:
   website-url: http://example.com
 
@@ -35,4 +36,6 @@ jwt:
   refreshMillis: 100000000000
   resetPasswordSecret: secret
   resetPasswordExpirationMillis: 1000000000000
-
+graphql:
+  servlet:
+    exception-handlers-enabled: true

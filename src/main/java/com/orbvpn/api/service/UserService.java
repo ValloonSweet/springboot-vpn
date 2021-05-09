@@ -6,8 +6,8 @@ import com.orbvpn.api.domain.dto.UserCreate;
 import com.orbvpn.api.domain.dto.UserView;
 import com.orbvpn.api.domain.entity.PasswordReset;
 import com.orbvpn.api.domain.entity.User;
-import com.orbvpn.api.domain.exception.BadRequestException;
-import com.orbvpn.api.domain.exception.NotFoundException;
+import com.orbvpn.api.exception.BadRequestException;
+import com.orbvpn.api.exception.NotFoundException;
 import com.orbvpn.api.mapper.UserCreateMapper;
 import com.orbvpn.api.mapper.UserViewMapper;
 import com.orbvpn.api.reposiitory.PasswordResetRepository;
@@ -15,6 +15,7 @@ import com.orbvpn.api.reposiitory.UserRepository;
 import java.text.MessageFormat;
 import java.util.Optional;
 import java.util.UUID;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
@@ -75,6 +76,7 @@ public class UserService {
     return authenticatedUser;
   }
 
+  @Transactional
   public boolean requestResetPassword(String email) {
     log.info("Resetting password for user: {}", email);
 
@@ -92,7 +94,7 @@ public class UserService {
     msg.setTo(email);
 
     msg.setSubject("Reset your password");
-    msg.setText(MessageFormat.format("Please use code: {} to update yout password", token));
+    msg.setText(MessageFormat.format("Please use code: {0} to update yout password", token));
 
     javaMailSender.send(msg);
 

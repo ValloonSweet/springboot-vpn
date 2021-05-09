@@ -2,15 +2,9 @@ plugins {
     id 'org.springframework.boot' version '2.4.2'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
-    id 'checkstyle'
     id 'war'
 }
 
-checkstyle {
-    toolVersion = 8.39
-    ignoreFailures = false
-    maxWarnings = 0
-}
 static def isLinuxOrMacOs() {
     def osName = System.getProperty('os.name').toLowerCase(Locale.ROOT)
     return osName.contains('linux') || osName.contains('mac os') || osName.contains('macos')
@@ -33,7 +27,7 @@ tasks.matching { it.name != 'copyGitHooks' }.all { Task task ->
 
 group = 'com.orbvpn'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '15'
+sourceCompatibility = '11'
 
 configurations {
     compileOnly {
@@ -53,6 +47,9 @@ dependencies {
     implementation 'com.graphql-java-kickstart:graphql-spring-boot-starter:11.0.0'
     implementation 'com.graphql-java-kickstart:graphql-java-tools:11.0.0'
     runtimeOnly 'com.graphql-java-kickstart:playground-spring-boot-starter:11.0.0'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
+
+
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail'
 
