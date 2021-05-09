@@ -1,6 +1,6 @@
 type UserView {
     id: Int!
     email: String!
-    firstName: String
-    lastName: String
+    firstName: String!
+    lastName: String!
 }

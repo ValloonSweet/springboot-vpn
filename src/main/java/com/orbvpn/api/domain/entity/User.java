@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
+import javax.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -30,16 +31,17 @@ public class User implements UserDetails {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
 
-  @Column
+  @Column(nullable = false)
+  @Email
   private String email;
 
   @Column
   private String password;
 
-  @Column
+  @Column(nullable = false)
   private String firstName;
 
-  @Column
+  @Column(nullable = false)
   private String lastName;
 
   @Enumerated(EnumType.STRING)

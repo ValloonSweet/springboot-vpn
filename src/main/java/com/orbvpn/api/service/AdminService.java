@@ -25,6 +25,8 @@ public class AdminService {
       User user = new User();
       user.setEmail("admin@mail.com");
       user.setPassword(passwordEncoder.encode("admin"));
+      user.setFirstName("admin");
+      user.setLastName("admin");
       user.setRole(Role.ADMIN);
       userRepository.save(user);
     }

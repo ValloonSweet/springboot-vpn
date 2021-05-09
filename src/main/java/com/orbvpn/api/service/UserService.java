@@ -6,6 +6,7 @@ import com.orbvpn.api.domain.dto.UserCreate;
 import com.orbvpn.api.domain.dto.UserView;
 import com.orbvpn.api.domain.entity.PasswordReset;
 import com.orbvpn.api.domain.entity.User;
+import com.orbvpn.api.exception.BadCredentialsException;
 import com.orbvpn.api.exception.BadRequestException;
 import com.orbvpn.api.exception.NotFoundException;
 import com.orbvpn.api.mapper.UserCreateMapper;
@@ -64,10 +65,16 @@ public class UserService {
   public AuthenticatedUser login(String email, String password) {
     log.info("Authentication user with email {}", email);
 
-    Authentication authenticate = authenticationManager
-      .authenticate(new UsernamePasswordAuthenticationToken(email, password));
+    Authentication authentication;
+    try {
+      authentication = authenticationManager
+        .authenticate(new UsernamePasswordAuthenticationToken(email, password));
+    } catch (Exception ex) {
+      throw new BadCredentialsException();
+    }
 
-    User user = (User) authenticate.getPrincipal();
+
+    User user = (User) authentication.getPrincipal();
 
     UserView userView = userViewMapper.toView(user);
     String token = jwtTokenUtil.generateAccessToken(user);
