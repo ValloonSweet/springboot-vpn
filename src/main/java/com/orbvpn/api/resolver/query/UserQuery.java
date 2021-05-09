@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 public class UserQuery implements GraphQLQueryResolver  {
   private final UserService userService;
 
+
   public UserView user() {
     return userService.getUser();
   }

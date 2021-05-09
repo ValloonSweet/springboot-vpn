@@ -48,6 +48,8 @@ dependencies {
     implementation 'com.graphql-java-kickstart:graphql-java-tools:11.0.0'
     runtimeOnly 'com.graphql-java-kickstart:playground-spring-boot-starter:11.0.0'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
+    implementation group: 'org.springframework', name: 'spring-aspects'
+
 
 
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2'

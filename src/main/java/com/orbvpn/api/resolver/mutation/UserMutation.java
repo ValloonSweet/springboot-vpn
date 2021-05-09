@@ -3,6 +3,7 @@ package com.orbvpn.api.resolver.mutation;
 import static com.orbvpn.api.domain.ValidationProperties.BAD_PASSWORD_MESSAGE;
 import static com.orbvpn.api.domain.ValidationProperties.PASSWORD_PATTERN;
 
+import com.orbvpn.api.config.security.Unsecured;
 import com.orbvpn.api.domain.dto.AuthenticatedUser;
 import com.orbvpn.api.domain.dto.UserCreate;
 import com.orbvpn.api.domain.dto.UserView;
@@ -24,18 +25,22 @@ public class UserMutation implements GraphQLMutationResolver {
 
   private final UserService userService;
 
+  @Unsecured
   public UserView register(UserCreate userCreate) {
     return userService.register(userCreate);
   }
 
+  @Unsecured
   public AuthenticatedUser login(@Email String email, @NotBlank String password) {
     return userService.login(email, password);
   }
 
+  @Unsecured
   public boolean requestResetPassword(@Email String email) {
     return userService.requestResetPassword(email);
   }
 
+  @Unsecured
   public boolean resetPassword(@NotBlank String token,
     @Pattern(regexp = PASSWORD_PATTERN, message = BAD_PASSWORD_MESSAGE) String password) {
     return userService.resetPassword(token, password);
