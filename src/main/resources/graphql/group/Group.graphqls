@@ -7,9 +7,14 @@ input GroupEdit {
     price: String,
     usernamePostfix: String,
     usernamePostfixId: String,
-    dailyBandwidth: Int,
+    dailyBandwidth: String,
     multiLoginCount: Int,
-    downloadUpload: Int
+    downloadUpload: String,
+    ip: IpType
+}
+
+enum IpType {
+    STATIC,DYNAMIC
 }
 
 type GroupView {
@@ -22,7 +27,8 @@ type GroupView {
     price: String,
     usernamePostfix: String,
     usernamePostfixId: String,
-    dailyBandwidth: Int,
+    dailyBandwidth: String,
     multiLoginCount: Int,
-    downloadUpload: Int,
+    downloadUpload: String
+    ip: IpType
 }

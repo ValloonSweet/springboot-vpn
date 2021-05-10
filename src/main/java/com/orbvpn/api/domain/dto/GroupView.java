@@ -1,6 +1,8 @@
 package com.orbvpn.api.domain.dto;
 
+import com.orbvpn.api.domain.enums.IpType;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +18,8 @@ public class GroupView {
   private BigDecimal price;
   private String usernamePostfix;
   private String usernamePostfixId;
-  private int dailyBandwidth;
+  private BigInteger dailyBandwidth;
   private int multiLoginCount;
-  private int downloadUpload;
+  private BigInteger downloadUpload;
+  private IpType ip;
 }

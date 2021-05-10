@@ -8,5 +8,7 @@ type Mutation {
     editServiceGroup(id: Int!, serviceGroup: ServiceGroupEdit!): ServiceGroupView
     deleteServiceGroup(id: Int!): ServiceGroupView
     createGroup(group: GroupEdit): GroupView
+    editGroup(id: Int!, group: GroupEdit): GroupView
+    deleteGroup(id: Int!): GroupView
     createServer(server: ServerEdit): ServerView
 }

@@ -3,4 +3,5 @@ type UserView {
     email: String!
     firstName: String!
     lastName: String!
+    role: String!
 }

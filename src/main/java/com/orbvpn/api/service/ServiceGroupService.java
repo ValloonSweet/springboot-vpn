@@ -6,6 +6,7 @@ import com.orbvpn.api.domain.entity.ServiceGroup;
 import com.orbvpn.api.exception.NotFoundException;
 import com.orbvpn.api.mapper.ServiceGroupEditMapper;
 import com.orbvpn.api.mapper.ServiceGroupViewMapper;
+import com.orbvpn.api.reposiitory.GroupRepository;
 import com.orbvpn.api.reposiitory.ServiceGroupRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ServiceGroupService {
 
+  private final GroupRepository groupRepository;
   private final ServiceGroupRepository serviceGroupRepository;
   private final ServiceGroupEditMapper serviceGroupEditMapper;
   private final ServiceGroupViewMapper serviceGroupViewMapper;
@@ -45,6 +47,7 @@ public class ServiceGroupService {
   public ServiceGroupView deleteServiceGroup(int id) {
     ServiceGroup serviceGroup = getById(id);
 
+    groupRepository.deleteByServiceGroup(serviceGroup);
     serviceGroupRepository.delete(serviceGroup);
 
     return serviceGroupViewMapper.toView(serviceGroup);

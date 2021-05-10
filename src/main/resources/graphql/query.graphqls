@@ -4,7 +4,7 @@ type Query {
     gateways: [GatewayView]
     serviceGroup(id: Int!): ServiceGroupView
     serviceGroups: [ServiceGroupView]
-    groups: [GroupView]
+    groups(serviceGroupId: Int!): [GroupView]
     servers: [ServerView]
     geolocations: [GeolocationView]
 }

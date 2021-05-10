@@ -1,21 +1,49 @@
 package com.orbvpn.api.domain.dto;
 
+import com.orbvpn.api.domain.enums.IpType;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
 public class GroupEdit {
+
+  @Positive
   private int serviceGroupId;
+
+  @NotBlank
   private String name;
+
+  @NotBlank
   private String description;
+
+  @NotBlank
   private String tagName;
+
+  @Positive
   private int duration;
+
+  @DecimalMin(value = "0.0", inclusive = false)
+  @NotNull
   private BigDecimal price;
+
   private String usernamePostfix;
+
   private String usernamePostfixId;
-  private int dailyBandwidth;
+
+  @DecimalMin(value = "0")
+  private BigInteger dailyBandwidth = BigInteger.ZERO;
+
   private int multiLoginCount;
-  private int downloadUpload;
+
+  @DecimalMin(value = "0")
+  private BigInteger downloadUpload = BigInteger.ZERO;
+
+  private IpType ip = IpType.STATIC;
 }

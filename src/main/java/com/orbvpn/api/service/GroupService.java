@@ -3,6 +3,8 @@ package com.orbvpn.api.service;
 import com.orbvpn.api.domain.dto.GroupEdit;
 import com.orbvpn.api.domain.dto.GroupView;
 import com.orbvpn.api.domain.entity.Group;
+import com.orbvpn.api.domain.entity.ServiceGroup;
+import com.orbvpn.api.exception.NotFoundException;
 import com.orbvpn.api.mapper.GroupEditMapper;
 import com.orbvpn.api.mapper.GroupViewMapper;
 import com.orbvpn.api.reposiitory.GroupRepository;
@@ -19,10 +21,11 @@ public class GroupService {
   private final GroupRepository groupRepository;
   private final GroupViewMapper groupViewMapper;
   private final GroupEditMapper groupEditMapper;
+  private final ServiceGroupService serviceGroupService;
 
   @Transactional
   public GroupView createGroup(GroupEdit groupEdit) {
-    Group group = groupEditMapper.edit(groupEdit);
+    Group group = groupEditMapper.create(groupEdit);
 
     groupRepository.save(group);
 
@@ -30,11 +33,37 @@ public class GroupService {
   }
 
   @Transactional
-  public List<GroupView> getGroups() {
-    return groupRepository.findAll()
+  public GroupView editGroup(int id, GroupEdit groupEdit) {
+    Group group = getById(id);
+
+    Group edited = groupEditMapper.edit(group, groupEdit);
+
+    groupRepository.save(edited);
+
+    return groupViewMapper.toView(edited);
+  }
+
+  @Transactional
+  public GroupView deleteGroup(int id) {
+    Group group = getById(id);
+
+    groupRepository.delete(group);
+
+    return groupViewMapper.toView(group);
+  }
+
+  @Transactional
+  public List<GroupView> getGroups(int serviceGroupId) {
+    ServiceGroup serviceGroup = serviceGroupService.getById(serviceGroupId);
+    return groupRepository.findAllByServiceGroup(serviceGroup)
       .stream()
       .map(groupViewMapper::toView)
       .collect(Collectors.toList());
+  }
+
+  public Group getById(int id) {
+    return groupRepository.findById(id)
+      .orElseThrow(()->new NotFoundException("Group not found"));
   }
 
 }

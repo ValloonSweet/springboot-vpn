@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class GroupQuery implements GraphQLQueryResolver {
   private final GroupService groupService;
 
-  List<GroupView> groups() {
-    return groupService.getGroups();
+  List<GroupView> groups(int serviceGroupId) {
+    return groupService.getGroups(serviceGroupId);
   }
 }
