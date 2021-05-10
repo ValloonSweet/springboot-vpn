@@ -2,6 +2,7 @@ type Query {
     user: UserView
     news(count: Int, offset: Int ): [NewsView]!
     gateways: [GatewayView]
+    serviceGroup(id: Int!): ServiceGroupView
     serviceGroups: [ServiceGroupView]
     groups: [GroupView]
     servers: [ServerView]

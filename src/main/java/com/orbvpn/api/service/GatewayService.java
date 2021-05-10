@@ -37,4 +37,8 @@ public class GatewayService {
       .map(gatewayViewMapper::toView)
       .collect(Collectors.toList());
   }
+
+  public List<Gateway> findAllById(List<Integer> ids) {
+    return gatewayRepository.findAllById(ids);
+  }
 }

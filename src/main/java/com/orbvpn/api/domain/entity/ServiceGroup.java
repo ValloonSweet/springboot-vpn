@@ -1,8 +1,12 @@
 package com.orbvpn.api.domain.entity;
 
+import com.orbvpn.api.domain.entity.converter.LocaleConverter;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
@@ -10,6 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -26,17 +32,20 @@ public class ServiceGroup {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
 
-  @Column
+  @Column(nullable = false)
   private String name;
 
-  @Column
+  @Column(nullable = false)
   private String description;
 
   @Column
-  private String language;
+  @Convert(converter = LocaleConverter.class)
+  private Locale language;
 
   @Column
-  private int discount;
+  @DecimalMin(value = "0.0")
+  @DecimalMax(value = "100", inclusive = false)
+  private BigDecimal discount;
 
   @ManyToMany(fetch = FetchType.EAGER)
   private List<Gateway> gateways;

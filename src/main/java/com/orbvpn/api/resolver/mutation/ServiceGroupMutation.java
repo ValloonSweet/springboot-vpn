@@ -6,7 +6,6 @@ import com.orbvpn.api.domain.dto.ServiceGroupEdit;
 import com.orbvpn.api.domain.dto.ServiceGroupView;
 import com.orbvpn.api.service.ServiceGroupService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
-import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,10 +13,21 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class ServiceGroupMutation implements GraphQLMutationResolver {
+
   private final ServiceGroupService serviceGroupService;
 
-
+  @RolesAllowed(ADMIN)
   ServiceGroupView createServiceGroup(ServiceGroupEdit serviceGroup) {
     return serviceGroupService.createServiceGroup(serviceGroup);
+  }
+
+  @RolesAllowed(ADMIN)
+  ServiceGroupView editServiceGroup(int id, ServiceGroupEdit serviceGroupEdit) {
+    return serviceGroupService.editServiceGroup(id, serviceGroupEdit);
+  }
+
+  @RolesAllowed(ADMIN)
+  ServiceGroupView deleteServiceGroup(int id) {
+    return serviceGroupService.deleteServiceGroup(id);
   }
 }

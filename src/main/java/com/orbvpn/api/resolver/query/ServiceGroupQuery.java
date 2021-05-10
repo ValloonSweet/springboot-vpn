@@ -10,9 +10,14 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class ServiceGroupQuery implements GraphQLQueryResolver {
+
   private final ServiceGroupService serviceGroupService;
 
   List<ServiceGroupView> serviceGroups() {
     return serviceGroupService.getAllServiceGroups();
+  }
+
+  ServiceGroupView serviceGroup(int id) {
+    return serviceGroupService.getServiceGroup(id);
   }
 }

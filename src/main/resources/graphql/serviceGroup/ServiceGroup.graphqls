@@ -2,7 +2,7 @@ input ServiceGroupEdit {
     name: String,
     description: String,
     language: String,
-    discount: Int,
+    discount: String,
     gateways: [Int],
     allowedGeolocations: [Int],
     disAllowedGeolocations: [Int]
@@ -13,7 +13,7 @@ type ServiceGroupView {
     name: String,
     description: String,
     language: String,
-    discount: Int,
+    discount: String,
     gateways: [GatewayView],
     allowedGeolocations: [GeolocationView],
     disAllowedGeolocations: [GeolocationView]

@@ -2,13 +2,10 @@ package com.orbvpn.api.service;
 
 import com.orbvpn.api.domain.dto.ServiceGroupEdit;
 import com.orbvpn.api.domain.dto.ServiceGroupView;
-import com.orbvpn.api.domain.entity.Gateway;
-import com.orbvpn.api.domain.entity.Geolocation;
 import com.orbvpn.api.domain.entity.ServiceGroup;
 import com.orbvpn.api.exception.NotFoundException;
+import com.orbvpn.api.mapper.ServiceGroupEditMapper;
 import com.orbvpn.api.mapper.ServiceGroupViewMapper;
-import com.orbvpn.api.reposiitory.GatewayRepository;
-import com.orbvpn.api.reposiitory.GeolocationRepository;
 import com.orbvpn.api.reposiitory.ServiceGroupRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,29 +18,41 @@ import org.springframework.stereotype.Service;
 public class ServiceGroupService {
 
   private final ServiceGroupRepository serviceGroupRepository;
-  private final GatewayRepository gatewayRepository;
-  private final GeolocationRepository geolocationRepository;
+  private final ServiceGroupEditMapper serviceGroupEditMapper;
   private final ServiceGroupViewMapper serviceGroupViewMapper;
 
   @Transactional
   public ServiceGroupView createServiceGroup(ServiceGroupEdit serviceGroupEdit) {
-    ServiceGroup serviceGroup = new ServiceGroup();
-
-    serviceGroup.setName(serviceGroupEdit.getName());
-    serviceGroup.setDescription(serviceGroupEdit.getDescription());
-
-    List<Gateway> allById = gatewayRepository.findAllById(serviceGroupEdit.getGateways());
-    serviceGroup.setGateways(allById);
-
-    List<Geolocation> allowedGeolocations = geolocationRepository
-      .findAllById(serviceGroupEdit.getAllowedGeolocations());
-    serviceGroup.setAllowedGeolocations(allowedGeolocations);
-
-    List<Geolocation> disallowedGeolocations = geolocationRepository
-      .findAllById(serviceGroupEdit.getDisAllowedGeolocations());
-    serviceGroup.setDisAllowedGeolocations(disallowedGeolocations);
+    ServiceGroup serviceGroup = serviceGroupEditMapper.create(serviceGroupEdit);
 
     serviceGroupRepository.save(serviceGroup);
+
+    return serviceGroupViewMapper.toView(serviceGroup);
+  }
+
+  @Transactional
+  public ServiceGroupView editServiceGroup(int id, ServiceGroupEdit serviceGroupEdit) {
+    ServiceGroup serviceGroup = getById(id);
+
+    ServiceGroup serviceGroupEdited = serviceGroupEditMapper.edit(serviceGroup, serviceGroupEdit);
+
+    serviceGroupRepository.save(serviceGroupEdited);
+
+    return serviceGroupViewMapper.toView(serviceGroupEdited);
+  }
+
+  @Transactional
+  public ServiceGroupView deleteServiceGroup(int id) {
+    ServiceGroup serviceGroup = getById(id);
+
+    serviceGroupRepository.delete(serviceGroup);
+
+    return serviceGroupViewMapper.toView(serviceGroup);
+  }
+
+  @Transactional
+  public ServiceGroupView getServiceGroup(int id) {
+    ServiceGroup serviceGroup = getById(id);
 
     return serviceGroupViewMapper.toView(serviceGroup);
   }
