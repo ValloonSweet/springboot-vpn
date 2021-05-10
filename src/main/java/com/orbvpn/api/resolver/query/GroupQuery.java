@@ -15,4 +15,8 @@ public class GroupQuery implements GraphQLQueryResolver {
   List<GroupView> groups(int serviceGroupId) {
     return groupService.getGroups(serviceGroupId);
   }
+
+  GroupView group(int id) {
+    return groupService.getGroup(id);
+  }
 }

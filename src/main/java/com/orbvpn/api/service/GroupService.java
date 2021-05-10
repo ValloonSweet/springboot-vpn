@@ -61,6 +61,13 @@ public class GroupService {
       .collect(Collectors.toList());
   }
 
+  @Transactional
+  public GroupView getGroup(int id) {
+    Group group = getById(id);
+
+    return groupViewMapper.toView(group);
+  }
+
   public Group getById(int id) {
     return groupRepository.findById(id)
       .orElseThrow(()->new NotFoundException("Group not found"));
