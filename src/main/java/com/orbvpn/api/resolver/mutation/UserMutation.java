@@ -9,6 +9,7 @@ import com.orbvpn.api.domain.dto.UserCreate;
 import com.orbvpn.api.domain.dto.UserView;
 import com.orbvpn.api.service.UserService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -26,7 +27,7 @@ public class UserMutation implements GraphQLMutationResolver {
   private final UserService userService;
 
   @Unsecured
-  public UserView register(UserCreate userCreate) {
+  public UserView register(@Valid UserCreate userCreate) {
     return userService.register(userCreate);
   }
 
