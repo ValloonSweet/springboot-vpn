@@ -3,15 +3,21 @@ package com.orbvpn.api.service;
 import com.orbvpn.api.config.security.JwtTokenUtil;
 import com.orbvpn.api.domain.dto.AuthenticatedUser;
 import com.orbvpn.api.domain.dto.UserCreate;
+import com.orbvpn.api.domain.dto.UserProfileEdit;
+import com.orbvpn.api.domain.dto.UserProfileView;
 import com.orbvpn.api.domain.dto.UserView;
 import com.orbvpn.api.domain.entity.PasswordReset;
 import com.orbvpn.api.domain.entity.User;
+import com.orbvpn.api.domain.entity.UserProfile;
 import com.orbvpn.api.exception.BadCredentialsException;
 import com.orbvpn.api.exception.BadRequestException;
 import com.orbvpn.api.exception.NotFoundException;
 import com.orbvpn.api.mapper.UserCreateMapper;
+import com.orbvpn.api.mapper.UserProfileEditMapper;
+import com.orbvpn.api.mapper.UserProfileViewMapper;
 import com.orbvpn.api.mapper.UserViewMapper;
 import com.orbvpn.api.reposiitory.PasswordResetRepository;
+import com.orbvpn.api.reposiitory.UserProfileRepository;
 import com.orbvpn.api.reposiitory.UserRepository;
 import java.text.MessageFormat;
 import java.util.Optional;
@@ -36,11 +42,17 @@ public class UserService {
   private final UserRepository userRepository;
   private final UserCreateMapper userCreateMapper;
   private final UserViewMapper userViewMapper;
+
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManager authenticationManager;
   private final JwtTokenUtil jwtTokenUtil;
   private final JavaMailSender javaMailSender;
+
   private final PasswordResetRepository passwordResetRepository;
+
+  private final UserProfileRepository userProfileRepository;
+  private final UserProfileEditMapper userProfileEditMapper;
+  private final UserProfileViewMapper userProfileViewMapper;
 
 
   public UserView register(UserCreate userCreate) {
@@ -137,6 +149,31 @@ public class UserService {
     userRepository.save(user);
 
     return true;
+  }
+
+  public UserProfileView editProfile(UserProfileEdit userProfileEdit) {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    User user = (User) authentication.getPrincipal();
+
+    log.info("Editing user{} profile{}", user.getId(), userProfileEdit);
+
+    UserProfile userProfile = userProfileRepository.findByUser(user).orElse(new UserProfile());
+
+    UserProfile edited = userProfileEditMapper.edit(userProfile, userProfileEdit);
+    edited.setUser(user);
+
+    userProfileRepository.save(edited);
+
+    return userProfileViewMapper.toView(edited);
+  }
+
+  public UserProfileView getProfile() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    User user = (User) authentication.getPrincipal();
+
+    UserProfile userProfile = userProfileRepository.findByUser(user).orElse(new UserProfile());
+
+    return userProfileViewMapper.toView(userProfile);
   }
 
   public UserView getUser() {

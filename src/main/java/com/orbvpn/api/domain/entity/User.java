@@ -12,6 +12,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import lombok.Getter;
@@ -47,6 +48,9 @@ public class User implements UserDetails {
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private Role role = Role.USER;
+
+  @OneToOne(mappedBy = "user")
+  private UserProfile userProfile;
 
   @Column
   @CreatedDate

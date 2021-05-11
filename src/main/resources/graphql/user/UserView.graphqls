@@ -4,4 +4,23 @@ type UserView {
     firstName: String!
     lastName: String!
     role: String!
+    profile: UserProfileView
+}
+
+input UserProfileEdit {
+    fullName: String
+    phone: String
+    address: String
+    city: String
+    country: String
+    postalCode: String
+}
+
+type UserProfileView {
+    fullName: String
+    phone: String
+    address: String
+    city: String
+    country: String
+    postalCode: String
 }

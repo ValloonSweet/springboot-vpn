@@ -6,6 +6,8 @@ import static com.orbvpn.api.domain.ValidationProperties.PASSWORD_PATTERN;
 import com.orbvpn.api.config.security.Unsecured;
 import com.orbvpn.api.domain.dto.AuthenticatedUser;
 import com.orbvpn.api.domain.dto.UserCreate;
+import com.orbvpn.api.domain.dto.UserProfileEdit;
+import com.orbvpn.api.domain.dto.UserProfileView;
 import com.orbvpn.api.domain.dto.UserView;
 import com.orbvpn.api.service.UserService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
@@ -50,5 +52,9 @@ public class UserMutation implements GraphQLMutationResolver {
   public boolean changePassword(@Positive int id, String oldPassword,
     @Pattern(regexp = PASSWORD_PATTERN, message = BAD_PASSWORD_MESSAGE) String password) {
     return userService.changePassword(id, oldPassword, password);
+  }
+
+  public UserProfileView editProfile(UserProfileEdit userProfile) {
+    return userService.editProfile(userProfile);
   }
 }
