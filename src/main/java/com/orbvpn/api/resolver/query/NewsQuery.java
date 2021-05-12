@@ -1,14 +1,23 @@
 package com.orbvpn.api.resolver.query;
 
 import com.orbvpn.api.domain.dto.NewsView;
+import com.orbvpn.api.service.NewsService;
 import graphql.kickstart.tools.GraphQLQueryResolver;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
+@RequiredArgsConstructor
 public class NewsQuery implements GraphQLQueryResolver {
-  List<NewsView> getNews(int count, int offset) {
-    return List.of(NewsView.builder().id(0).title("default").description("my description").build());
+
+  private final NewsService newsService;
+
+  public List<NewsView> news() {
+    return newsService.getNews();
+  }
+
+  public NewsView newsById(int id) {
+    return newsService.getNews(id);
   }
 }

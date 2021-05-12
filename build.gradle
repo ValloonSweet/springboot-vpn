@@ -67,6 +67,10 @@ dependencies {
     implementation 'org.mapstruct:mapstruct:1.4.2.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
 
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.12.3"
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.12.3'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.12.3'
+    runtimeOnly "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.3"
 }
 
 test {

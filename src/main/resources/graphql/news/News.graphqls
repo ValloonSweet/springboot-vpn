@@ -1,0 +1,16 @@
+type NewsView {
+    id: Int!
+    title: String!
+    description: String!
+    notifyByEmail: Boolean!
+    rolesToSend: [RoleView]
+    createdAt: String!
+    updatedAt: String!
+}
+
+input NewsEdit {
+    title: String!
+    description: String!
+    notifyByEmail: Boolean
+    rolesToSend: [Int]
+}

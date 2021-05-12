@@ -24,3 +24,8 @@ type UserProfileView {
     country: String
     postalCode: String
 }
+
+type RoleView {
+    id: Int,
+    name: String
+}

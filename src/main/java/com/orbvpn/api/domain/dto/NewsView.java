@@ -1,14 +1,26 @@
 package com.orbvpn.api.domain.dto;
 
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
-@Builder
+
 @Getter
 @Setter
+@ToString
 public class NewsView {
-  private final int id;
-  private final String title;
-  private final String description;
+
+  private int id;
+  private String title;
+  private String description;
+  private boolean notifyByEmail;
+  private List<RoleView> rolesToSend;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ssz")
+  private LocalDateTime createdAt;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ssz")
+  private LocalDateTime updatedAt;
 }
