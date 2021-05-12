@@ -29,12 +29,4 @@ public class Gateway {
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private GatewayName name;
-
-  @Column
-  @CreatedDate
-  private LocalDateTime createdAt;
-
-  @Column
-  @LastModifiedDate
-  private LocalDateTime updatedAt;
 }

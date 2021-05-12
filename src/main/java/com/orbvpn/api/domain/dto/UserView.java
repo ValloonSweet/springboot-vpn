@@ -1,6 +1,6 @@
 package com.orbvpn.api.domain.dto;
 
-import com.orbvpn.api.domain.enums.Role;
+import com.orbvpn.api.domain.enums.RoleName;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +11,6 @@ public class UserView {
   private String email;
   private String firstName;
   private String lastName;
-  private Role role;
+  private RoleName role;
   private UserProfileView profile;
 }

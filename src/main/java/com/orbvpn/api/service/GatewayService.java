@@ -18,19 +18,6 @@ public class GatewayService {
   private final GatewayRepository gatewayRepository;
   private final GatewayViewMapper gatewayViewMapper;
 
-  @PostConstruct
-  public void init() {
-    List<Gateway> all = gatewayRepository.findAll();
-    if (all.isEmpty()) {
-      Gateway visa = new Gateway();
-      visa.setName(GatewayName.VISA);
-      gatewayRepository.save(visa);
-      Gateway masterCard = new Gateway();
-      masterCard.setName(GatewayName.MASTERCARD);
-      gatewayRepository.save(masterCard);
-    }
-  }
-
   public List<GatewayView> getAllGateways() {
     return gatewayRepository.findAll()
       .stream()

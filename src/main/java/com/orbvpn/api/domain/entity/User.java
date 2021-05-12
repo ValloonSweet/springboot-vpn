@@ -1,6 +1,6 @@
 package com.orbvpn.api.domain.entity;
 
-import com.orbvpn.api.domain.enums.Role;
+import com.orbvpn.api.domain.enums.RoleName;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
@@ -12,6 +12,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.Email;
@@ -45,12 +46,11 @@ public class User implements UserDetails {
   @Column(nullable = false)
   private String lastName;
 
-  @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
-  private Role role = Role.USER;
+  @ManyToOne
+  private Role role;
 
   @OneToOne(mappedBy = "user")
-  private UserProfile userProfile;
+  private UserProfile profile;
 
   @Column
   @CreatedDate
@@ -65,7 +65,7 @@ public class User implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return Collections.singleton(role);
+    return Collections.singleton(role.getName());
   }
 
   @Override

@@ -1,6 +1,6 @@
 package com.orbvpn.api.resolver.mutation;
 
-import static com.orbvpn.api.domain.enums.Role.Constants.ADMIN;
+import static com.orbvpn.api.domain.enums.RoleName.Constants.ADMIN;
 
 import com.orbvpn.api.domain.dto.ServiceGroupEdit;
 import com.orbvpn.api.domain.dto.ServiceGroupView;

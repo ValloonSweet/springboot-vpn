@@ -7,8 +7,10 @@ import com.orbvpn.api.domain.dto.UserProfileEdit;
 import com.orbvpn.api.domain.dto.UserProfileView;
 import com.orbvpn.api.domain.dto.UserView;
 import com.orbvpn.api.domain.entity.PasswordReset;
+import com.orbvpn.api.domain.entity.Role;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.entity.UserProfile;
+import com.orbvpn.api.domain.enums.RoleName;
 import com.orbvpn.api.exception.BadCredentialsException;
 import com.orbvpn.api.exception.BadRequestException;
 import com.orbvpn.api.exception.NotFoundException;
@@ -17,6 +19,7 @@ import com.orbvpn.api.mapper.UserProfileEditMapper;
 import com.orbvpn.api.mapper.UserProfileViewMapper;
 import com.orbvpn.api.mapper.UserViewMapper;
 import com.orbvpn.api.reposiitory.PasswordResetRepository;
+import com.orbvpn.api.reposiitory.RoleRepository;
 import com.orbvpn.api.reposiitory.UserProfileRepository;
 import com.orbvpn.api.reposiitory.UserRepository;
 import java.text.MessageFormat;
@@ -54,6 +57,8 @@ public class UserService {
   private final UserProfileEditMapper userProfileEditMapper;
   private final UserProfileViewMapper userProfileViewMapper;
 
+  private final RoleRepository roleRepository;
+
 
   public UserView register(UserCreate userCreate) {
     log.info("Creating user with data {}", userCreate);
@@ -65,6 +70,8 @@ public class UserService {
 
     User user = userCreateMapper.createEntity(userCreate);
     user.setPassword(passwordEncoder.encode(userCreate.getPassword()));
+    Role role = roleRepository.findByName(RoleName.USER);
+    user.setRole(role);
     userRepository.save(user);
 
     UserView userView = userViewMapper.toView(user);

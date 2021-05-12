@@ -6,7 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 @Getter
 @AllArgsConstructor
-public enum Role implements GrantedAuthority {
+public enum RoleName implements GrantedAuthority {
   USER(Constants.USER), ADMIN(Constants.ADMIN), RESELLER(Constants.RESELLER);
 
   private final String authority;
