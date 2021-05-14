@@ -1,0 +1,6 @@
+type AccountingView {
+    totalUsers: Int
+    joinedByDay: Int
+    joinedByMonth: Int
+    joinedByYear: Int
+}

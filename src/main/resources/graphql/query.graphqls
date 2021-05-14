@@ -10,4 +10,5 @@ type Query {
     groups(serviceGroupId: Int!): [GroupView]
     servers: [ServerView]
     geolocations: [GeolocationView]
+    accounting: AccountingView
 }
