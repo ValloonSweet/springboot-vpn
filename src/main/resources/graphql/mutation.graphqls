@@ -12,6 +12,8 @@ type Mutation {
     editGroup(id: Int!, group: GroupEdit): GroupView
     deleteGroup(id: Int!): GroupView
     createServer(server: ServerEdit): ServerView
+    editServer(id: Int!, server: ServerEdit): ServerView
+    deleteServer(id: Int!): ServerView
     createNews(news: NewsEdit): NewsView
     editNews(id: Int!, news: NewsEdit): NewsView
     deleteNews(id: Int!): NewsView
