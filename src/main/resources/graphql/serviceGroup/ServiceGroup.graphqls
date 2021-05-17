@@ -16,5 +16,6 @@ type ServiceGroupView {
     discount: String,
     gateways: [GatewayView],
     allowedGeolocations: [GeolocationView],
-    disAllowedGeolocations: [GeolocationView]
+    disAllowedGeolocations: [GeolocationView],
+    groups: [GroupView]
 }

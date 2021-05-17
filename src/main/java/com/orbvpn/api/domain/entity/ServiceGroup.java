@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import lombok.Getter;
@@ -55,6 +56,9 @@ public class ServiceGroup {
 
   @ManyToMany
   private List<Geolocation> disAllowedGeolocations;
+
+  @OneToMany(mappedBy = "serviceGroup")
+  private List<Group> groups;
 
   @Column
   @CreatedDate

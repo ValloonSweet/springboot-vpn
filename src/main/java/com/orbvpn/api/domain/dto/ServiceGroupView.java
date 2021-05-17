@@ -18,4 +18,5 @@ public class ServiceGroupView {
   private List<GatewayView> gateways;
   private List<GeolocationView> allowedGeolocations;
   private List<GeolocationView> disAllowedGeolocations;
+  private List<GroupView> groups;
 }

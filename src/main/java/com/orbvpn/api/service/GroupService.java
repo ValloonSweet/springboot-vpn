@@ -52,6 +52,13 @@ public class GroupService {
     return groupViewMapper.toView(group);
   }
 
+  public List<GroupView> getAllGroups() {
+    return groupRepository.findAll()
+      .stream()
+      .map(groupViewMapper::toView)
+      .collect(Collectors.toList());
+  }
+
   @Transactional
   public List<GroupView> getGroups(int serviceGroupId) {
     ServiceGroup serviceGroup = serviceGroupService.getById(serviceGroupId);
