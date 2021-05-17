@@ -51,7 +51,6 @@ dependencies {
     implementation group: 'org.springframework', name: 'spring-aspects'
 
 
-
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail'
 
@@ -71,6 +70,8 @@ dependencies {
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.12.3'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.12.3'
     runtimeOnly "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.3"
+
+    implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
 }
 
 test {

@@ -12,5 +12,6 @@ public class UserView {
   private String firstName;
   private String lastName;
   private RoleName role;
+  private String radAccess;
   private UserProfileView profile;
 }

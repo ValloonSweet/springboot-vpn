@@ -10,6 +10,7 @@ import com.orbvpn.api.reposiitory.ServerRepository;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,34 +23,42 @@ public class ServerService {
   private final ServerEditMapper serverEditMapper;
   private final ServerViewMapper serverViewMapper;
 
+  private final RadiusService radiusService;
+
+  @Transactional
   public ServerView createServer(ServerEdit serverEdit) {
     log.info("Creating server with data {}", serverEdit);
     Server server = serverEditMapper.create(serverEdit);
 
     serverRepository.save(server);
-
+    radiusService.createNas(server);
     ServerView serverView = serverViewMapper.toView(server);
     log.info("Created server {}", serverView);
     return serverView;
   }
 
+  @Transactional
   public ServerView editServer(int id, ServerEdit serverEdit) {
     log.info("Editing server with id {} with data {}", id, serverEdit);
 
     Server server = getServerById(id);
+    String publicIp = server.getPublicIp();
     server = serverEditMapper.edit(server, serverEdit);
     serverRepository.save(server);
+    radiusService.editNas(publicIp, server);
 
     ServerView serverView = serverViewMapper.toView(server);
     log.info("Edited server {}", serverView);
     return serverView;
   }
 
+  @Transactional
   public ServerView deleteServer(int id) {
     log.info("Deleting server with id {}", id);
 
     Server server = getServerById(id);
     serverRepository.delete(server);
+    radiusService.deleteNas(server);
 
     ServerView serverView = serverViewMapper.toView(server);
     log.info("Deleted server {}", serverView);

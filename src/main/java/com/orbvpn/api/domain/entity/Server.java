@@ -7,7 +7,6 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -25,6 +24,42 @@ public class Server {
 
   @Column
   private String hostName;
+
+  @Column(unique = true)
+  private String publicIp;
+
+  @Column
+  private boolean isIbs;
+
+  @Column
+  private String privateIp;
+
+  @Column
+  private String city;
+
+  @Column
+  private String country;
+
+  @Column
+  private String secret;
+
+  @Column
+  private Integer ports;
+
+  @Column
+  private String sshUsername;
+
+  @Column
+  private String sshKey;
+
+  @Column
+  private String killCommand;
+
+  @Column
+  private String rootCommand;
+
+  @Column
+  private String description;
 
   @Column
   @CreatedDate

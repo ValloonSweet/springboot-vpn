@@ -4,6 +4,7 @@ type UserView {
     firstName: String!
     lastName: String!
     role: String!
+    radAccess: String!
     profile: UserProfileView
 }
 

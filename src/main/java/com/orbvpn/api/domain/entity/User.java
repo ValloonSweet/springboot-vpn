@@ -4,6 +4,7 @@ import com.orbvpn.api.domain.enums.RoleName;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -48,6 +49,9 @@ public class User implements UserDetails {
 
   @ManyToOne
   private Role role;
+
+  @Column(nullable = false)
+  private String radAccess;
 
   @OneToOne(mappedBy = "user")
   private UserProfile profile;

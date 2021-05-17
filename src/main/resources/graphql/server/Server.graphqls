@@ -1,5 +1,17 @@
 input ServerEdit {
     hostName: String
+    publicIp: String
+    isIbs: Boolean
+    privateIp: String
+    city: String
+    country: String
+    secret: String
+    ports: Int
+    sshUsername: String
+    sshKey: String
+    killCommand: String
+    rootCommand: String
+    description: String
 }
 
 type ServerView {

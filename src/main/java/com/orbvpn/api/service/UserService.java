@@ -58,8 +58,10 @@ public class UserService {
   private final UserProfileViewMapper userProfileViewMapper;
 
   private final RoleRepository roleRepository;
+  private final RadiusService radiusService;
 
 
+  @Transactional
   public UserView register(UserCreate userCreate) {
     log.info("Creating user with data {}", userCreate);
 
@@ -70,10 +72,11 @@ public class UserService {
 
     User user = userCreateMapper.createEntity(userCreate);
     user.setPassword(passwordEncoder.encode(userCreate.getPassword()));
+    user.setRadAccess(UUID.randomUUID().toString());
     Role role = roleRepository.findByName(RoleName.USER);
     user.setRole(role);
     userRepository.save(user);
-
+    radiusService.createUserRadChecks(user);
     UserView userView = userViewMapper.toView(user);
 
     log.info("Created user {}", userView);
