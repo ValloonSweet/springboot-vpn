@@ -1,15 +1,12 @@
 package com.orbvpn.api.domain.entity;
 
-import com.orbvpn.api.domain.enums.RoleName;
+
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -51,7 +48,7 @@ public class User implements UserDetails {
   private Role role;
 
   @Column(nullable = false)
-  private String radAccess;
+  private String radAccess = "not-a-regular";
 
   @OneToOne(mappedBy = "user")
   private UserProfile profile;
@@ -64,8 +61,8 @@ public class User implements UserDetails {
   @LastModifiedDate
   private LocalDateTime updatedAt;
 
-  @Transient
-  private boolean isEnabled = true;
+  @Column
+  private boolean enabled = true;
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -79,21 +76,21 @@ public class User implements UserDetails {
 
   @Override
   public boolean isAccountNonExpired() {
-    return isEnabled;
+    return enabled;
   }
 
   @Override
   public boolean isAccountNonLocked() {
-    return isEnabled;
+    return enabled;
   }
 
   @Override
   public boolean isCredentialsNonExpired() {
-    return isEnabled;
+    return enabled;
   }
 
   @Override
   public boolean isEnabled() {
-    return isEnabled;
+    return enabled;
   }
 }

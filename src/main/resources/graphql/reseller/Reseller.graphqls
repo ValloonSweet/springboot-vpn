@@ -1,0 +1,32 @@
+input ResellerCreate {
+    email: String
+    password: String
+    firstName: String
+    lastName: String
+    credit: String
+    level: ResellerLevel
+    phone: String
+}
+
+input ResellerEdit {
+    email: String
+    firstName: String
+    lastName: String
+    credit: String
+    phone: String
+}
+
+type ResellerView {
+    id: Int
+    email: String
+    firstName: String
+    lastName: String
+    credit: String
+    level: ResellerLevel
+    phone: String
+    serviceGroups: [ServiceGroupView]
+}
+
+enum ResellerLevel {
+    BRONZE, SILVER, GOLD, DIAMOND
+}

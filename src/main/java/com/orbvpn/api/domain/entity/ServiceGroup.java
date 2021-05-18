@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -57,7 +58,7 @@ public class ServiceGroup {
   @ManyToMany
   private List<Geolocation> disAllowedGeolocations;
 
-  @OneToMany(mappedBy = "serviceGroup")
+  @OneToMany(mappedBy = "serviceGroup", cascade = CascadeType.ALL)
   private List<Group> groups;
 
   @Column

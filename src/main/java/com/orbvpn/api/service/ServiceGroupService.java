@@ -12,16 +12,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class ServiceGroupService {
 
-  private final GroupRepository groupRepository;
   private final ServiceGroupRepository serviceGroupRepository;
   private final ServiceGroupEditMapper serviceGroupEditMapper;
   private final ServiceGroupViewMapper serviceGroupViewMapper;
+
+  @Autowired
+  private ResellerService resellerService;
 
   @Transactional
   public ServiceGroupView createServiceGroup(ServiceGroupEdit serviceGroupEdit) {
@@ -47,8 +50,8 @@ public class ServiceGroupService {
   public ServiceGroupView deleteServiceGroup(int id) {
     ServiceGroup serviceGroup = getById(id);
 
-    groupRepository.deleteByServiceGroup(serviceGroup);
     serviceGroupRepository.delete(serviceGroup);
+    resellerService.removeServiceGroup(serviceGroup);
 
     return serviceGroupViewMapper.toView(serviceGroup);
   }
