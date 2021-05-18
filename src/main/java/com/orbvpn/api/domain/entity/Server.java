@@ -1,9 +1,12 @@
 package com.orbvpn.api.domain.entity;
 
+import com.orbvpn.api.domain.enums.ServerType;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,6 +30,10 @@ public class Server {
 
   @Column(unique = true)
   private String publicIp;
+
+  @Column
+  @Enumerated(EnumType.STRING)
+  private ServerType type;
 
   @Column
   private boolean isIbs;

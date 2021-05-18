@@ -8,7 +8,6 @@ import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.exception.NotFoundException;
 import com.orbvpn.api.reposiitory.NasRepository;
 import com.orbvpn.api.reposiitory.RadCheckRepository;
-import java.security.MessageDigest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -41,8 +40,8 @@ public class RadiusService {
 
   public void mapNas(Nas nas, Server server) {
     nas.setNasName(server.getPublicIp());
-    nas.setShortName("shorname");
-    nas.setType("other");
+    nas.setShortName(server.getHostName());
+    nas.setType(server.getType());
     nas.setSecret(server.getSecret());
   }
 

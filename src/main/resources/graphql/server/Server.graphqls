@@ -1,6 +1,7 @@
 input ServerEdit {
     hostName: String
     publicIp: String
+    type: ServerType
     isIbs: Boolean
     privateIp: String
     city: String
@@ -12,6 +13,10 @@ input ServerEdit {
     killCommand: String
     rootCommand: String
     description: String
+}
+
+enum ServerType {
+    cisco,other
 }
 
 type ServerView {
