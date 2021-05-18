@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-@Table(name = "raccheck")
+@Table(name = "radcheck")
 @Entity
 @Getter
 @Setter

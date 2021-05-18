@@ -58,17 +58,17 @@ public class RadiusService {
 
     //Simultaneous use
     RadCheck simultaneousCheck = new RadCheck();
-    passwordCheck.setUsername(user.getEmail());
-    passwordCheck.setAttribute("Simultaneous-Use");
-    passwordCheck.setOp(":=");
-    passwordCheck.setValue("10");
+    simultaneousCheck.setUsername(user.getEmail());
+    simultaneousCheck.setAttribute("Simultaneous-Use");
+    simultaneousCheck.setOp(":=");
+    simultaneousCheck.setValue("10");
 
     //Expiration
     RadCheck expirationCheck = new RadCheck();
-    passwordCheck.setUsername(user.getEmail());
-    passwordCheck.setAttribute("Expiration");
-    passwordCheck.setOp("==");
-    passwordCheck.setValue("November 30 2023 00:00:00");
+    expirationCheck.setUsername(user.getEmail());
+    expirationCheck.setAttribute("Expiration");
+    expirationCheck.setOp("==");
+    expirationCheck.setValue("November 30 2023 00:00:00");
 
     radCheckRepository.save(passwordCheck);
     radCheckRepository.save(simultaneousCheck);
