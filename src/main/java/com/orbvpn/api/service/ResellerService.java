@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,8 @@ public class ResellerService {
   private final ResellerEditMapper resellerEditMapper;
   private final PasswordEncoder passwordEncoder;
   private final RoleService roleService;
-  private final ServiceGroupService serviceGroupService;
+  @Setter
+  private ServiceGroupService serviceGroupService;
 
   @Transactional
   public ResellerView createReseller(ResellerCreate resellerCreate) {

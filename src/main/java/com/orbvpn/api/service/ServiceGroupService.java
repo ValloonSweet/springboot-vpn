@@ -10,6 +10,7 @@ import com.orbvpn.api.reposiitory.GroupRepository;
 import com.orbvpn.api.reposiitory.ServiceGroupRepository;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,12 @@ public class ServiceGroupService {
   private final ServiceGroupRepository serviceGroupRepository;
   private final ServiceGroupEditMapper serviceGroupEditMapper;
   private final ServiceGroupViewMapper serviceGroupViewMapper;
+  private final ResellerService resellerService;
 
-  @Autowired
-  private ResellerService resellerService;
+  @PostConstruct
+  public void init() {
+    resellerService.setServiceGroupService(this);
+  }
 
   @Transactional
   public ServiceGroupView createServiceGroup(ServiceGroupEdit serviceGroupEdit) {
