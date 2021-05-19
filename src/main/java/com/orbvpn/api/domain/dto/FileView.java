@@ -11,12 +11,12 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class NewsView {
+public class FileView {
 
   private int id;
   private String title;
   private String description;
-  private boolean notifyByEmail;
+  private String url;
   private List<RoleView> roles;
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ssz")
   private LocalDateTime createdAt;

@@ -1,8 +1,6 @@
 type Query {
     user: UserView
     userProfile: UserProfileView
-    news: [NewsView]!
-    newsById(id: Int): NewsView!
     gateways: [GatewayView]
     serviceGroup(id: Int!): ServiceGroupView
     serviceGroups: [ServiceGroupView]
@@ -13,6 +11,11 @@ type Query {
     servers: [ServerView]
     reseller(id: Int!): ResellerView
     resellers: [ResellerView]
+    totalResellersCredit: String
     geolocations: [GeolocationView]
     accounting: AccountingView
+    news: [NewsView]!
+    newsById(id: Int): NewsView!
+    files: [FileView]
+    file (id: Int): FileView!
 }

@@ -13,7 +13,7 @@ public class UserQuery implements GraphQLQueryResolver  {
   private final UserService userService;
 
   public UserView user() {
-    return userService.getUser();
+    return userService.getUserView();
   }
 
   public UserProfileView userProfile() {

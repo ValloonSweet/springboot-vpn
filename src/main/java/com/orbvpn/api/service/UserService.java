@@ -162,8 +162,7 @@ public class UserService {
   }
 
   public UserProfileView editProfile(UserProfileEdit userProfileEdit) {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    User user = (User) authentication.getPrincipal();
+    User user = getUser();
 
     log.info("Editing user{} profile{}", user.getId(), userProfileEdit);
 
@@ -178,17 +177,25 @@ public class UserService {
   }
 
   public UserProfileView getProfile() {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    User user = (User) authentication.getPrincipal();
+    User user = getUser();
 
     UserProfile userProfile = userProfileRepository.findByUser(user).orElse(new UserProfile());
 
     return userProfileViewMapper.toView(userProfile);
   }
 
-  public UserView getUser() {
+  public User getUser() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    User user = (User) authentication.getPrincipal();
+    return (User) authentication.getPrincipal();
+  }
+
+  public Role getUserRole() {
+    User user = getUser();
+    return user.getRole();
+  }
+
+  public UserView getUserView() {
+    User user = getUser();
 
     return userViewMapper.toView(user);
   }

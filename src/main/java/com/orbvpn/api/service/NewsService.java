@@ -3,6 +3,8 @@ package com.orbvpn.api.service;
 import com.orbvpn.api.domain.dto.NewsEdit;
 import com.orbvpn.api.domain.dto.NewsView;
 import com.orbvpn.api.domain.entity.News;
+import com.orbvpn.api.domain.entity.Role;
+import com.orbvpn.api.exception.AccessDeniedException;
 import com.orbvpn.api.exception.NotFoundException;
 import com.orbvpn.api.mapper.NewsEditMapper;
 import com.orbvpn.api.mapper.NewsViewMapper;
@@ -12,9 +14,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,19 +21,29 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class NewsService {
 
+  private final UserService userService;
   private final NewsRepository newsRepository;
   private final NewsEditMapper newsEditMapper;
   private final NewsViewMapper newsViewMapper;
 
   public List<NewsView> getNews() {
+    Role currentUserRole = userService.getUserRole();
+
     return newsRepository.findAll()
       .stream()
+      .filter(it -> it.getRoles().contains(currentUserRole))
       .map(newsViewMapper::toView)
       .collect(Collectors.toList());
   }
 
   public NewsView getNews(int id) {
+    Role currentUserRole = userService.getUserRole();
     News news = getById(id);
+
+    if (news.getRoles().contains(currentUserRole)) {
+      throw new AccessDeniedException(News.class);
+    }
+
     return newsViewMapper.toView(news);
   }
 

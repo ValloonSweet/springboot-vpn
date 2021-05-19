@@ -10,7 +10,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class NewsEdit {
+public class FileEdit {
 
   @NotBlank
   private String title;
@@ -18,7 +18,8 @@ public class NewsEdit {
   @NotBlank
   private String description;
 
-  private boolean notifyByEmail;
+  @NotBlank
+  private String url;
 
   @NotEmpty
   private List<Integer> roles;

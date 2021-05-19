@@ -1,0 +1,14 @@
+input FileEdit {
+    title: String!
+    description: String!
+    url: String!
+    roles: [Int]!
+}
+
+
+type FileView {
+    title: String!
+    description: String!
+    url: String!
+    roles: [RoleView]!
+}

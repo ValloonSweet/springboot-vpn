@@ -19,6 +19,9 @@ type Mutation {
     deleteReseller(id: Int!): ResellerView
     addResellerServiceGroup(resellerId: Int, serviceGroupId: Int): ResellerView
     removeResellerServiceGroup(resellerId: Int, serviceGroupId: Int): ResellerView
+    createFile(file: FileEdit): FileView
+    editFile(id: Int!, file: FileEdit): FileView
+    deleteFile(id: Int!): FileView
     createNews(news: NewsEdit): NewsView
     editNews(id: Int!, news: NewsEdit): NewsView
     deleteNews(id: Int!): NewsView

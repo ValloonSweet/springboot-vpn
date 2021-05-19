@@ -5,6 +5,7 @@ import static com.orbvpn.api.domain.enums.RoleName.Constants.ADMIN;
 import com.orbvpn.api.domain.dto.ResellerView;
 import com.orbvpn.api.service.ResellerService;
 import graphql.kickstart.tools.GraphQLQueryResolver;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
@@ -23,5 +24,10 @@ public class ResellerQuery implements GraphQLQueryResolver {
   @RolesAllowed(ADMIN)
   public List<ResellerView> resellers() {
     return resellerService.getEnabledResellers();
+  }
+
+  @RolesAllowed(ADMIN)
+  public BigDecimal totalResellersCredit() {
+    return resellerService.getTotalResellersCredit();
   }
 }

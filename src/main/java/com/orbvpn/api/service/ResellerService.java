@@ -11,6 +11,7 @@ import com.orbvpn.api.exception.NotFoundException;
 import com.orbvpn.api.mapper.ResellerEditMapper;
 import com.orbvpn.api.mapper.ResellerViewMapper;
 import com.orbvpn.api.reposiitory.ResellerRepository;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
@@ -58,6 +59,16 @@ public class ResellerService {
       .stream()
       .map(resellerViewMapper::toView)
       .collect(Collectors.toList());
+  }
+
+  public BigDecimal getTotalResellersCredit() {
+    BigDecimal total = BigDecimal.valueOf(0);
+    List<Reseller> all = resellerRepository.findAll();
+    for (Reseller reseller : all) {
+      total = total.add(reseller.getCredit());
+    }
+
+    return total;
   }
 
   @Transactional

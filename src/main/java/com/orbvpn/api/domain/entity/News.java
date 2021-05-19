@@ -35,7 +35,7 @@ public class News {
   private boolean sendMail;
 
   @ManyToMany(fetch = FetchType.EAGER)
-  private List<Role> rolesToSend;
+  private List<Role> roles;
 
   @Column
   @CreatedDate
