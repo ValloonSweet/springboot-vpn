@@ -18,4 +18,6 @@ type Query {
     newsById(id: Int): NewsView!
     files: [FileView]
     file (id: Int): FileView!
+    ticket(id: Int): TicketView
+    tickets(page: Int, size: Int, category: TicketCategory, status: TicketStatus): TicketPage
 }

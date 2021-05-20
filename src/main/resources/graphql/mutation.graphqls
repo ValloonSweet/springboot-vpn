@@ -25,4 +25,8 @@ type Mutation {
     createNews(news: NewsEdit): NewsView
     editNews(id: Int!, news: NewsEdit): NewsView
     deleteNews(id: Int!): NewsView
+    createTicket(ticket: TicketCreate): TicketView
+    closeTicket(id: Int!): TicketView
+    closeTickets(id: [Int]!): [TicketView]
+    replyToTicket(ticketId: Int!, reply: TicketReplyCreate): TicketReplyView
 }
