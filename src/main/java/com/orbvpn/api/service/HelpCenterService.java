@@ -20,9 +20,9 @@ import com.orbvpn.api.mapper.TicketReplyViewMapper;
 import com.orbvpn.api.mapper.TicketViewMapper;
 import com.orbvpn.api.reposiitory.TicketReplyRepository;
 import com.orbvpn.api.reposiitory.TicketRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -31,10 +31,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class HelpCenterService {
 
   private final UserService userService;
@@ -45,7 +47,6 @@ public class HelpCenterService {
   private final TicketReplyEditMapper ticketReplyEditMapper;
   private final TicketReplyViewMapper ticketReplyViewMapper;
 
-  @Transactional
   public TicketView createTicket(TicketCreate ticketCreate) {
     log.info("Creating ticket {}", ticketCreate);
 
@@ -53,7 +54,7 @@ public class HelpCenterService {
     User creator = userService.getUser();
     ticket.setCreator(creator);
     ticket.setStatus(TicketStatus.OPEN);
-
+    ticketRepository.save(ticket);
     TicketView ticketView = ticketViewMapper.toView(ticket);
 
     log.info("Created ticket {}", ticketView);
@@ -61,13 +62,11 @@ public class HelpCenterService {
     return ticketView;
   }
 
-  @Transactional
   public TicketView getTicketView(int id) {
     Ticket ticket = getTicket(id);
     return ticketViewMapper.toView(ticket);
   }
 
-  @Transactional
   public Page<TicketView> getTickets(int page, int size, TicketCategory category,
     TicketStatus status) {
     Pageable pageable = PageRequest.of(page, size, Sort.by(DEFAULT_SORT));
@@ -86,7 +85,6 @@ public class HelpCenterService {
     return queryResult.map(ticketViewMapper::toView);
   }
 
-  @Transactional
   public TicketView closeTicket(int id) {
     log.info("Editing ticket with id {} with data {}", id);
 
@@ -101,7 +99,6 @@ public class HelpCenterService {
     return ticketView;
   }
 
-  @Transactional
   public List<TicketView> closeTickets(List<Integer> ids) {
     log.info("Closing tickets");
 
@@ -116,7 +113,6 @@ public class HelpCenterService {
       .collect(Collectors.toList());
   }
 
-  @Transactional
   public TicketView deleteTicket(int id) {
     log.info("Deleting ticket with id {}", id);
 
@@ -130,7 +126,6 @@ public class HelpCenterService {
     return ticketView;
   }
 
-  @Transactional
   public TicketReplyView replyToTicket(int ticketId, TicketReplyCreate ticketReplyCreate) {
     log.info("Replying to ticket with id {} with data {}", ticketReplyCreate);
 
@@ -151,16 +146,18 @@ public class HelpCenterService {
       status = TicketStatus.CUSTOMER_REPLY;
     }
     ticket.setStatus(status);
-    ticket.getReplies().add(ticketReply);
 
-    ticketRepository.save(ticket);
     ticketReplyRepository.save(ticketReply);
-
     TicketReplyView ticketReplyView = ticketReplyViewMapper.toView(ticketReply);
 
     log.info("Created ticket reply {}", ticketReplyView);
 
     return ticketReplyView;
+  }
+
+  public void removeOldTickets() {
+    LocalDateTime dateTime = LocalDateTime.now();
+    ticketRepository.deleteByCreatedAtBefore(dateTime);
   }
 
   public Ticket getTicket(int id) {

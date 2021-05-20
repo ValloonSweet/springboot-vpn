@@ -52,6 +52,9 @@ public class User implements UserDetails {
   @OneToOne(mappedBy = "user")
   private UserProfile profile;
 
+  @ManyToOne
+  private Reseller reseller;
+
   @Column
   @CreatedDate
   private LocalDateTime createdAt;

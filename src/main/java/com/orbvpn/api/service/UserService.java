@@ -7,6 +7,7 @@ import com.orbvpn.api.domain.dto.UserProfileEdit;
 import com.orbvpn.api.domain.dto.UserProfileView;
 import com.orbvpn.api.domain.dto.UserView;
 import com.orbvpn.api.domain.entity.PasswordReset;
+import com.orbvpn.api.domain.entity.Reseller;
 import com.orbvpn.api.domain.entity.Role;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.entity.UserProfile;
@@ -25,7 +26,6 @@ import com.orbvpn.api.reposiitory.UserRepository;
 import java.text.MessageFormat;
 import java.util.Optional;
 import java.util.UUID;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
@@ -36,10 +36,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class UserService {
 
   private final UserRepository userRepository;
@@ -60,8 +62,9 @@ public class UserService {
   private final RoleRepository roleRepository;
   private final RadiusService radiusService;
 
+  private final ResellerService resellerService;
 
-  @Transactional
+
   public UserView register(UserCreate userCreate) {
     log.info("Creating user with data {}", userCreate);
 
@@ -75,6 +78,8 @@ public class UserService {
     user.setRadAccess(UUID.randomUUID().toString());
     Role role = roleRepository.findByName(RoleName.USER);
     user.setRole(role);
+    user.setReseller(resellerService.getOwnerReseller());
+
     userRepository.save(user);
     radiusService.createUserRadChecks(user);
     UserView userView = userViewMapper.toView(user);
@@ -105,7 +110,6 @@ public class UserService {
     return authenticatedUser;
   }
 
-  @Transactional
   public boolean requestResetPassword(String email) {
     log.info("Resetting password for user: {}", email);
 

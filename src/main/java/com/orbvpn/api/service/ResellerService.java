@@ -14,16 +14,17 @@ import com.orbvpn.api.reposiitory.ResellerRepository;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class ResellerService {
 
   private final ResellerRepository resellerRepository;
@@ -34,7 +35,10 @@ public class ResellerService {
   @Setter
   private ServiceGroupService serviceGroupService;
 
-  @Transactional
+  public Reseller getOwnerReseller() {
+    return getResellerById(1);
+  }
+
   public ResellerView createReseller(ResellerCreate resellerCreate) {
     log.info("Creating a reseller with data {} ", resellerCreate);
     Reseller reseller = resellerEditMapper.create(resellerCreate);
@@ -49,13 +53,11 @@ public class ResellerService {
     return resellerView;
   }
 
-  @Transactional
   public ResellerView getReseller(int id) {
     Reseller reseller = getResellerById(id);
     return resellerViewMapper.toView(reseller);
   }
 
-  @Transactional
   public List<ResellerView> getEnabledResellers() {
     return resellerRepository.findAllByEnabled(true)
       .stream()
@@ -73,7 +75,6 @@ public class ResellerService {
     return total;
   }
 
-  @Transactional
   public ResellerView editReseller(int id, ResellerEdit resellerEdit) {
     log.info("Editing reseller with id {} with data {}", id, resellerEdit);
     Reseller reseller = getResellerById(id);
@@ -85,7 +86,6 @@ public class ResellerService {
     return resellerView;
   }
 
-  @Transactional
   public ResellerView deleteReseller(int id) {
     log.info("Deleting reseller with id {}", id);
     Reseller reseller = getResellerById(id);
@@ -98,7 +98,6 @@ public class ResellerService {
     return resellerViewMapper.toView(reseller);
   }
 
-  @Transactional
   public ResellerView addResellerServiceGroup(int resellerId, int serviceGroupId) {
     Reseller reseller = getResellerById(resellerId);
     ServiceGroup serviceGroup = serviceGroupService.getById(serviceGroupId);
@@ -109,7 +108,6 @@ public class ResellerService {
     return resellerViewMapper.toView(reseller);
   }
 
-  @Transactional
   public ResellerView removeResellerServiceGroup(int resellerId, int serviceGroupId) {
     Reseller reseller = getResellerById(resellerId);
     ServiceGroup serviceGroup = serviceGroupService.getById(serviceGroupId);

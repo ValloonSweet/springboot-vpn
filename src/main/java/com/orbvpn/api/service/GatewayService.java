@@ -2,12 +2,10 @@ package com.orbvpn.api.service;
 
 import com.orbvpn.api.domain.dto.GatewayView;
 import com.orbvpn.api.domain.entity.Gateway;
-import com.orbvpn.api.domain.enums.GatewayName;
 import com.orbvpn.api.mapper.GatewayViewMapper;
 import com.orbvpn.api.reposiitory.GatewayRepository;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

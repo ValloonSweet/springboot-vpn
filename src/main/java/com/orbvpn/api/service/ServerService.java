@@ -7,17 +7,17 @@ import com.orbvpn.api.exception.NotFoundException;
 import com.orbvpn.api.mapper.ServerEditMapper;
 import com.orbvpn.api.mapper.ServerViewMapper;
 import com.orbvpn.api.reposiitory.ServerRepository;
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class ServerService {
   private final ServerRepository serverRepository;
   private final ServerEditMapper serverEditMapper;
@@ -25,7 +25,6 @@ public class ServerService {
 
   private final RadiusService radiusService;
 
-  @Transactional
   public ServerView createServer(ServerEdit serverEdit) {
     log.info("Creating server with data {}", serverEdit);
     Server server = serverEditMapper.create(serverEdit);
@@ -37,7 +36,6 @@ public class ServerService {
     return serverView;
   }
 
-  @Transactional
   public ServerView editServer(int id, ServerEdit serverEdit) {
     log.info("Editing server with id {} with data {}", id, serverEdit);
 
@@ -52,7 +50,6 @@ public class ServerService {
     return serverView;
   }
 
-  @Transactional
   public ServerView deleteServer(int id) {
     log.info("Deleting server with id {}", id);
 

@@ -6,18 +6,17 @@ import com.orbvpn.api.domain.entity.ServiceGroup;
 import com.orbvpn.api.exception.NotFoundException;
 import com.orbvpn.api.mapper.ServiceGroupEditMapper;
 import com.orbvpn.api.mapper.ServiceGroupViewMapper;
-import com.orbvpn.api.reposiitory.GroupRepository;
 import com.orbvpn.api.reposiitory.ServiceGroupRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ServiceGroupService {
 
   private final ServiceGroupRepository serviceGroupRepository;
@@ -30,7 +29,6 @@ public class ServiceGroupService {
     resellerService.setServiceGroupService(this);
   }
 
-  @Transactional
   public ServiceGroupView createServiceGroup(ServiceGroupEdit serviceGroupEdit) {
     ServiceGroup serviceGroup = serviceGroupEditMapper.create(serviceGroupEdit);
 
@@ -39,7 +37,6 @@ public class ServiceGroupService {
     return serviceGroupViewMapper.toView(serviceGroup);
   }
 
-  @Transactional
   public ServiceGroupView editServiceGroup(int id, ServiceGroupEdit serviceGroupEdit) {
     ServiceGroup serviceGroup = getById(id);
 
@@ -50,7 +47,6 @@ public class ServiceGroupService {
     return serviceGroupViewMapper.toView(serviceGroupEdited);
   }
 
-  @Transactional
   public ServiceGroupView deleteServiceGroup(int id) {
     ServiceGroup serviceGroup = getById(id);
 
@@ -60,14 +56,12 @@ public class ServiceGroupService {
     return serviceGroupViewMapper.toView(serviceGroup);
   }
 
-  @Transactional
   public ServiceGroupView getServiceGroup(int id) {
     ServiceGroup serviceGroup = getById(id);
 
     return serviceGroupViewMapper.toView(serviceGroup);
   }
 
-  @Transactional
   public List<ServiceGroupView> getAllServiceGroups() {
     return serviceGroupRepository.findAll()
       .stream()
