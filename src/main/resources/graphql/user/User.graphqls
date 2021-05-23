@@ -1,3 +1,10 @@
+input UserCreate {
+    email: String!
+    password: String!
+    firstName: String!
+    lastName: String!
+}
+
 type UserView {
     id: Int!
     email: String!
@@ -29,4 +36,29 @@ type UserProfileView {
 type RoleView {
     id: Int,
     name: String
+}
+
+input LoginCredentials {
+    email: String!
+    password: String!
+}
+
+type AuthenticatedUser {
+    accessToken: String!
+    user: UserView!
+}
+
+input ResellerUserCreate {
+    email: String!
+    password: String!
+    firstName: String!
+    lastName: String!
+    groupId: Int!
+}
+
+type UserPage {
+    totalElements: Int,
+    size: Int,
+    number: Int,
+    content:  [UserView]
 }

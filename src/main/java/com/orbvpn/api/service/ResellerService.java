@@ -7,6 +7,7 @@ import com.orbvpn.api.domain.entity.Reseller;
 import com.orbvpn.api.domain.entity.ServiceGroup;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.enums.RoleName;
+import com.orbvpn.api.exception.InternalException;
 import com.orbvpn.api.exception.NotFoundException;
 import com.orbvpn.api.mapper.ResellerEditMapper;
 import com.orbvpn.api.mapper.ResellerViewMapper;
@@ -131,5 +132,10 @@ public class ResellerService {
   public Reseller getResellerById(int id) {
     return resellerRepository.findById(id)
       .orElseThrow(() -> new NotFoundException(Reseller.class, id));
+  }
+
+  public Reseller getResellerByUser(User user) {
+    return resellerRepository.findResellerByUser(user)
+      .orElseThrow(()->new InternalException("Can't find reseller"));
   }
 }

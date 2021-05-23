@@ -1,6 +1,8 @@
 type Query {
     user: UserView
     userProfile: UserProfileView
+    resellerGetUser (id: Int): UserView
+    resellerGetUsers (page: Int, size: Int): UserPage
     gateways: [GatewayView]
     serviceGroup(id: Int!): ServiceGroupView
     serviceGroups: [ServiceGroupView]

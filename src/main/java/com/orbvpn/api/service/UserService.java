@@ -7,7 +7,6 @@ import com.orbvpn.api.domain.dto.UserProfileEdit;
 import com.orbvpn.api.domain.dto.UserProfileView;
 import com.orbvpn.api.domain.dto.UserView;
 import com.orbvpn.api.domain.entity.PasswordReset;
-import com.orbvpn.api.domain.entity.Reseller;
 import com.orbvpn.api.domain.entity.Role;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.entity.UserProfile;
@@ -59,7 +58,7 @@ public class UserService {
   private final UserProfileEditMapper userProfileEditMapper;
   private final UserProfileViewMapper userProfileViewMapper;
 
-  private final RoleRepository roleRepository;
+  private final RoleService roleService;
   private final RadiusService radiusService;
 
   private final ResellerService resellerService;
@@ -76,7 +75,7 @@ public class UserService {
     User user = userCreateMapper.createEntity(userCreate);
     user.setPassword(passwordEncoder.encode(userCreate.getPassword()));
     user.setRadAccess(UUID.randomUUID().toString());
-    Role role = roleRepository.findByName(RoleName.USER);
+    Role role = roleService.getByName(RoleName.USER);
     user.setRole(role);
     user.setReseller(resellerService.getOwnerReseller());
 
@@ -186,6 +185,11 @@ public class UserService {
     UserProfile userProfile = userProfileRepository.findByUser(user).orElse(new UserProfile());
 
     return userProfileViewMapper.toView(userProfile);
+  }
+
+  public User getUserById(int id) {
+    return userRepository.findById(id)
+      .orElseThrow(()->new NotFoundException(User.class, id));
   }
 
   public User getUser() {

@@ -1,4 +1,0 @@
-type AuthenticatedUser {
-    accessToken: String!
-    user: UserView!
-}

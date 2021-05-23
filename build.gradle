@@ -72,6 +72,7 @@ dependencies {
     runtimeOnly "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.3"
 
     implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
+    implementation "com.stripe:stripe-java:20.51.0"
 }
 
 test {

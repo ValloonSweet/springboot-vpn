@@ -1,0 +1,8 @@
+input StripeCreatePaymentIntent {
+    tokenId: String!,
+    groupId: Int!
+}
+
+type StripeCreatePaymentIntentResponse {
+    clientSecret: String
+}

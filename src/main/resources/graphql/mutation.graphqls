@@ -29,4 +29,8 @@ type Mutation {
     closeTicket(id: Int!): TicketView
     closeTickets(id: [Int]!): [TicketView]
     replyToTicket(ticketId: Int!, reply: TicketReplyCreate): TicketReplyView
+    resellerCreateUser(user: ResellerUserCreate): UserView
+    resellerDeleteUser(id: Int): UserView
+
+    stripeCreatePaymentIntent(patmentIntent: StripeCreatePaymentIntent): StripeCreatePaymentIntentResponse
 }
