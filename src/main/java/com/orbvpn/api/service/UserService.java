@@ -81,7 +81,6 @@ public class UserService {
     user.setReseller(resellerService.getOwnerReseller());
 
     userRepository.save(user);
-    radiusService.createUserRadChecks(user);
     UserView userView = userViewMapper.toView(user);
 
     log.info("Created user {}", userView);
