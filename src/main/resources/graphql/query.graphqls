@@ -16,10 +16,17 @@ type Query {
     totalResellersCredit: String
     geolocations: [GeolocationView]
     accounting: AccountingView
+
     news: [NewsView]!
     newsById(id: Int): NewsView!
+
     files: [FileView]
     file (id: Int): FileView!
+
     ticket(id: Int): TicketView
     tickets(page: Int, size: Int, category: TicketCategory, status: TicketStatus): TicketPage
+
+    totalActiveUsers: Int
+    activeUsers(page: Int, size: Int): UserPage
+    inactiveUsers(page: Int, size: Int): UserPage
 }
