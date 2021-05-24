@@ -69,10 +69,11 @@ public class UserService {
 
     Optional<User> userEntityOptional = userRepository.findByEmail(userCreate.getEmail());
     if (userEntityOptional.isPresent()) {
-      throw new BadRequestException("User with specified username exists");
+      throw new BadRequestException("User with specified email exists");
     }
 
     User user = userCreateMapper.createEntity(userCreate);
+    user.setUsername(userCreate.getEmail());
     user.setPassword(passwordEncoder.encode(userCreate.getPassword()));
     user.setRadAccess(UUID.randomUUID().toString());
     Role role = roleService.getByName(RoleName.USER);

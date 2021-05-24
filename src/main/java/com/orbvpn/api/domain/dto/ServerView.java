@@ -9,7 +9,6 @@ public class ServerView {
   private int id;
   private String hostName;
   private String publicIp;
-  private boolean isIbs;
   private String privateIp;
   private String city;
   private String country;

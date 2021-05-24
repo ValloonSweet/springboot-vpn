@@ -1,12 +1,11 @@
 input ServerEdit {
-    hostName: String
-    publicIp: String
-    type: ServerType
-    isIbs: Boolean
+    hostName: String!
+    publicIp: String!
+    type: ServerType!
     privateIp: String
     city: String
     country: String
-    secret: String
+    secret: String!
     ports: Int
     sshUsername: String
     sshKey: String
@@ -20,6 +19,17 @@ enum ServerType {
 }
 
 type ServerView {
-    id: Int,
+    id: Int
     hostName: String
+    publicIp: String
+    privateIp: String
+    city: String
+    country: String
+    secret: String
+    ports: Int
+    sshUsername: String
+    sshKey: String
+    killCommand: String
+    rootCommand: String
+    description: String
 }

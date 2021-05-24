@@ -9,9 +9,11 @@ import com.orbvpn.api.domain.entity.Reseller;
 import com.orbvpn.api.domain.entity.Role;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.enums.RoleName;
+import com.orbvpn.api.exception.BadRequestException;
 import com.orbvpn.api.mapper.ResellerUserCreateMapper;
 import com.orbvpn.api.mapper.UserViewMapper;
 import com.orbvpn.api.reposiitory.UserRepository;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +51,13 @@ public class ResellerUserService {
     Reseller reseller = creator.getReseller();
     Group group = groupService.getById(resellerUserCreate.getGroupId());
 
+    Optional<User> userEntityOptional = userRepository.findByEmail(resellerUserCreate.getEmail());
+    if (userEntityOptional.isPresent()) {
+      throw new BadRequestException("User with specified email exists");
+    }
+
     User user = resellerUserCreateMapper.create(resellerUserCreate);
+    user.setUsername(resellerUserCreate.getEmail());
     user.setPassword(passwordEncoder.encode(resellerUserCreate.getPassword()));
     user.setRadAccess(UUID.randomUUID().toString());
     Role role = roleService.getByName(RoleName.USER);

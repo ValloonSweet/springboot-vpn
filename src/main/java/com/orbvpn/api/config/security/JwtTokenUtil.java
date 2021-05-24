@@ -26,7 +26,7 @@ public class JwtTokenUtil {
   public String generateAccessToken(UserDetails user) {
 
     return JWT.create()
-      .withClaim("email", user.getUsername())
+      .withClaim("username", user.getUsername())
       .withIssuedAt(new Date())
       .withExpiresAt(new Date(System.currentTimeMillis() + jwtProperties.getExpirationMillis()))
       .sign(algorithm);
@@ -35,7 +35,7 @@ public class JwtTokenUtil {
   public String getUsername(String token) {
     DecodedJWT decodedJWT = jwtVerifier.verify(token);
 
-    return decodedJWT.getClaim("email").asString();
+    return decodedJWT.getClaim("username").asString();
   }
 
   public Date getExpirationDate(String token) {
