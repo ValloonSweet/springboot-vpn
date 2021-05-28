@@ -1,7 +1,5 @@
 package com.orbvpn.api.resolver.mutation;
-
 import com.orbvpn.api.domain.dto.StripeCreatePaymentIntentResponse;
-import com.orbvpn.api.domain.dto.StripeCreatePaymentIntent;
 import com.orbvpn.api.service.PaymentService;
 import com.stripe.exception.StripeException;
 import graphql.kickstart.tools.GraphQLMutationResolver;
@@ -14,11 +12,12 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class PaymentMutation implements GraphQLMutationResolver {
 
-  private PaymentService paymentService;
+  private final PaymentService paymentService;
 
-  public StripeCreatePaymentIntentResponse stripeCreatePaymentIntent(StripeCreatePaymentIntent paymentIntent)
+
+  public StripeCreatePaymentIntentResponse stripeCreatePaymentIntent(int  groupId)
     throws StripeException {
-    return paymentService.stripeCreatePaymentIntent(paymentIntent);
+    return paymentService.stripeCreatePaymentIntent(groupId);
   }
 
 

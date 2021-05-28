@@ -1,10 +1,15 @@
 package com.orbvpn.api.domain.entity;
 
+import com.orbvpn.api.domain.enums.PaymentStatus;
+import com.orbvpn.api.domain.enums.PaymentType;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,8 +34,22 @@ public class UserSubscription {
   @ManyToOne
   private User user;
 
+  @ManyToOne
+  private Group group;
+
   @Column
-  private int groupId;
+  @Enumerated(EnumType.STRING)
+  private PaymentType paymentType;
+
+  @Column
+  @Enumerated(EnumType.STRING)
+  private PaymentStatus paymentStatus;
+
+  @Column
+  private String paymentId;
+
+  @Column
+  private BigDecimal price;
 
   @Column
   @Positive

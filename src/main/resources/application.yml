@@ -47,3 +47,4 @@ stripe:
   api:
     secret-key: sk_test_51IuGKuKHM8iu6lnJ0fEKCdca9sA2DF8K4dOMcHSBoHk4ljCbbH5aEYSRuCPkCpdZNUeWSq4Cut5T19Yyl1vVpFuE00IKjpvPvU
     public-key: pk_test_51IuGKuKHM8iu6lnJeXPVpGSNucHcJKMvMWYGartWgEFAj67M3DkgFZVVUORjiRHoQ5nao2EyB7EOk2gTUYTi5YtK00Yrmkfkzk
+    webhook-secret: whsec_8GpHy7eDtKlMgThkDWPfSm7dougQspxb
