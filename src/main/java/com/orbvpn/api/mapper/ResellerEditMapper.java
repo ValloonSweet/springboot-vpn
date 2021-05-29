@@ -13,6 +13,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ResellerEditMapper {
   @Mappings({
+    @Mapping(source = "email", target = "user.username"),
     @Mapping(source = "email", target = "user.email"),
     @Mapping(source = "firstName", target = "user.firstName"),
     @Mapping(source = "lastName", target = "user.lastName"),
@@ -20,6 +21,7 @@ public interface ResellerEditMapper {
   Reseller create(ResellerCreate resellerCreate);
 
   @Mappings({
+    @Mapping(source = "email", target = "user.username"),
     @Mapping(source = "email", target = "user.email"),
     @Mapping(source = "firstName", target = "user.firstName"),
     @Mapping(source = "lastName", target = "user.lastName"),

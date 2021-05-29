@@ -4,15 +4,19 @@ import com.orbvpn.api.domain.dto.ResellerCreate;
 import com.orbvpn.api.domain.dto.ResellerEdit;
 import com.orbvpn.api.domain.dto.ResellerView;
 import com.orbvpn.api.domain.entity.Reseller;
+import com.orbvpn.api.domain.entity.ResellerAddCredit;
 import com.orbvpn.api.domain.entity.ServiceGroup;
 import com.orbvpn.api.domain.entity.User;
+import com.orbvpn.api.domain.enums.ResellerLevel;
 import com.orbvpn.api.domain.enums.RoleName;
 import com.orbvpn.api.exception.InternalException;
 import com.orbvpn.api.exception.NotFoundException;
 import com.orbvpn.api.mapper.ResellerEditMapper;
 import com.orbvpn.api.mapper.ResellerViewMapper;
+import com.orbvpn.api.reposiitory.ResellerAddCreditRepository;
 import com.orbvpn.api.reposiitory.ResellerRepository;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +32,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ResellerService {
 
-  private final ResellerRepository resellerRepository;
-  private final ResellerViewMapper resellerViewMapper;
-  private final ResellerEditMapper resellerEditMapper;
-  private final PasswordEncoder passwordEncoder;
-  private final RoleService roleService;
   @Setter
   private ServiceGroupService serviceGroupService;
+  private final RoleService roleService;
+
+  private final ResellerViewMapper resellerViewMapper;
+  private final ResellerEditMapper resellerEditMapper;
+
+  private final PasswordEncoder passwordEncoder;
+
+  private final ResellerRepository resellerRepository;
+  private final ResellerAddCreditRepository resellerAddCreditRepository;
 
   public Reseller getOwnerReseller() {
     return getResellerById(1);
@@ -42,7 +50,10 @@ public class ResellerService {
 
   public ResellerView createReseller(ResellerCreate resellerCreate) {
     log.info("Creating a reseller with data {} ", resellerCreate);
+
     Reseller reseller = resellerEditMapper.create(resellerCreate);
+    reseller.setLevelSetDate(LocalDateTime.now());
+
     User user = reseller.getUser();
     user.setRole(roleService.getByName(RoleName.RESELLER));
     user.setPassword(passwordEncoder.encode(resellerCreate.getPassword()));
@@ -78,9 +89,12 @@ public class ResellerService {
 
   public ResellerView editReseller(int id, ResellerEdit resellerEdit) {
     log.info("Editing reseller with id {} with data {}", id, resellerEdit);
+
     Reseller reseller = getResellerById(id);
     resellerEditMapper.edit(reseller, resellerEdit);
 
+
+    resellerRepository.save(reseller);
     ResellerView resellerView = resellerViewMapper.toView(reseller);
 
     log.info("Edited reseller {}", resellerView);
@@ -119,6 +133,34 @@ public class ResellerService {
     return resellerViewMapper.toView(reseller);
   }
 
+  public ResellerView setResellerLevel(int resellerId, ResellerLevel level) {
+    log.info("Updating reseller {} level {}", resellerId, level);
+    Reseller reseller = getResellerById(resellerId);
+
+    reseller.setLevel(level);
+    reseller.setLevelSetDate(LocalDateTime.now());
+    resellerRepository.save(reseller);
+
+    log.info("Reseller {} updated level {}", resellerId, level);
+
+    return resellerViewMapper.toView(reseller);
+  }
+
+  public ResellerView addResellerCredit(int resellerId, BigDecimal credit) {
+    log.info("Adding reseller {} credit {}", resellerId, credit);
+    Reseller reseller = getResellerById(resellerId);
+
+    BigDecimal curCredit = reseller.getCredit();
+    reseller.setCredit(curCredit.add(credit));
+    ResellerAddCredit resellerAddCredit = new ResellerAddCredit(reseller, credit);
+    resellerRepository.save(reseller);
+    resellerAddCreditRepository.save(resellerAddCredit);
+
+    log.info("Added reseller {} credit {}", resellerId, credit);
+
+    return resellerViewMapper.toView(reseller);
+  }
+
   //Only should be called when service group is removed
   public void removeServiceGroup(ServiceGroup serviceGroup) {
     List<Reseller> resellers = resellerRepository.findAll();
@@ -137,5 +179,25 @@ public class ResellerService {
   public Reseller getResellerByUser(User user) {
     return resellerRepository.findResellerByUser(user)
       .orElseThrow(()->new InternalException("Can't find reseller"));
+  }
+
+  public void updateResellersLevel() {
+    LocalDateTime monthBefore = LocalDateTime.now().minusMonths(1L);
+    List<Reseller> resellers = resellerRepository.findByLevelSetDateBefore(monthBefore);
+
+    for (Reseller reseller : resellers) {
+      ResellerLevel level = getResellerLevel(reseller);
+      reseller.setLevel(level);
+      reseller.setLevelSetDate(LocalDateTime.now());
+    }
+    resellerRepository.saveAll(resellers);
+  }
+
+  private ResellerLevel getResellerLevel(Reseller reseller) {
+    if(reseller.getLevel() == ResellerLevel.OWNER) {
+      return ResellerLevel.OWNER;
+    }
+
+    return reseller.getLevel();
   }
 }

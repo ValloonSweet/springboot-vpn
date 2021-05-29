@@ -44,6 +44,9 @@ public class Reseller {
   private ResellerLevel level;
 
   @Column
+  private LocalDateTime levelSetDate;
+
+  @Column
   private String phone;
 
   @Column

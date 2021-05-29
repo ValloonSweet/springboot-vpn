@@ -156,8 +156,8 @@ public class HelpCenterService {
   }
 
   public void removeOldTickets() {
-    LocalDateTime dateTime = LocalDateTime.now();
-    ticketRepository.deleteByCreatedAtBefore(dateTime);
+    LocalDateTime monthBefore = LocalDateTime.now().minusMonths(1L);
+    ticketRepository.deleteByCreatedAtBefore(monthBefore);
   }
 
   public Ticket getTicket(int id) {

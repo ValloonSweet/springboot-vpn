@@ -12,7 +12,6 @@ input ResellerEdit {
     email: String
     firstName: String
     lastName: String
-    credit: String
     phone: String
 }
 

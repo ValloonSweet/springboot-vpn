@@ -12,9 +12,16 @@ public class JobService {
 
   private static final int HOUR_RATE = 60 * 60 * 1000;
   private final HelpCenterService helpCenterService;
+  private final ResellerService resellerService;
 
   @Scheduled(fixedRate = HOUR_RATE)
   public void removeOldTickets() {
     helpCenterService.removeOldTickets();
   }
+
+  @Scheduled(fixedRate = HOUR_RATE)
+  public void updateResellerLevels() {
+    resellerService.updateResellersLevel();
+  }
+
 }

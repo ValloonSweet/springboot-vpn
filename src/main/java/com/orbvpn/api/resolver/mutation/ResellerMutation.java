@@ -5,10 +5,13 @@ import static com.orbvpn.api.domain.enums.RoleName.Constants.ADMIN;
 import com.orbvpn.api.domain.dto.ResellerCreate;
 import com.orbvpn.api.domain.dto.ResellerEdit;
 import com.orbvpn.api.domain.dto.ResellerView;
+import com.orbvpn.api.domain.enums.ResellerLevel;
 import com.orbvpn.api.service.ResellerService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
+import java.math.BigDecimal;
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
+import javax.validation.constraints.DecimalMin;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
@@ -42,5 +45,16 @@ public class ResellerMutation implements GraphQLMutationResolver {
   @RolesAllowed(ADMIN)
   public ResellerView removeResellerServiceGroup(int resellerId, int serviceGroupId) {
     return resellerService.removeResellerServiceGroup(resellerId, serviceGroupId);
+  }
+
+  @RolesAllowed(ADMIN)
+  public ResellerView setResellerLevel(int resellerId, ResellerLevel level) {
+    return resellerService.setResellerLevel(resellerId, level);
+  }
+
+  @RolesAllowed(ADMIN)
+  public ResellerView addResellerCredit(int resellerId,
+    @DecimalMin(value = "0.0", inclusive = false)BigDecimal credit) {
+    return resellerService.addResellerCredit(resellerId, credit);
   }
 }

@@ -8,11 +8,18 @@ import com.orbvpn.api.domain.entity.Group;
 import com.orbvpn.api.domain.entity.Reseller;
 import com.orbvpn.api.domain.entity.Role;
 import com.orbvpn.api.domain.entity.User;
+import com.orbvpn.api.domain.entity.UserSubscription;
+import com.orbvpn.api.domain.enums.PaymentStatus;
+import com.orbvpn.api.domain.enums.PaymentType;
+import com.orbvpn.api.domain.enums.ResellerLevel;
 import com.orbvpn.api.domain.enums.RoleName;
 import com.orbvpn.api.exception.BadRequestException;
+import com.orbvpn.api.exception.InsufficientFundsException;
 import com.orbvpn.api.mapper.ResellerUserCreateMapper;
 import com.orbvpn.api.mapper.UserViewMapper;
+import com.orbvpn.api.reposiitory.ResellerRepository;
 import com.orbvpn.api.reposiitory.UserRepository;
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -37,14 +44,15 @@ public class ResellerUserService {
 
   private final PasswordEncoder passwordEncoder;
 
-  private final ResellerService resellerService;
   private final UserService userService;
   private final RoleService roleService;
   private final GroupService groupService;
+  private final UserSubscriptionService userSubscriptionService;
 
   private final UserRepository userRepository;
+  private final ResellerRepository resellerRepository;
 
-  //TODO reduce credit from reseller
+
   public UserView createUser(ResellerUserCreate resellerUserCreate) {
     log.info("Creating user");
     User creator = userService.getUser();
@@ -64,12 +72,47 @@ public class ResellerUserService {
     user.setRole(role);
     user.setReseller(reseller);
 
+    createResellerUserSubscription(user, group);
     userRepository.save(user);
 
     UserView userView = userViewMapper.toView(user);
     log.info("Created user");
 
     return userView;
+  }
+
+  @Transactional
+  public UserSubscription createResellerUserSubscription(User user, Group group) {
+    Reseller reseller = user.getReseller();
+
+    BigDecimal credit = reseller.getCredit();
+    BigDecimal price = calculatePrice(reseller, group);
+    if (credit.compareTo(price) < 0) {
+      throw new InsufficientFundsException();
+    }
+    reseller.setCredit(credit.subtract(price));
+    resellerRepository.save(reseller);
+
+    String paymentId = UUID.randomUUID().toString();
+    UserSubscription userSubscription = userSubscriptionService
+      .createUserSubscription(user, group, PaymentType.RESELLER_CREDIT, PaymentStatus.PENDING,
+        paymentId);
+    userSubscriptionService.fullFillSubscription(userSubscription);
+
+    return userSubscription;
+  }
+
+
+  public BigDecimal calculatePrice(Reseller reseller, Group group) {
+    ResellerLevel level = reseller.getLevel();
+    if (level == ResellerLevel.OWNER) {
+      return BigDecimal.ZERO;
+    }
+
+    BigDecimal price = group.getPrice();
+    BigDecimal discount = price.multiply(level.getDiscountPercent()).divide(new BigDecimal(100));
+
+    return price.subtract(discount);
   }
 
   public UserView deleteUser(int id) {

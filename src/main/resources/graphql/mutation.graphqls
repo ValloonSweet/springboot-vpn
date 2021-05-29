@@ -14,14 +14,24 @@ type Mutation {
     createServer(server: ServerEdit): ServerView
     editServer(id: Int!, server: ServerEdit): ServerView
     deleteServer(id: Int!): ServerView
-    createReseller(reseller: ResellerCreate): ResellerView
-    editReseller(id: Int!, reseller: ResellerEdit): ResellerView
-    deleteReseller(id: Int!): ResellerView
-    addResellerServiceGroup(resellerId: Int, serviceGroupId: Int): ResellerView
-    removeResellerServiceGroup(resellerId: Int, serviceGroupId: Int): ResellerView
+
+    # resellers
+    createReseller(reseller: ResellerCreate): ResellerView!
+    setResellerLevel(resellerId: Int!, level: ResellerLevel!): ResellerView!
+    addResellerCredit(resellerId: Int!, credit: String!): ResellerView!
+    editReseller(id: Int!, reseller: ResellerEdit): ResellerView!
+    deleteReseller(id: Int!): ResellerView!
+    addResellerServiceGroup(resellerId: Int, serviceGroupId: Int): ResellerView!
+    removeResellerServiceGroup(resellerId: Int, serviceGroupId: Int): ResellerView!
+    resellerCreateUser(user: ResellerUserCreate): UserView!
+    resellerDeleteUser(id: Int): UserView!
+
+    # files
     createFile(file: FileEdit): FileView
     editFile(id: Int!, file: FileEdit): FileView
     deleteFile(id: Int!): FileView
+
+    # news
     createNews(news: NewsEdit): NewsView
     editNews(id: Int!, news: NewsEdit): NewsView
     deleteNews(id: Int!): NewsView
@@ -29,8 +39,6 @@ type Mutation {
     closeTicket(id: Int!): TicketView
     closeTickets(id: [Int]!): [TicketView]
     replyToTicket(ticketId: Int!, reply: TicketReplyCreate): TicketReplyView
-    resellerCreateUser(user: ResellerUserCreate): UserView
-    resellerDeleteUser(id: Int): UserView
 
     stripeCreatePaymentIntent(groupId: Int!): StripeCreatePaymentIntentResponse
 }
