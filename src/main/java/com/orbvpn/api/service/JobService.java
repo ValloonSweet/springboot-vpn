@@ -12,16 +12,20 @@ public class JobService {
 
   private static final int HOUR_RATE = 60 * 60 * 1000;
   private final HelpCenterService helpCenterService;
-  private final ResellerService resellerService;
+  private final ResellerLevelService resellerLevelService;
 
   @Scheduled(fixedRate = HOUR_RATE)
   public void removeOldTickets() {
+    log.info("Starting job for removing old tickets");
     helpCenterService.removeOldTickets();
+    log.info("Removing old tickets job is finished");
   }
 
   @Scheduled(fixedRate = HOUR_RATE)
   public void updateResellerLevels() {
-    resellerService.updateResellersLevel();
+    log.info("Starting job for updating reseller level");
+    resellerLevelService.updateResellersLevel();
+    log.info("Finished job for updating reseller level");
   }
 
 }

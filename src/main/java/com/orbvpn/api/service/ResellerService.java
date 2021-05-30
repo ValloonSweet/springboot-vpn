@@ -1,5 +1,7 @@
 package com.orbvpn.api.service;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 import com.orbvpn.api.domain.dto.ResellerCreate;
 import com.orbvpn.api.domain.dto.ResellerEdit;
 import com.orbvpn.api.domain.dto.ResellerView;
@@ -7,6 +9,7 @@ import com.orbvpn.api.domain.entity.Reseller;
 import com.orbvpn.api.domain.entity.ResellerAddCredit;
 import com.orbvpn.api.domain.entity.ServiceGroup;
 import com.orbvpn.api.domain.entity.User;
+import com.orbvpn.api.domain.enums.PaymentStatus;
 import com.orbvpn.api.domain.enums.ResellerLevel;
 import com.orbvpn.api.domain.enums.RoleName;
 import com.orbvpn.api.exception.InternalException;
@@ -15,6 +18,7 @@ import com.orbvpn.api.mapper.ResellerEditMapper;
 import com.orbvpn.api.mapper.ResellerViewMapper;
 import com.orbvpn.api.reposiitory.ResellerAddCreditRepository;
 import com.orbvpn.api.reposiitory.ResellerRepository;
+import com.orbvpn.api.reposiitory.UserSubscriptionRepository;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -181,23 +185,4 @@ public class ResellerService {
       .orElseThrow(()->new InternalException("Can't find reseller"));
   }
 
-  public void updateResellersLevel() {
-    LocalDateTime monthBefore = LocalDateTime.now().minusMonths(1L);
-    List<Reseller> resellers = resellerRepository.findByLevelSetDateBefore(monthBefore);
-
-    for (Reseller reseller : resellers) {
-      ResellerLevel level = getResellerLevel(reseller);
-      reseller.setLevel(level);
-      reseller.setLevelSetDate(LocalDateTime.now());
-    }
-    resellerRepository.saveAll(resellers);
-  }
-
-  private ResellerLevel getResellerLevel(Reseller reseller) {
-    if(reseller.getLevel() == ResellerLevel.OWNER) {
-      return ResellerLevel.OWNER;
-    }
-
-    return reseller.getLevel();
-  }
 }
