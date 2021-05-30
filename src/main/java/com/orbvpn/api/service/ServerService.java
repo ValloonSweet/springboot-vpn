@@ -1,5 +1,6 @@
 package com.orbvpn.api.service;
 
+import com.orbvpn.api.domain.dto.ClientServerView;
 import com.orbvpn.api.domain.dto.ServerEdit;
 import com.orbvpn.api.domain.dto.ServerView;
 import com.orbvpn.api.domain.entity.Server;
@@ -72,6 +73,13 @@ public class ServerService {
     return serverRepository.findAll()
       .stream()
       .map(serverViewMapper::toView)
+      .collect(Collectors.toList());
+  }
+
+  public List<ClientServerView> getClientServers() {
+    return serverRepository.findAll()
+      .stream()
+      .map(serverViewMapper::toClientView)
       .collect(Collectors.toList());
   }
 

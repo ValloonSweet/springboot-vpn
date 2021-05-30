@@ -9,8 +9,11 @@ type Query {
     group(id: Int): GroupView
     groups(serviceGroupId: Int!): [GroupView]
     allGroups: [GroupView]
+
     server(id: Int!): ServerView
     servers: [ServerView]
+    clientServers: [ClientServerView]
+
     reseller(id: Int!): ResellerView
     resellers: [ResellerView]
     totalResellersCredit: String

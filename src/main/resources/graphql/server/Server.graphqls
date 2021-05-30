@@ -33,3 +33,12 @@ type ServerView {
     rootCommand: String
     description: String
 }
+
+type ClientServerView {
+    id: Int
+    hostName: String
+    publicIp: String
+    city: String
+    country: String
+    description: String
+}

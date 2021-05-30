@@ -2,6 +2,7 @@ package com.orbvpn.api.resolver.query;
 
 import static com.orbvpn.api.domain.enums.RoleName.Constants.ADMIN;
 
+import com.orbvpn.api.domain.dto.ClientServerView;
 import com.orbvpn.api.domain.dto.ServerView;
 import com.orbvpn.api.service.ServerService;
 import graphql.kickstart.tools.GraphQLQueryResolver;
@@ -18,6 +19,10 @@ public class ServerQuery implements GraphQLQueryResolver {
   @RolesAllowed(ADMIN)
   public List<ServerView> servers() {
     return serverService.getServers();
+  }
+
+  public List<ClientServerView> clientServers() {
+    return serverService.getClientServers();
   }
 
   @RolesAllowed(ADMIN)
