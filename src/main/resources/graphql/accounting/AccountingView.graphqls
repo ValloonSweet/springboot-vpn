@@ -3,4 +3,10 @@ type AccountingView {
     joinedByDay: Int
     joinedByMonth: Int
     joinedByYear: Int
+
+    monthPurchaseCount: Int
+    monthPurchase: String
+
+    dayPurchaseCount: Int
+    dayPurchase: String
 }

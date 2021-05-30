@@ -1,7 +1,10 @@
 package com.orbvpn.api.service;
 
 import com.orbvpn.api.domain.dto.AccountingView;
+import com.orbvpn.api.domain.enums.PaymentStatus;
 import com.orbvpn.api.reposiitory.UserRepository;
+import com.orbvpn.api.reposiitory.UserSubscriptionRepository;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AccountingService {
   private final UserRepository userRepository;
-
+  private final UserSubscriptionRepository userSubscriptionRepository;
 
   public AccountingView getAccounting() {
     AccountingView accountingView = new AccountingView();
@@ -24,11 +27,20 @@ public class AccountingService {
     int joinedByDay = (int) userRepository.countByCreatedAtAfter(currentDay);
     int joinedByMonth = (int) userRepository.countByCreatedAtAfter(currentMonth);
     int joinedByYear = (int) userRepository.countByCreatedAtAfter(currentYear);
+    int monthPurchaseCount = userSubscriptionRepository.getTotalSubscriptionCount(currentMonth, PaymentStatus.SUCCEEDED);
+    BigDecimal monthPurchase = userSubscriptionRepository.getTotalSubscriptionPrice(currentMonth, PaymentStatus.SUCCEEDED);
+    int dayPurchaseCount = userSubscriptionRepository.getTotalSubscriptionCount(currentDay, PaymentStatus.SUCCEEDED);
+    BigDecimal dayPurchase = userSubscriptionRepository.getTotalSubscriptionPrice(currentDay, PaymentStatus.SUCCEEDED);
+
 
     accountingView.setTotalUsers(totalUsers);
     accountingView.setJoinedByDay(joinedByDay);
     accountingView.setJoinedByMonth(joinedByMonth);
     accountingView.setJoinedByYear(joinedByYear);
+    accountingView.setMonthPurchaseCount(monthPurchaseCount);
+    accountingView.setMonthPurchase(monthPurchase);
+    accountingView.setDayPurchaseCount(dayPurchaseCount);
+    accountingView.setDayPurchase(dayPurchase);
 
     return accountingView;
   }

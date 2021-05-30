@@ -19,4 +19,7 @@ public interface UserSubscriptionRepository extends JpaRepository<UserSubscripti
 
   @Query("select sum(sub.price) from UserSubscription sub where sub.createdAt > :createdAt and sub.paymentStatus = :paymentStatus")
   BigDecimal getTotalSubscriptionPrice(LocalDateTime createdAt, PaymentStatus paymentStatus);
+
+  @Query("select count(sub.id) from UserSubscription sub where sub.createdAt > :createdAt and sub.paymentStatus = :paymentStatus")
+  int getTotalSubscriptionCount(LocalDateTime createdAt, PaymentStatus paymentStatus);
 }
