@@ -1,4 +1,6 @@
 type Mutation {
+    oauthLogin(idToken: String!, socialMedia: SocialMedia!): AuthenticatedUser
+
     register(userCreate: UserCreate!): UserView!
     editProfile(userProfile: UserProfileEdit): UserProfileView
     login(email: String!, password: String!): AuthenticatedUser!

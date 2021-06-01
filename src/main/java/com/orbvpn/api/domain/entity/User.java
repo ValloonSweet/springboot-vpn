@@ -50,7 +50,7 @@ public class User implements UserDetails {
   private Role role;
 
   @Column(nullable = false)
-  private String radAccess = "not-a-regular";
+  private String radAccess = "not-a-regular-user";
 
   @OneToOne(mappedBy = "user")
   private UserProfile profile;

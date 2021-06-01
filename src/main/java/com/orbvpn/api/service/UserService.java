@@ -19,7 +19,6 @@ import com.orbvpn.api.mapper.UserProfileEditMapper;
 import com.orbvpn.api.mapper.UserProfileViewMapper;
 import com.orbvpn.api.mapper.UserViewMapper;
 import com.orbvpn.api.reposiitory.PasswordResetRepository;
-import com.orbvpn.api.reposiitory.RoleRepository;
 import com.orbvpn.api.reposiitory.UserProfileRepository;
 import com.orbvpn.api.reposiitory.UserRepository;
 import java.text.MessageFormat;
@@ -59,8 +58,6 @@ public class UserService {
   private final UserProfileViewMapper userProfileViewMapper;
 
   private final RoleService roleService;
-  private final RadiusService radiusService;
-
   private final ResellerService resellerService;
 
 
@@ -101,7 +98,10 @@ public class UserService {
 
 
     User user = (User) authentication.getPrincipal();
+    return login(user);
+  }
 
+  public AuthenticatedUser login(User user) {
     UserView userView = userViewMapper.toView(user);
     String token = jwtTokenUtil.generateAccessToken(user);
 
