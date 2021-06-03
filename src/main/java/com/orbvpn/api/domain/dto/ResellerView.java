@@ -1,6 +1,6 @@
 package com.orbvpn.api.domain.dto;
 
-import com.orbvpn.api.domain.enums.ResellerLevel;
+import com.orbvpn.api.domain.enums.ResellerLevelName;
 import java.math.BigDecimal;
 import java.util.Set;
 import lombok.Getter;
@@ -14,7 +14,7 @@ public class ResellerView {
   private String firstName;
   private String lastName;
   private BigDecimal credit;
-  private ResellerLevel level;
+  private ResellerLevelName level;
   private String phone;
   private Set<ServiceGroupView> serviceGroups;
 }

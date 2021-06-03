@@ -4,11 +4,18 @@ import static com.orbvpn.api.domain.enums.RoleName.Constants.ADMIN;
 
 import com.orbvpn.api.domain.dto.ResellerCreate;
 import com.orbvpn.api.domain.dto.ResellerEdit;
+import com.orbvpn.api.domain.dto.ResellerLevelCoefficientsEdit;
+import com.orbvpn.api.domain.dto.ResellerLevelCoefficientsView;
+import com.orbvpn.api.domain.dto.ResellerLevelEdit;
+import com.orbvpn.api.domain.dto.ResellerLevelView;
 import com.orbvpn.api.domain.dto.ResellerView;
-import com.orbvpn.api.domain.enums.ResellerLevel;
+import com.orbvpn.api.domain.entity.ResellerLevel;
+import com.orbvpn.api.domain.entity.ResellerLevelCoefficients;
+import com.orbvpn.api.domain.enums.ResellerLevelName;
 import com.orbvpn.api.service.ResellerService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
 import java.math.BigDecimal;
+import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.DecimalMin;
@@ -48,7 +55,7 @@ public class ResellerMutation implements GraphQLMutationResolver {
   }
 
   @RolesAllowed(ADMIN)
-  public ResellerView setResellerLevel(int resellerId, ResellerLevel level) {
+  public ResellerView setResellerLevel(int resellerId, ResellerLevelName level) {
     return resellerService.setResellerLevel(resellerId, level);
   }
 
@@ -57,4 +64,16 @@ public class ResellerMutation implements GraphQLMutationResolver {
     @DecimalMin(value = "0.0", inclusive = false)BigDecimal credit) {
     return resellerService.addResellerCredit(resellerId, credit);
   }
+
+  @RolesAllowed(ADMIN)
+  public ResellerLevelView updateResellerLevel(int id, ResellerLevelEdit level) {
+    return resellerService.updateResellerLevel(id, level);
+  }
+
+  @RolesAllowed(ADMIN)
+  public ResellerLevelCoefficientsView updateResellerLevelCoefficients(
+    ResellerLevelCoefficientsEdit resellerLevelCoefficientsEdit) {
+    return resellerService.updateResellerLevelCoefficients(resellerLevelCoefficientsEdit);
+  }
+
 }

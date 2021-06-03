@@ -16,6 +16,8 @@ type Query {
 
     reseller(id: Int!): ResellerView
     resellers: [ResellerView]
+    getResellersLevels: [ResellerLevelView]
+    getResellerLevelCoefficients: ResellerLevelCoefficientsView
     totalResellersCredit: String
     geolocations: [GeolocationView]
     accounting: AccountingView

@@ -3,7 +3,7 @@ package com.orbvpn.api.domain.dto;
 import static com.orbvpn.api.domain.ValidationProperties.BAD_PASSWORD_MESSAGE;
 import static com.orbvpn.api.domain.ValidationProperties.PASSWORD_PATTERN;
 
-import com.orbvpn.api.domain.enums.ResellerLevel;
+import com.orbvpn.api.domain.enums.ResellerLevelName;
 import java.math.BigDecimal;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Email;
@@ -30,7 +30,7 @@ public class ResellerCreate {
   @DecimalMin(value = "0.0", inclusive = false)
   private BigDecimal credit;
 
-  private ResellerLevel level;
+  private ResellerLevelName level;
 
   private String phone;
 }

@@ -4,7 +4,7 @@ input ResellerCreate {
     firstName: String
     lastName: String
     credit: String
-    level: ResellerLevel
+    level: ResellerLevelName
     phone: String
 }
 
@@ -21,11 +21,57 @@ type ResellerView {
     firstName: String
     lastName: String
     credit: String
-    level: ResellerLevel
+    level: ResellerLevelName
     phone: String
     serviceGroups: [ServiceGroupView]
 }
 
-enum ResellerLevel {
+input ResellerLevelEdit {
+    discountPercent: String!
+    minScore: String!
+}
+
+type ResellerLevelView {
+    id: Int!
+    name: ResellerLevelName!
+    discountPercent: String!
+    minScore: String!
+}
+
+input ResellerLevelCoefficientsEdit {
+    monthCreditPercent: String
+    monthCreditMax: String
+    currentCreditPercent: String
+    currentCreditMax: String
+    activeSubscriptionPercent: String
+    activeSubscriptionMax: String
+    membershipDurationPercent: String
+    membershipDurationMax: String
+    depositIntervalManualDays: String
+    depositIntervalMax: String
+    totalSalePercent: String
+    totalSaleMax: String
+    monthSalePercent: String
+    monthSaleMax: String
+}
+
+type ResellerLevelCoefficientsView {
+    monthCreditPercent: String
+    monthCreditMax: String
+    currentCreditPercent: String
+    currentCreditMax: String
+    activeSubscriptionPercent: String
+    activeSubscriptionMax: String
+    membershipDurationPercent: String
+    membershipDurationMax: String
+    depositIntervalManualDays: String
+    depositIntervalMax: String
+    totalSalePercent: String
+    totalSaleMax: String
+    monthSalePercent: String
+    monthSaleMax: String
+}
+
+enum ResellerLevelName {
     BRONZE, SILVER, GOLD, DIAMOND
 }

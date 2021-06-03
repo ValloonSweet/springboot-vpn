@@ -22,7 +22,7 @@ public class Nas {
   @Column(name = "nasname", unique = true)
   private String nasName;
 
-  @Column(name = "shorname")
+  @Column(name = "shortname")
   private String shortName;
 
   @Column

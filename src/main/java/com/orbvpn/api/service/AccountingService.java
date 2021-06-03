@@ -27,9 +27,9 @@ public class AccountingService {
     int joinedByDay = (int) userRepository.countByCreatedAtAfter(currentDay);
     int joinedByMonth = (int) userRepository.countByCreatedAtAfter(currentMonth);
     int joinedByYear = (int) userRepository.countByCreatedAtAfter(currentYear);
-    int monthPurchaseCount = userSubscriptionRepository.getTotalSubscriptionCount(currentMonth, PaymentStatus.SUCCEEDED);
+    int monthPurchaseCount = userSubscriptionRepository.countTotalSubscriptionCount(currentMonth, PaymentStatus.SUCCEEDED);
     BigDecimal monthPurchase = userSubscriptionRepository.getTotalSubscriptionPrice(currentMonth, PaymentStatus.SUCCEEDED);
-    int dayPurchaseCount = userSubscriptionRepository.getTotalSubscriptionCount(currentDay, PaymentStatus.SUCCEEDED);
+    int dayPurchaseCount = userSubscriptionRepository.countTotalSubscriptionCount(currentDay, PaymentStatus.SUCCEEDED);
     BigDecimal dayPurchase = userSubscriptionRepository.getTotalSubscriptionPrice(currentDay, PaymentStatus.SUCCEEDED);
 
 

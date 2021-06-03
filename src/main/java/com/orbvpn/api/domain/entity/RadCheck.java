@@ -25,7 +25,7 @@ public class RadCheck {
   @Column
   private String attribute;
 
-  @Column
+  @Column(columnDefinition="CHAR(2)")
   private String op;
 
   @Column

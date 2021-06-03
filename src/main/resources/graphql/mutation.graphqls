@@ -19,14 +19,17 @@ type Mutation {
 
     # resellers
     createReseller(reseller: ResellerCreate): ResellerView!
-    setResellerLevel(resellerId: Int!, level: ResellerLevel!): ResellerView!
+    setResellerLevel(resellerId: Int!, level: ResellerLevelName!): ResellerView!
     addResellerCredit(resellerId: Int!, credit: String!): ResellerView!
     editReseller(id: Int!, reseller: ResellerEdit): ResellerView!
     deleteReseller(id: Int!): ResellerView!
     addResellerServiceGroup(resellerId: Int, serviceGroupId: Int): ResellerView!
     removeResellerServiceGroup(resellerId: Int, serviceGroupId: Int): ResellerView!
     resellerCreateUser(user: ResellerUserCreate): UserView!
-    resellerDeleteUser(id: Int): UserView!
+    resellerDeleteUser(id: Int!): UserView!
+    updateResellerLevel(id: Int!, level: ResellerLevelEdit!): ResellerLevelView
+    updateResellerLevelCoefficients(levelCoefficients: ResellerLevelCoefficientsEdit): ResellerLevelCoefficientsView
+
 
     # files
     createFile(file: FileEdit): FileView

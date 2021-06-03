@@ -6,12 +6,13 @@ import com.orbvpn.api.domain.dto.ResellerUserCreate;
 import com.orbvpn.api.domain.dto.UserView;
 import com.orbvpn.api.domain.entity.Group;
 import com.orbvpn.api.domain.entity.Reseller;
+import com.orbvpn.api.domain.entity.ResellerLevel;
 import com.orbvpn.api.domain.entity.Role;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.entity.UserSubscription;
 import com.orbvpn.api.domain.enums.PaymentStatus;
 import com.orbvpn.api.domain.enums.PaymentType;
-import com.orbvpn.api.domain.enums.ResellerLevel;
+import com.orbvpn.api.domain.enums.ResellerLevelName;
 import com.orbvpn.api.domain.enums.RoleName;
 import com.orbvpn.api.exception.BadRequestException;
 import com.orbvpn.api.exception.InsufficientFundsException;
@@ -105,7 +106,7 @@ public class ResellerUserService {
 
   public BigDecimal calculatePrice(Reseller reseller, Group group) {
     ResellerLevel level = reseller.getLevel();
-    if (level == ResellerLevel.OWNER) {
+    if (level.getName() == ResellerLevelName.OWNER) {
       return BigDecimal.ZERO;
     }
 
