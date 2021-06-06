@@ -1,8 +1,7 @@
 type Query {
     user: UserView
     userProfile: UserProfileView
-    resellerGetUser (id: Int): UserView
-    resellerGetUsers (page: Int, size: Int): UserPage
+
     gateways: [GatewayView]
     serviceGroup(id: Int!): ServiceGroupView
     serviceGroups: [ServiceGroupView]
@@ -19,8 +18,10 @@ type Query {
     getResellersLevels: [ResellerLevelView]
     getResellerLevelCoefficients: ResellerLevelCoefficientsView
     totalResellersCredit: String
+    resellerGetUser (id: Int): UserView
+    resellerGetUsers (page: Int, size: Int): UserPage
+
     geolocations: [GeolocationView]
-    accounting: AccountingView
 
     news: [NewsView]!
     newsById(id: Int): NewsView!
@@ -31,6 +32,7 @@ type Query {
     ticket(id: Int): TicketView
     tickets(page: Int, size: Int, category: TicketCategory, status: TicketStatus): TicketPage
 
+    accounting: AccountingView
     totalActiveUsers: Int
     activeUsers(page: Int, size: Int): UserPage
     inactiveUsers(page: Int, size: Int): UserPage

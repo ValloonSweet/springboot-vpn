@@ -17,7 +17,7 @@ public class OauthMutation implements GraphQLMutationResolver {
   private final OauthService oauthService;
 
   @Unsecured
-  public AuthenticatedUser oauthLogin(String idToken, SocialMedia socialMedia) {
-    return oauthService.oauthLogin(idToken, socialMedia);
+  public AuthenticatedUser oauthLogin(String token, SocialMedia socialMedia) {
+    return oauthService.oauthLogin(token, socialMedia);
   }
 }

@@ -1,5 +1,5 @@
 type Mutation {
-    oauthLogin(idToken: String!, socialMedia: SocialMedia!): AuthenticatedUser
+    oauthLogin(token: String!, socialMedia: SocialMedia!): AuthenticatedUser
 
     register(userCreate: UserCreate!): UserView!
     editProfile(userProfile: UserProfileEdit): UserProfileView
