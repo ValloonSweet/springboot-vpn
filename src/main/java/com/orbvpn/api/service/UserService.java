@@ -107,7 +107,7 @@ public class UserService {
       authentication = authenticationManager
         .authenticate(new UsernamePasswordAuthenticationToken(email, password));
     } catch (Exception ex) {
-      throw new BadCredentialsException();
+      throw new BadCredentialsException(ex);
     }
 
 
