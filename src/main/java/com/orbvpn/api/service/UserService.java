@@ -6,10 +6,14 @@ import com.orbvpn.api.domain.dto.UserCreate;
 import com.orbvpn.api.domain.dto.UserProfileEdit;
 import com.orbvpn.api.domain.dto.UserProfileView;
 import com.orbvpn.api.domain.dto.UserView;
+import com.orbvpn.api.domain.entity.Group;
 import com.orbvpn.api.domain.entity.PasswordReset;
 import com.orbvpn.api.domain.entity.Role;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.entity.UserProfile;
+import com.orbvpn.api.domain.entity.UserSubscription;
+import com.orbvpn.api.domain.enums.PaymentStatus;
+import com.orbvpn.api.domain.enums.PaymentType;
 import com.orbvpn.api.domain.enums.RoleName;
 import com.orbvpn.api.exception.BadCredentialsException;
 import com.orbvpn.api.exception.BadRequestException;
@@ -59,6 +63,8 @@ public class UserService {
 
   private final RoleService roleService;
   private final ResellerService resellerService;
+  private final GroupService groupService;
+  private final UserSubscriptionService userSubscriptionService;
 
 
   public UserView register(UserCreate userCreate) {
@@ -79,6 +85,14 @@ public class UserService {
 
     userRepository.save(user);
     UserView userView = userViewMapper.toView(user);
+
+    // Assign trial group
+    Group group = groupService.getById(1);
+    String paymentId = UUID.randomUUID().toString();
+    UserSubscription userSubscription = userSubscriptionService
+      .createUserSubscription(user, group, PaymentType.RESELLER_CREDIT, PaymentStatus.PENDING,
+        paymentId);
+    userSubscriptionService.fullFillSubscription(userSubscription);
 
     log.info("Created user {}", userView);
 
