@@ -90,7 +90,11 @@ public class UploadUserService {
         User user = new User();
 
         user.setUsername(username);
-        user.setEmail("invalid@mail.com");
+        if (isValidEmail(username)) {
+          user.setEmail(username);
+        } else {
+          user.setEmail("invalid@mail.com");
+        }
         user.setFirstName("Migrated");
         user.setLastName("User");
         user.setPassword(passwordEncoder.encode(password));
