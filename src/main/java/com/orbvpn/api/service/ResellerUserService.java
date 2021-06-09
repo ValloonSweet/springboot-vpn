@@ -73,8 +73,8 @@ public class ResellerUserService {
     user.setRole(role);
     user.setReseller(reseller);
 
-    createResellerUserSubscription(user, group);
     userRepository.save(user);
+    createResellerUserSubscription(user, group);
 
     UserView userView = userViewMapper.toView(user);
     log.info("Created user");

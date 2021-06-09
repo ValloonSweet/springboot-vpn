@@ -10,5 +10,4 @@ public enum ResellerLevelName {
   GOLD,
   DIAMOND,
   OWNER
-
 }
