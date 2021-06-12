@@ -67,7 +67,7 @@ public class UserService {
   private final UserSubscriptionService userSubscriptionService;
 
 
-  public UserView register(UserCreate userCreate) {
+  public AuthenticatedUser register(UserCreate userCreate) {
     log.info("Creating user with data {}", userCreate);
 
     Optional<User> userEntityOptional = userRepository.findByEmail(userCreate.getEmail());
@@ -84,7 +84,6 @@ public class UserService {
     user.setReseller(resellerService.getOwnerReseller());
 
     userRepository.save(user);
-    UserView userView = userViewMapper.toView(user);
 
     // Assign trial group
     Group group = groupService.getById(1);
@@ -94,9 +93,10 @@ public class UserService {
         paymentId);
     userSubscriptionService.fullFillSubscription(userSubscription);
 
+    UserView userView = userViewMapper.toView(user);
     log.info("Created user {}", userView);
 
-    return userView;
+    return login(user);
   }
 
   public AuthenticatedUser login(String email, String password) {

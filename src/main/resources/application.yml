@@ -42,6 +42,9 @@ jwt:
 graphql:
   servlet:
     exception-handlers-enabled: true
+  datetime:
+    scalars:
+      zone-conversion-enabled: true
 
 stripe:
   api:

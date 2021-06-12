@@ -29,7 +29,7 @@ public class UserMutation implements GraphQLMutationResolver {
   private final UserService userService;
 
   @Unsecured
-  public UserView register(@Valid UserCreate userCreate) {
+  public AuthenticatedUser register(@Valid UserCreate userCreate) {
     return userService.register(userCreate);
   }
 

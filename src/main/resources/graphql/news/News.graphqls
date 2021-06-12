@@ -4,8 +4,8 @@ type NewsView {
     description: String!
     notifyByEmail: Boolean!
     roles: [RoleView]
-    createdAt: String!
-    updatedAt: String!
+    createdAt: LocalDateTime!
+    updatedAt: LocalDateTime!
 }
 
 input NewsEdit {
