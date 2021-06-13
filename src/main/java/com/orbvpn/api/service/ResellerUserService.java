@@ -68,7 +68,7 @@ public class ResellerUserService {
     User user = resellerUserCreateMapper.create(resellerUserCreate);
     user.setUsername(resellerUserCreate.getEmail());
     user.setPassword(passwordEncoder.encode(resellerUserCreate.getPassword()));
-    user.setRadAccess(UUID.randomUUID().toString());
+    user.setRadAccess(userService.generateRadAccess());
     Role role = roleService.getByName(RoleName.USER);
     user.setRole(role);
     user.setReseller(reseller);

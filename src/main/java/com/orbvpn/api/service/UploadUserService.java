@@ -82,6 +82,10 @@ public class UploadUserService {
           password = passwordCell.getStringCellValue();
         }
 
+        if (StringUtils.isBlank(password)) {
+          password = "123456";
+        }
+
         Cell resellerCell = currentRow.getCell(4, MissingCellPolicy.CREATE_NULL_AS_BLANK);
         String reseller = resellerCell.getStringCellValue();
 
@@ -99,7 +103,7 @@ public class UploadUserService {
         user.setFirstName("Migrated");
         user.setLastName("User");
         user.setPassword(passwordEncoder.encode(password));
-        user.setRadAccess(UUID.randomUUID().toString());
+        user.setRadAccess(password);
         Role role = roleService.getByName(RoleName.USER);
         user.setRole(role);
 

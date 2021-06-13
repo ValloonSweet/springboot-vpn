@@ -74,6 +74,7 @@ dependencies {
 
     implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
     implementation "com.stripe:stripe-java:20.51.0"
+    implementation group: 'com.paypal.sdk', name: 'checkout-sdk', version: '1.0.3'
 
     implementation 'com.google.api-client:google-api-client:1.31.2'
 

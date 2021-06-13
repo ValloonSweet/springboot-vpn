@@ -30,6 +30,7 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -78,7 +79,7 @@ public class UserService {
     User user = userCreateMapper.createEntity(userCreate);
     user.setUsername(userCreate.getEmail());
     user.setPassword(passwordEncoder.encode(userCreate.getPassword()));
-    user.setRadAccess(UUID.randomUUID().toString());
+    user.setRadAccess(generateRadAccess());
     Role role = roleService.getByName(RoleName.USER);
     user.setRole(role);
     user.setReseller(resellerService.getOwnerReseller());
@@ -97,6 +98,13 @@ public class UserService {
     log.info("Created user {}", userView);
 
     return login(user);
+  }
+
+  public String generateRadAccess() {
+    int length = 10;
+    boolean useLetters = true;
+    boolean useNumbers = true;
+    return RandomStringUtils.random(length, useLetters, useNumbers);
   }
 
   public AuthenticatedUser login(String email, String password) {
