@@ -1,6 +1,7 @@
 package com.orbvpn.api.reposiitory;
 
 import com.orbvpn.api.domain.entity.Reseller;
+import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.entity.UserSubscription;
 import com.orbvpn.api.domain.enums.PaymentStatus;
 import com.orbvpn.api.domain.enums.PaymentType;
@@ -11,6 +12,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface UserSubscriptionRepository extends JpaRepository<UserSubscription, Integer> {
+
+  UserSubscription findFirstByUserOrderByCreatedAtDesc(User user);
 
   Optional<UserSubscription> findByPaymentTypeAndPaymentId(PaymentType paymentType, String paymentId);
 

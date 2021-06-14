@@ -12,8 +12,6 @@ import org.mapstruct.Mappings;
 public interface ResellerViewMapper {
   @Mappings({
     @Mapping(source = "user.email", target = "email"),
-    @Mapping(source = "user.firstName", target = "firstName"),
-    @Mapping(source = "user.lastName", target = "lastName")
   })
   ResellerView toView(Reseller reseller);
 

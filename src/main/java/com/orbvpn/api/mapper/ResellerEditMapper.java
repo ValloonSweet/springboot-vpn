@@ -23,16 +23,12 @@ public abstract class ResellerEditMapper {
   @Mappings({
     @Mapping(source = "email", target = "user.username"),
     @Mapping(source = "email", target = "user.email"),
-    @Mapping(source = "firstName", target = "user.firstName"),
-    @Mapping(source = "lastName", target = "user.lastName"),
   })
   public abstract Reseller create(ResellerCreate resellerCreate);
 
   @Mappings({
     @Mapping(source = "email", target = "user.username"),
     @Mapping(source = "email", target = "user.email"),
-    @Mapping(source = "firstName", target = "user.firstName"),
-    @Mapping(source = "lastName", target = "user.lastName"),
   })
   public abstract Reseller edit(@MappingTarget Reseller reseller, ResellerEdit resellerEdit);
 

@@ -19,8 +19,4 @@ public class UserCreate {
 
   @Pattern(regexp = PASSWORD_PATTERN, message = BAD_PASSWORD_MESSAGE)
   private String password;
-  @NotBlank
-  private String firstName;
-  @NotBlank
-  private String lastName;
 }

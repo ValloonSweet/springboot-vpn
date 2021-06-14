@@ -1,8 +1,6 @@
 input ResellerCreate {
     email: String
     password: String
-    firstName: String
-    lastName: String
     credit: String
     level: ResellerLevelName
     phone: String
@@ -10,8 +8,6 @@ input ResellerCreate {
 
 input ResellerEdit {
     email: String
-    firstName: String
-    lastName: String
     phone: String
 }
 

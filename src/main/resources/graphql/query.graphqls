@@ -1,6 +1,7 @@
 type Query {
     user: UserView
     userProfile: UserProfileView
+    userSubscription: UserSubscriptionView
 
     gateways: [GatewayView]
     serviceGroup(id: Int!): ServiceGroupView

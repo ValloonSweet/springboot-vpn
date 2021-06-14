@@ -100,8 +100,6 @@ public class UploadUserService {
         } else {
           user.setEmail("invalid@mail.com");
         }
-        user.setFirstName("Migrated");
-        user.setLastName("User");
         user.setPassword(passwordEncoder.encode(password));
         user.setRadAccess(password);
         Role role = roleService.getByName(RoleName.USER);

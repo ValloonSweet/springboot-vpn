@@ -21,12 +21,6 @@ public class ResellerCreate {
   @Pattern(regexp = PASSWORD_PATTERN, message = BAD_PASSWORD_MESSAGE)
   private String password;
 
-  @NotBlank
-  private String firstName;
-
-  @NotBlank
-  private String lastName;
-
   @DecimalMin(value = "0.0", inclusive = false)
   private BigDecimal credit;
 

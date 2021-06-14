@@ -228,8 +228,6 @@ create table user
     created_at datetime(6) null,
     email varchar(255) not null,
     enabled bit null,
-    first_name varchar(255) not null,
-    last_name varchar(255) not null,
     password varchar(255) null,
     rad_access varchar(255) not null,
     updated_at datetime(6) null,
@@ -310,7 +308,8 @@ create table user_profile
     city varchar(255) null,
     country varchar(255) null,
     created_at datetime(6) null,
-    full_name varchar(255) null,
+    first_name varchar(255) null,
+    last_name varchar(255) null,
     phone varchar(255) null,
     postal_code varchar(255) null,
     updated_at datetime(6) null,
@@ -761,14 +760,17 @@ insert into reseller_level(id, name, discount_percent, min_score) VALUES
 
 
 
-INSERT into user (id, username, email, password, first_name, last_name, rad_access, role_id, enabled) VALUES (1, 'nima@orb.group', 'nima@orb.group', '$2a$12$4.IiwafezzxBkzQ6ojigQufkMAVeSK588xrF0e.FD.Ol5EUnZzegi', 'admin', 'admin','rad',1, true);
+INSERT into user (id, username, email, password, rad_access, role_id, enabled) VALUES (1, 'nima@orb.group', 'nima@orb.group', '$2a$12$4.IiwafezzxBkzQ6ojigQufkMAVeSK588xrF0e.FD.Ol5EUnZzegi', 'rad',1, true);
 INSERT into reseller(id, user_id, credit, level_id, enabled, created_at, updated_at) VALUES (1, 1, '100.00', 6, true, NOW(), NOW());
+UPDATE user set reseller_id = 1 where id = 1;
 
-INSERT into user (id, username, email, password, first_name, last_name, rad_access, role_id, enabled) VALUES (2, 'hosein@email.com', 'hosein@email.com', '$2a$12$4.IiwafezzxBkzQ6ojigQufkMAVeSK588xrF0e.FD.Ol5EUnZzegi', 'Hossein', 'Aghanassir','rad',2, true);
+INSERT into user (id, username, email, password, rad_access, role_id, enabled) VALUES (2, 'hosein@email.com', 'hosein@email.com', '$2a$12$4.IiwafezzxBkzQ6ojigQufkMAVeSK588xrF0e.FD.Ol5EUnZzegi', 'rad',2, true);
 INSERT into reseller(id, user_id, credit, level_id, enabled, created_at, updated_at) VALUES (2, 2, '0', 1, true, NOW(), NOW());
+UPDATE user set reseller_id = 2 where id = 2;
 
-INSERT into user (id, username, email, password, first_name, last_name, rad_access, role_id, enabled) VALUES (3, 'alireza@email.com', 'alireza@email.com', '$2a$12$4.IiwafezzxBkzQ6ojigQufkMAVeSK588xrF0e.FD.Ol5EUnZzegi', 'Alireza', 'Sadeghi','rad',2, true);
+INSERT into user (id, username, email, password, rad_access, role_id, enabled) VALUES (3, 'alireza@email.com', 'alireza@email.com', '$2a$12$4.IiwafezzxBkzQ6ojigQufkMAVeSK588xrF0e.FD.Ol5EUnZzegi', 'rad',2, true);
 INSERT into reseller(id, user_id, credit, level_id, enabled, created_at, updated_at) VALUES (3, 3, '0', 1, true, NOW(), NOW());
+UPDATE user set reseller_id = 3 where id = 3;
 
 INSERT into service_group(id, name, description, discount, created_at, updated_at) VALUES (1, 'Worldwide', 'Worldwide', '0', NOW(), NOW());
 INSERT into service_group(id, name, description, discount, created_at, updated_at) VALUES (2, 'Iran', 'Iran', '70', NOW(), NOW());

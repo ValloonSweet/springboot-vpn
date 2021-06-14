@@ -27,7 +27,10 @@ public class UserProfile {
   private User user;
 
   @Column
-  private String fullName;
+  private String firstName;
+
+  @Column
+  private String lastName;
 
   @Column
   private String phone;

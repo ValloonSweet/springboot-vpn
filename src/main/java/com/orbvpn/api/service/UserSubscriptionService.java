@@ -67,5 +67,9 @@ public class UserSubscriptionService {
     return userSubscriptionRepository.findByPaymentTypeAndPaymentId(type, pid)
       .orElseThrow(()->new RuntimeException("Payment not found"));
   }
+
+  public UserSubscription getCurrentSubscription(User user) {
+    return userSubscriptionRepository.findFirstByUserOrderByCreatedAtDesc(user);
+  }
 }
 

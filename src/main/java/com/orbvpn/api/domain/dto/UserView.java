@@ -10,8 +10,6 @@ import lombok.Setter;
 public class UserView {
   private int id;
   private String email;
-  private String firstName;
-  private String lastName;
   private RoleName role;
   private String radAccess;
   private UserProfileView profile;

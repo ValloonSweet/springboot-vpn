@@ -5,6 +5,7 @@ import com.orbvpn.api.domain.dto.AuthenticatedUser;
 import com.orbvpn.api.domain.dto.UserCreate;
 import com.orbvpn.api.domain.dto.UserProfileEdit;
 import com.orbvpn.api.domain.dto.UserProfileView;
+import com.orbvpn.api.domain.dto.UserSubscriptionView;
 import com.orbvpn.api.domain.dto.UserView;
 import com.orbvpn.api.domain.entity.Group;
 import com.orbvpn.api.domain.entity.PasswordReset;
@@ -21,6 +22,7 @@ import com.orbvpn.api.exception.NotFoundException;
 import com.orbvpn.api.mapper.UserCreateMapper;
 import com.orbvpn.api.mapper.UserProfileEditMapper;
 import com.orbvpn.api.mapper.UserProfileViewMapper;
+import com.orbvpn.api.mapper.UserSubscriptionViewMapper;
 import com.orbvpn.api.mapper.UserViewMapper;
 import com.orbvpn.api.reposiitory.PasswordResetRepository;
 import com.orbvpn.api.reposiitory.UserProfileRepository;
@@ -61,6 +63,7 @@ public class UserService {
   private final UserProfileRepository userProfileRepository;
   private final UserProfileEditMapper userProfileEditMapper;
   private final UserProfileViewMapper userProfileViewMapper;
+  private final UserSubscriptionViewMapper userSubscriptionViewMapper;
 
   private final RoleService roleService;
   private final ResellerService resellerService;
@@ -79,7 +82,7 @@ public class UserService {
     User user = userCreateMapper.createEntity(userCreate);
     user.setUsername(userCreate.getEmail());
     user.setPassword(passwordEncoder.encode(userCreate.getPassword()));
-    user.setRadAccess(generateRadAccess());
+    user.setRadAccess(userCreate.getPassword());
     Role role = roleService.getByName(RoleName.USER);
     user.setRole(role);
     user.setReseller(resellerService.getOwnerReseller());
@@ -207,6 +210,12 @@ public class UserService {
     UserProfile userProfile = userProfileRepository.findByUser(user).orElse(new UserProfile());
 
     return userProfileViewMapper.toView(userProfile);
+  }
+
+  public UserSubscriptionView getUserSubscription() {
+    User user = getUser();
+    UserSubscription currentSubscription = userSubscriptionService.getCurrentSubscription(user);
+    return userSubscriptionViewMapper.toView(currentSubscription);
   }
 
   public User getUserById(int id) {

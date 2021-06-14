@@ -40,12 +40,6 @@ public class User implements UserDetails {
   @Column
   private String password;
 
-  @Column(nullable = false)
-  private String firstName;
-
-  @Column(nullable = false)
-  private String lastName;
-
   @ManyToOne
   private Role role;
 

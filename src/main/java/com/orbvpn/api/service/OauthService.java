@@ -76,9 +76,7 @@ public class OauthService {
     User user = new User();
     user.setUsername(tokenData.getEmail());
     user.setEmail(tokenData.getEmail());
-    user.setFirstName(tokenData.getFirstName());
-    user.setLastName(tokenData.getLastName());
-    user.setRadAccess(UUID.randomUUID().toString());
+    user.setRadAccess(userService.generateRadAccess());
     Role role = roleService.getByName(RoleName.USER);
     user.setRole(role);
     user.setReseller(resellerService.getOwnerReseller());

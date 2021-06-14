@@ -1,15 +1,11 @@
 input UserCreate {
     email: String!
     password: String!
-    firstName: String!
-    lastName: String!
 }
 
 type UserView {
     id: Int!
     email: String!
-    firstName: String!
-    lastName: String!
     role: String!
     radAccess: String!
     profile: UserProfileView
@@ -18,7 +14,8 @@ type UserView {
 }
 
 input UserProfileEdit {
-    fullName: String
+    firstName: String
+    lastName: String
     phone: String
     address: String
     city: String
@@ -27,7 +24,8 @@ input UserProfileEdit {
 }
 
 type UserProfileView {
-    fullName: String
+    firstName: String
+    lastName: String
     phone: String
     address: String
     city: String
@@ -53,8 +51,6 @@ type AuthenticatedUser {
 input ResellerUserCreate {
     email: String!
     password: String!
-    firstName: String!
-    lastName: String!
     groupId: Int!
 }
 
@@ -63,4 +59,13 @@ type UserPage {
     size: Int,
     number: Int,
     content:  [UserView]
+}
+
+type UserSubscriptionView {
+    group: GroupView
+    duration: Int
+    multiLoginCount: Int
+    expiresAt: String
+    createdAt: String
+    updatedAt: String
 }
