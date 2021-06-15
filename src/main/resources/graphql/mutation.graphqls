@@ -26,6 +26,7 @@ type Mutation {
     addResellerServiceGroup(resellerId: Int, serviceGroupId: Int): ResellerView!
     removeResellerServiceGroup(resellerId: Int, serviceGroupId: Int): ResellerView!
     resellerCreateUser(user: ResellerUserCreate): UserView!
+    resellerEditUser(id: Int!, resellerUserEdit: ResellerUserEdit): UserView!
     resellerDeleteUser(id: Int!): UserView!
     updateResellerLevel(id: Int!, level: ResellerLevelEdit!): ResellerLevelView
     updateResellerLevelCoefficients(levelCoefficients: ResellerLevelCoefficientsEdit): ResellerLevelCoefficientsView

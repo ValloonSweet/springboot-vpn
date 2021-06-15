@@ -4,9 +4,11 @@ package com.orbvpn.api.domain.entity;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -46,7 +48,7 @@ public class User implements UserDetails {
   @Column(nullable = false)
   private String radAccess = "not-a-regular-user";
 
-  @OneToOne(mappedBy = "user")
+  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private UserProfile profile;
 
   @ManyToOne
@@ -66,11 +68,6 @@ public class User implements UserDetails {
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return Collections.singleton(role.getName());
-  }
-
-  @Override
-  public String getUsername() {
-    return email;
   }
 
   @Override

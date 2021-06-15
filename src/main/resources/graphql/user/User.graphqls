@@ -61,6 +61,14 @@ type UserPage {
     content:  [UserView]
 }
 
+input ResellerUserEdit {
+    password: String
+    resellerId: Int
+    groupId: Int
+    multiLoginCount: Int
+    userProfileEdit: UserProfileEdit
+}
+
 type UserSubscriptionView {
     group: GroupView
     duration: Int

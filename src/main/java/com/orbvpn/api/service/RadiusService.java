@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -27,6 +28,7 @@ public class RadiusService {
 
   private final NasRepository nasRepository;
   private final RadCheckRepository radCheckRepository;
+
 
   public void createNas(Server server) {
     Nas nas = new Nas();
@@ -55,25 +57,26 @@ public class RadiusService {
   @Transactional
   public void createUserRadChecks(UserSubscription userSubscription) {
     User user = userSubscription.getUser();
+    String username = user.getUsername();
 
     //Password
     String sha1Hex = DigestUtils.sha1Hex(user.getRadAccess());
     RadCheck passwordCheck = new RadCheck();
-    passwordCheck.setUsername(user.getUsername());
+    passwordCheck.setUsername(username);
     passwordCheck.setAttribute("SHA-Password");
     passwordCheck.setOp(":=");
     passwordCheck.setValue(sha1Hex);
 
     //Simultaneous use
     RadCheck simultaneousCheck = new RadCheck();
-    simultaneousCheck.setUsername(user.getEmail());
+    simultaneousCheck.setUsername(username);
     simultaneousCheck.setAttribute("Simultaneous-Use");
     simultaneousCheck.setOp(":=");
     simultaneousCheck.setValue(String.valueOf(userSubscription.getMultiLoginCount()));
 
     //Expiration
     RadCheck expirationCheck = new RadCheck();
-    expirationCheck.setUsername(user.getEmail());
+    expirationCheck.setUsername(username);
     expirationCheck.setAttribute("Expiration");
     expirationCheck.setOp("==");
     expirationCheck.setValue(convertToExpirationString(userSubscription.getExpiresAt()));
@@ -81,6 +84,37 @@ public class RadiusService {
     radCheckRepository.save(passwordCheck);
     radCheckRepository.save(simultaneousCheck);
     radCheckRepository.save(expirationCheck);
+  }
+
+  public void deleteUserRadChecks(User user) {
+    radCheckRepository.deleteByUsername(user.getUsername());
+  }
+
+  public void editUserPassword(User user) {
+    String username = user.getUsername();
+    String sha1Hex = DigestUtils.sha1Hex(user.getRadAccess());
+
+    Optional<RadCheck> radCheckOptional = radCheckRepository
+      .findByUsernameAndAttribute(username, "SHA-Password");
+
+    if(radCheckOptional.isPresent()) {
+      RadCheck radCheck = radCheckOptional.get();
+      radCheck.setValue(sha1Hex);
+      radCheckRepository.save(radCheck);
+    }
+  }
+
+  public void editUserMultiLoginCount(User user, int multiLoginCount) {
+    String username = user.getUsername();
+
+    Optional<RadCheck> radCheckOptional = radCheckRepository
+      .findByUsernameAndAttribute(username, "Simultaneous-Use");
+
+    if(radCheckOptional.isPresent()) {
+      RadCheck radCheck = radCheckOptional.get();
+      radCheck.setValue(String.valueOf(multiLoginCount));
+      radCheckRepository.save(radCheck);
+    }
   }
 
   public String convertToExpirationString(LocalDateTime expiration) {

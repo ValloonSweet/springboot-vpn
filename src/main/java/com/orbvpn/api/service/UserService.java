@@ -69,6 +69,7 @@ public class UserService {
   private final ResellerService resellerService;
   private final GroupService groupService;
   private final UserSubscriptionService userSubscriptionService;
+  private final RadiusService radiusService;
 
 
   public AuthenticatedUser register(UserCreate userCreate) {
@@ -189,6 +190,12 @@ public class UserService {
     return true;
   }
 
+  public void deleteUser(User user) {
+    userSubscriptionService.deleteUserSubscriptions(user);
+    radiusService.deleteUserRadChecks(user);
+    userRepository.delete(user);
+  }
+
   public UserProfileView editProfile(UserProfileEdit userProfileEdit) {
     User user = getUser();
 
@@ -231,6 +238,11 @@ public class UserService {
   public Role getUserRole() {
     User user = getUser();
     return user.getRole();
+  }
+
+  public boolean isAdmin() {
+    User user = getUser();
+    return user.getRole().getName() == RoleName.ADMIN;
   }
 
   public UserView getUserView() {

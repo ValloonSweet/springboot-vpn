@@ -1,14 +1,19 @@
 package com.orbvpn.api.service;
 
+import com.orbvpn.api.config.PayPalClient;
 import com.orbvpn.api.domain.dto.StripeCreatePaymentIntentResponse;
 import com.orbvpn.api.domain.entity.Group;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.enums.PaymentStatus;
 import com.orbvpn.api.domain.enums.PaymentType;
+import com.paypal.http.HttpResponse;
+import com.paypal.orders.Order;
+import com.paypal.orders.OrdersCreateRequest;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.param.PaymentIntentCreateParams;
+import java.io.IOException;
 import java.math.BigDecimal;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +36,7 @@ public class PaymentService {
   private final UserService userService;
   private final GroupService groupService;
   private final UserSubscriptionService userSubscriptionService;
+  private final PayPalClient paypalClient;
 
   @PostConstruct
   public void init() {
@@ -58,6 +64,8 @@ public class PaymentService {
     stripeCreatePaymentIntentResponse.setClientSecret(intent.getClientSecret());
     return stripeCreatePaymentIntentResponse;
   }
+
+
 
   public void fullFillStripeSubscription(String pid) {
     userSubscriptionService.fullFillSubscription(PaymentType.STRIPE, pid);

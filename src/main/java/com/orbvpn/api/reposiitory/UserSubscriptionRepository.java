@@ -13,6 +13,8 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface UserSubscriptionRepository extends JpaRepository<UserSubscription, Integer> {
 
+  long deleteByUser(User user);
+
   UserSubscription findFirstByUserOrderByCreatedAtDesc(User user);
 
   Optional<UserSubscription> findByPaymentTypeAndPaymentId(PaymentType paymentType, String paymentId);

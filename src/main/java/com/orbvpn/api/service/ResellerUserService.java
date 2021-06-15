@@ -3,12 +3,14 @@ package com.orbvpn.api.service;
 import static com.orbvpn.api.config.AppConstants.DEFAULT_SORT;
 
 import com.orbvpn.api.domain.dto.ResellerUserCreate;
+import com.orbvpn.api.domain.dto.ResellerUserEdit;
 import com.orbvpn.api.domain.dto.UserView;
 import com.orbvpn.api.domain.entity.Group;
 import com.orbvpn.api.domain.entity.Reseller;
 import com.orbvpn.api.domain.entity.ResellerLevel;
 import com.orbvpn.api.domain.entity.Role;
 import com.orbvpn.api.domain.entity.User;
+import com.orbvpn.api.domain.entity.UserProfile;
 import com.orbvpn.api.domain.entity.UserSubscription;
 import com.orbvpn.api.domain.enums.PaymentStatus;
 import com.orbvpn.api.domain.enums.PaymentType;
@@ -17,6 +19,7 @@ import com.orbvpn.api.domain.enums.RoleName;
 import com.orbvpn.api.exception.BadRequestException;
 import com.orbvpn.api.exception.InsufficientFundsException;
 import com.orbvpn.api.mapper.ResellerUserCreateMapper;
+import com.orbvpn.api.mapper.UserProfileEditMapper;
 import com.orbvpn.api.mapper.UserViewMapper;
 import com.orbvpn.api.reposiitory.ResellerRepository;
 import com.orbvpn.api.reposiitory.UserRepository;
@@ -42,6 +45,7 @@ public class ResellerUserService {
 
   private final ResellerUserCreateMapper resellerUserCreateMapper;
   private final UserViewMapper userViewMapper;
+  private final UserProfileEditMapper userProfileEditMapper;
 
   private final PasswordEncoder passwordEncoder;
 
@@ -49,6 +53,8 @@ public class ResellerUserService {
   private final RoleService roleService;
   private final GroupService groupService;
   private final UserSubscriptionService userSubscriptionService;
+  private final RadiusService radiusService;
+  private final ResellerService resellerService;
 
   private final UserRepository userRepository;
   private final ResellerRepository resellerRepository;
@@ -82,7 +88,6 @@ public class ResellerUserService {
     return userView;
   }
 
-  @Transactional
   public UserSubscription createResellerUserSubscription(User user, Group group) {
     Reseller reseller = user.getReseller();
 
@@ -116,12 +121,57 @@ public class ResellerUserService {
     return price.subtract(discount);
   }
 
+  public UserView editUser(int id, ResellerUserEdit resellerUserEdit) {
+    log.info("Editing user with id {}", id);
+
+    User user = userService.getUserById(id);
+    checkResellerUserAccess(user);
+
+    String password = resellerUserEdit.getPassword();
+    if (password != null) {
+      user.setPassword(passwordEncoder.encode(password));
+      user.setRadAccess(password);
+      radiusService.editUserPassword(user);
+    }
+
+    Integer resellerId = resellerUserEdit.getResellerId();
+    if (resellerId != null && userService.isAdmin()) {
+      Reseller reseller = resellerService.getResellerById(resellerId);
+      user.setReseller(reseller);
+    }
+
+    Integer groupId = resellerUserEdit.getGroupId();
+    if (groupId != null) {
+      Group group = groupService.getById(groupId);
+      createResellerUserSubscription(user, group);
+    }
+
+    Integer multiLoginCount = resellerUserEdit.getMultiLoginCount();
+    if (multiLoginCount != null) {
+      userSubscriptionService.updateSubscriptionMultiLoginCount(user, multiLoginCount);
+    }
+
+
+    if (user.getProfile() == null) {
+      UserProfile profile = new UserProfile();
+      profile.setUser(user);
+      user.setProfile(profile);
+    }
+    userProfileEditMapper.edit(user.getProfile(), resellerUserEdit.getUserProfileEdit());
+
+    userRepository.save(user);
+
+    UserView userView = userViewMapper.toView(user);
+    log.info("Edited user with id {}", id);
+    return userView;
+  }
+
   public UserView deleteUser(int id) {
     log.info("Deleting user with id {}", id);
 
     User user = userService.getUserById(id);
     checkResellerUserAccess(user);
-    userRepository.delete(user);
+    userService.deleteUser(user);
     UserView userView = userViewMapper.toView(user);
 
     log.info("Deleted user with id {}", id);

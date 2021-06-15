@@ -15,12 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class UserSubscriptionService {
 
   private final RadiusService radiusService;
   private final UserSubscriptionRepository userSubscriptionRepository;
 
-  @Transactional
+
   public UserSubscription createUserSubscription(User user, Group group,
     PaymentType type, PaymentStatus status, String pId) {
     log.info("Creating subscription for user with id {} for group {}", user.getId(), group.getId());
@@ -43,13 +44,13 @@ public class UserSubscriptionService {
     return userSubscription;
   }
 
-  @Transactional
+
   public UserSubscription fullFillSubscription(PaymentType type, String pId) {
     UserSubscription subscription = getSubscription(type, pId);
     return fullFillSubscription(subscription);
   }
 
-  @Transactional
+
   public UserSubscription fullFillSubscription(UserSubscription subscription) {
     if(subscription.getPaymentStatus() == PaymentStatus.SUCCEEDED) {
       return subscription;
@@ -59,8 +60,20 @@ public class UserSubscriptionService {
     subscription.setExpiresAt(LocalDateTime.now().plusDays(subscription.getDuration()));
 
     userSubscriptionRepository.save(subscription);
+    radiusService.deleteUserRadChecks(subscription.getUser());
     radiusService.createUserRadChecks(subscription);
     return subscription;
+  }
+
+  public void deleteUserSubscriptions(User user) {
+    userSubscriptionRepository.deleteByUser(user);
+  }
+
+  public void updateSubscriptionMultiLoginCount(User user, int multiLoginCount) {
+    UserSubscription subscription = getCurrentSubscription(user);
+    subscription.setMultiLoginCount(multiLoginCount);
+    userSubscriptionRepository.save(subscription);
+    radiusService.editUserMultiLoginCount(user, multiLoginCount);
   }
 
   public UserSubscription getSubscription(PaymentType type, String pid) {

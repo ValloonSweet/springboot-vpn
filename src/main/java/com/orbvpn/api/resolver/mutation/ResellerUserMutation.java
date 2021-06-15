@@ -4,6 +4,7 @@ import static com.orbvpn.api.domain.enums.RoleName.Constants.ADMIN;
 import static com.orbvpn.api.domain.enums.RoleName.Constants.RESELLER;
 
 import com.orbvpn.api.domain.dto.ResellerUserCreate;
+import com.orbvpn.api.domain.dto.ResellerUserEdit;
 import com.orbvpn.api.domain.dto.UserView;
 import com.orbvpn.api.service.ResellerUserService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
@@ -27,5 +28,10 @@ public class ResellerUserMutation implements GraphQLMutationResolver {
   @RolesAllowed({ADMIN, RESELLER})
   public UserView resellerDeleteUser(int id) {
     return resellerUserService.deleteUser(id);
+  }
+
+  @RolesAllowed({ADMIN, RESELLER})
+  public UserView resellerEditUser(int id, ResellerUserEdit resellerUserEdit) {
+    return resellerUserService.editUser(id, resellerUserEdit);
   }
 }
