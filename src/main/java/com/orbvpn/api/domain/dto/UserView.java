@@ -12,6 +12,7 @@ public class UserView {
   private String email;
   private RoleName role;
   private String radAccess;
+  private String radAccessClear;
   private UserProfileView profile;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;

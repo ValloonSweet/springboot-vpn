@@ -70,6 +70,7 @@ public class UserService {
   private final GroupService groupService;
   private final UserSubscriptionService userSubscriptionService;
   private final RadiusService radiusService;
+  private final PasswordService passwordService;
 
 
   public AuthenticatedUser register(UserCreate userCreate) {
@@ -82,7 +83,7 @@ public class UserService {
 
     User user = userCreateMapper.createEntity(userCreate);
     user.setUsername(userCreate.getEmail());
-    user.setPassword(passwordEncoder.encode(userCreate.getPassword()));
+    passwordService.setPassword(user, userCreate.getPassword());
     user.setRadAccess(userCreate.getPassword());
     Role role = roleService.getByName(RoleName.USER);
     user.setRole(role);
@@ -90,13 +91,7 @@ public class UserService {
 
     userRepository.save(user);
 
-    // Assign trial group
-    Group group = groupService.getById(1);
-    String paymentId = UUID.randomUUID().toString();
-    UserSubscription userSubscription = userSubscriptionService
-      .createUserSubscription(user, group, PaymentType.RESELLER_CREDIT, PaymentStatus.PENDING,
-        paymentId);
-    userSubscriptionService.fullFillSubscription(userSubscription);
+    assignTrialSubscription(user);
 
     UserView userView = userViewMapper.toView(user);
     log.info("Created user {}", userView);
@@ -104,7 +99,17 @@ public class UserService {
     return login(user);
   }
 
-  public String generateRadAccess() {
+  public void assignTrialSubscription(User user) {
+    // Assign trial group
+    Group group = groupService.getById(1);
+    String paymentId = UUID.randomUUID().toString();
+    UserSubscription userSubscription = userSubscriptionService
+      .createUserSubscription(user, group, PaymentType.RESELLER_CREDIT, PaymentStatus.PENDING,
+        paymentId);
+    userSubscriptionService.fullFillSubscription(userSubscription);
+  }
+
+  public String generateRandomString() {
     int length = 10;
     boolean useLetters = true;
     boolean useNumbers = true;
@@ -141,7 +146,7 @@ public class UserService {
     User user = userRepository.findByEmail(email)
       .orElseThrow(() -> new NotFoundException("User with specified email not exists"));
 
-    String token = UUID.randomUUID().toString();
+    String token = generateRandomString();
 
     PasswordReset passwordReset = new PasswordReset();
     passwordReset.setUser(user);
@@ -166,7 +171,7 @@ public class UserService {
       new NotFoundException("Token was not found"));
 
     User user = passwordReset.getUser();
-    user.setPassword(passwordEncoder.encode(password));
+    passwordService.setPassword(user, password);
     userRepository.save(user);
     passwordResetRepository.delete(passwordReset);
 
@@ -184,7 +189,7 @@ public class UserService {
       throw new BadRequestException("Wrong password");
     }
 
-    user.setPassword(passwordEncoder.encode(password));
+    passwordService.setPassword(user, password);
     userRepository.save(user);
 
     return true;

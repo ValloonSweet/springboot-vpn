@@ -4,6 +4,7 @@ import com.orbvpn.api.domain.entity.Group;
 import com.orbvpn.api.domain.entity.Reseller;
 import com.orbvpn.api.domain.entity.Role;
 import com.orbvpn.api.domain.entity.User;
+import com.orbvpn.api.domain.entity.UserProfile;
 import com.orbvpn.api.domain.entity.UserSubscription;
 import com.orbvpn.api.domain.enums.PaymentStatus;
 import com.orbvpn.api.domain.enums.PaymentType;
@@ -13,6 +14,8 @@ import com.orbvpn.api.reposiitory.ResellerRepository;
 import com.orbvpn.api.reposiitory.UserRepository;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
@@ -42,8 +45,6 @@ public class UploadUserService {
 
   private static final Map<String, Integer> resellerMap = Map.of("OrbVPN", 1,
     "Hosseing Aghanassir", 2, "Ali Sadeghi", 3);
-  private static final Map<String, Integer> groupMap = Map
-    .of("Iran Service", 2, "Agent Service", 1);
 
   private final UserRepository userRepository;
   private final ResellerRepository resellerRepository;
@@ -51,6 +52,7 @@ public class UploadUserService {
   private final PasswordEncoder passwordEncoder;
   private final UserSubscriptionService userSubscriptionService;
   private final RoleService roleService;
+  private final PasswordService passwordService;
 
   public boolean uploadUsers(InputStream inputStream) {
 
@@ -74,6 +76,12 @@ public class UploadUserService {
           continue;
         }
 
+        Cell emailCell = currentRow.getCell(14, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+        String email = emailCell.getStringCellValue();
+        if (!isValidEmail(email)) {
+          email = "invalid@mail.com";
+        }
+
         Cell passwordCell = currentRow.getCell(2, MissingCellPolicy.CREATE_NULL_AS_BLANK);
         String password;
         if (passwordCell.getCellType() == CellType.NUMERIC) {
@@ -92,18 +100,74 @@ public class UploadUserService {
         Cell servicePackageCell = currentRow.getCell(5, MissingCellPolicy.CREATE_NULL_AS_BLANK);
         String servicePackage = servicePackageCell.getStringCellValue();
 
+        Cell groupNameCell = currentRow.getCell(3, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+        String groupName = groupNameCell.getStringCellValue();
+
+        Cell multiLoginCountCell = currentRow.getCell(11, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+        double multiLoginCount = multiLoginCountCell.getNumericCellValue();
+        if (multiLoginCount == 0) {
+          multiLoginCount = 2.0;
+        }
+
+        Cell creationDateCell = currentRow.getCell(10, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+        Date creationDate = new Date();
+        try {
+          creationDate = creationDateCell.getDateCellValue();
+        } catch (Exception ex) {
+          log.info("Exception:{}", ex.getMessage());
+        }
+        LocalDateTime creationDateTime = getCreationDate(creationDate);
+
+        Cell expirationDateCell = currentRow.getCell(7, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+        Date expirationDate = expirationDateCell.getDateCellValue();
+        LocalDateTime expirationDateTime = getCreationDate(expirationDate);
+
+        Cell fullNameCell = currentRow.getCell(12, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+        String fullName = fullNameCell.getStringCellValue();
+        String[] names = fullName.split(" ");
+
+        Cell cellPhoneCell = currentRow.getCell(13, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+        String cellPhone;
+        if (cellPhoneCell.getCellType() == CellType.NUMERIC) {
+          cellPhone = NumberToTextConverter.toText(cellPhoneCell.getNumericCellValue());
+        } else {
+          cellPhone = cellPhoneCell.getStringCellValue();
+        }
+
+        Cell postalCodeCell = currentRow.getCell(15, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+        String postalCode;
+        if (postalCodeCell.getCellType() == CellType.NUMERIC) {
+          postalCode = NumberToTextConverter.toText(postalCodeCell.getNumericCellValue());
+        } else {
+          postalCode = postalCodeCell.getStringCellValue();
+        }
+
+        Cell cityCell = currentRow.getCell(16, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+        String city = cityCell.getStringCellValue();
+
+        Cell countryCell = currentRow.getCell(17, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+        String country = countryCell.getStringCellValue();
+
         User user = new User();
 
         user.setUsername(username);
-        if (isValidEmail(username)) {
-          user.setEmail(username);
-        } else {
-          user.setEmail("invalid@mail.com");
-        }
-        user.setPassword(passwordEncoder.encode(password));
-        user.setRadAccess(password);
+        user.setEmail(email);
+        passwordService.setPassword(user, password);
         Role role = roleService.getByName(RoleName.USER);
         user.setRole(role);
+
+        UserProfile userProfile = new UserProfile();
+        if(names.length> 0) {
+          userProfile.setFirstName(names[0]);
+        }
+        if(names.length > 1) {
+          userProfile.setLastName(names[1]);
+        }
+        userProfile.setPhone(cellPhone);
+        userProfile.setPostalCode(postalCode);
+        userProfile.setCity(city);
+        userProfile.setCountry(country);
+        user.setProfile(userProfile);
 
         // Set resellers
         Integer resellerId = resellerMap.getOrDefault(reseller, 1);
@@ -111,13 +175,18 @@ public class UploadUserService {
         user.setReseller(resellerEnt);
 
         userRepository.save(user);
+        user.setCreatedAt(creationDateTime);
+        userRepository.save(user);
         // Create subscription
-        Integer groupId = groupMap.getOrDefault(servicePackage, 1);
+        Integer groupId = getGroupId(groupName, servicePackage);
         Group group = groupRepository.getOne(groupId);
         String paymentId = UUID.randomUUID().toString();
         UserSubscription userSubscription = userSubscriptionService
           .createUserSubscription(user, group, PaymentType.RESELLER_CREDIT, PaymentStatus.PENDING,
             paymentId);
+
+        userSubscription.setMultiLoginCount((int) multiLoginCount);
+        userSubscription.setExpiresAt(expirationDateTime);
         userSubscriptionService.fullFillSubscription(userSubscription);
       }
     } catch (IOException ioException) {
@@ -132,6 +201,36 @@ public class UploadUserService {
   private boolean isValidEmail(String email) {
     Matcher m = EMAIL_PATTERN.matcher(email);
     return m.matches();
+  }
+
+  private static final Map<String, Integer> agentServiceMap = Map
+    .of("3 Months", 3, "6 Months", 4 ,"1 Year", 5,
+      "2 Years", 6, "3 Years", 7);
+  private static final Map<String, Integer> iranServiceMap = Map
+    .of("3 Months", 15, "6 Months", 16 ,"1 Year", 17,
+      "2 Years", 18, "3 Years", 19);
+
+
+
+  private int getGroupId(String groupName, String servicePackage) {
+    if("Agent Service".equals(servicePackage)) {
+      return agentServiceMap.getOrDefault(groupName, 1);
+    }
+
+    if("Iran Service".equals(servicePackage)) {
+      return iranServiceMap.getOrDefault(groupName,2);
+    }
+
+    return 1;
+  }
+
+  private LocalDateTime getCreationDate(Date date) {
+    if(date == null) {
+      return LocalDateTime.now();
+    }
+
+    return new java.sql.Timestamp(
+      date.getTime()).toLocalDateTime();
   }
 
 }

@@ -20,7 +20,6 @@ import com.orbvpn.api.exception.OauthLoginException;
 import com.orbvpn.api.reposiitory.UserRepository;
 import java.text.MessageFormat;
 import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +35,7 @@ public class OauthService {
 
   private final RoleService roleService;
   private final UserService userService;
+  private final PasswordService passwordService;
   private final ResellerService resellerService;
   private final UserRepository userRepository;
 
@@ -73,15 +73,21 @@ public class OauthService {
   }
 
   private User createUser(TokenData tokenData) {
+    String password = userService.generateRandomString();
+
     User user = new User();
     user.setUsername(tokenData.getEmail());
     user.setEmail(tokenData.getEmail());
-    user.setRadAccess(userService.generateRadAccess());
+    passwordService.setPassword(user, password);
+    user.setRadAccessClear(password);
     Role role = roleService.getByName(RoleName.USER);
     user.setRole(role);
     user.setReseller(resellerService.getOwnerReseller());
 
     userRepository.save(user);
+
+    userService.assignTrialSubscription(user);
+
     return user;
   }
 

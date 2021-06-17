@@ -48,6 +48,9 @@ public class User implements UserDetails {
   @Column(nullable = false)
   private String radAccess = "not-a-regular-user";
 
+  @Column
+  private String radAccessClear;
+
   @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private UserProfile profile;
 

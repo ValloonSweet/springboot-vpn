@@ -49,6 +49,7 @@ public class ResellerUserService {
 
   private final PasswordEncoder passwordEncoder;
 
+  private final PasswordService passwordService;
   private final UserService userService;
   private final RoleService roleService;
   private final GroupService groupService;
@@ -73,8 +74,7 @@ public class ResellerUserService {
 
     User user = resellerUserCreateMapper.create(resellerUserCreate);
     user.setUsername(resellerUserCreate.getEmail());
-    user.setPassword(passwordEncoder.encode(resellerUserCreate.getPassword()));
-    user.setRadAccess(resellerUserCreate.getPassword());
+    passwordService.setPassword(user, resellerUserCreate.getPassword());
     Role role = roleService.getByName(RoleName.USER);
     user.setRole(role);
     user.setReseller(reseller);
@@ -129,9 +129,7 @@ public class ResellerUserService {
 
     String password = resellerUserEdit.getPassword();
     if (password != null) {
-      user.setPassword(passwordEncoder.encode(password));
-      user.setRadAccess(password);
-      radiusService.editUserPassword(user);
+      passwordService.setPassword(user, password);
     }
 
     Integer resellerId = resellerUserEdit.getResellerId();

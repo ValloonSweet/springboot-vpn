@@ -8,6 +8,7 @@ type UserView {
     email: String!
     role: String!
     radAccess: String!
+    radAccessClear: String
     profile: UserProfileView
     createdAt: LocalDateTime
     updatedAt: LocalDateTime

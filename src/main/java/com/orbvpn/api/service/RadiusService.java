@@ -60,7 +60,7 @@ public class RadiusService {
     String username = user.getUsername();
 
     //Password
-    String sha1Hex = DigestUtils.sha1Hex(user.getRadAccess());
+    String sha1Hex = user.getRadAccess();
     RadCheck passwordCheck = new RadCheck();
     passwordCheck.setUsername(username);
     passwordCheck.setAttribute("SHA-Password");
@@ -92,7 +92,7 @@ public class RadiusService {
 
   public void editUserPassword(User user) {
     String username = user.getUsername();
-    String sha1Hex = DigestUtils.sha1Hex(user.getRadAccess());
+    String sha1Hex = user.getRadAccess();
 
     Optional<RadCheck> radCheckOptional = radCheckRepository
       .findByUsernameAndAttribute(username, "SHA-Password");

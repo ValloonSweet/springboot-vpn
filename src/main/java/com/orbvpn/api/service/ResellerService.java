@@ -45,6 +45,7 @@ public class ResellerService {
 
   @Setter
   private ServiceGroupService serviceGroupService;
+  private final PasswordService passwordService;
   private final RoleService roleService;
 
   private final ResellerViewMapper resellerViewMapper;
@@ -72,7 +73,7 @@ public class ResellerService {
 
     User user = reseller.getUser();
     user.setRole(roleService.getByName(RoleName.RESELLER));
-    user.setPassword(passwordEncoder.encode(resellerCreate.getPassword()));
+    passwordService.setPassword(user, resellerCreate.getPassword());
 
     resellerRepository.save(reseller);
     ResellerView resellerView = resellerViewMapper.toView(reseller);

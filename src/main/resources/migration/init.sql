@@ -230,6 +230,7 @@ create table user
     enabled bit null,
     password varchar(255) null,
     rad_access varchar(255) not null,
+    rad_access_clear varchar(255) null,
     updated_at datetime(6) null,
     username varchar(255) not null,
     reseller_id int null,

@@ -57,7 +57,9 @@ public class UserSubscriptionService {
     }
 
     subscription.setPaymentStatus(PaymentStatus.SUCCEEDED);
-    subscription.setExpiresAt(LocalDateTime.now().plusDays(subscription.getDuration()));
+    if(subscription.getExpiresAt() == null) {
+      subscription.setExpiresAt(LocalDateTime.now().plusDays(subscription.getDuration()));
+    }
 
     userSubscriptionRepository.save(subscription);
     radiusService.deleteUserRadChecks(subscription.getUser());
