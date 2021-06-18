@@ -9,4 +9,6 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
   Long deleteByServiceGroup(ServiceGroup serviceGroup);
 
   List<Group> findAllByServiceGroup(ServiceGroup serviceGroup);
+
+  List<Group> findAllByRegistrationGroupIsTrue();
 }

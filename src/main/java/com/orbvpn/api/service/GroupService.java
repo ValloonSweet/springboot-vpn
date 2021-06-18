@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class GroupService {
 
@@ -23,7 +24,6 @@ public class GroupService {
   private final GroupEditMapper groupEditMapper;
   private final ServiceGroupService serviceGroupService;
 
-  @Transactional
   public GroupView createGroup(GroupEdit groupEdit) {
     Group group = groupEditMapper.create(groupEdit);
 
@@ -32,7 +32,6 @@ public class GroupService {
     return groupViewMapper.toView(group);
   }
 
-  @Transactional
   public GroupView editGroup(int id, GroupEdit groupEdit) {
     Group group = getById(id);
 
@@ -43,13 +42,19 @@ public class GroupService {
     return groupViewMapper.toView(edited);
   }
 
-  @Transactional
   public GroupView deleteGroup(int id) {
     Group group = getById(id);
 
     groupRepository.delete(group);
 
     return groupViewMapper.toView(group);
+  }
+
+  public List<GroupView> getRegistrationGroups() {
+    return groupRepository.findAllByRegistrationGroupIsTrue()
+      .stream()
+      .map(groupViewMapper::toView)
+      .collect(Collectors.toList());
   }
 
   public List<GroupView> getAllGroups() {
@@ -59,7 +64,6 @@ public class GroupService {
       .collect(Collectors.toList());
   }
 
-  @Transactional
   public List<GroupView> getGroups(int serviceGroupId) {
     ServiceGroup serviceGroup = serviceGroupService.getById(serviceGroupId);
     return groupRepository.findAllByServiceGroup(serviceGroup)
@@ -68,7 +72,6 @@ public class GroupService {
       .collect(Collectors.toList());
   }
 
-  @Transactional
   public GroupView getGroup(int id) {
     Group group = getById(id);
 

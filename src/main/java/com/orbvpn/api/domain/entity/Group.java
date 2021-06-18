@@ -73,6 +73,9 @@ public class Group {
   private IpType ip;
 
   @Column
+  private boolean registrationGroup;
+
+  @Column
   @CreatedDate
   private LocalDateTime createdAt;
 

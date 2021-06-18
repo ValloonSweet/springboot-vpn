@@ -794,12 +794,12 @@ insert into group_app(service_group_id, name, description, tag_name, price, dura
 insert into group_app(service_group_id, name, description, tag_name, price, duration, multi_login_count ) VALUES (1, '2 Year', '2 Year', 'tag-name', '84', 730, 2);
 insert into group_app(service_group_id, name, description, tag_name, price, duration, multi_login_count ) VALUES (1, '3 Year', '3 Year', 'tag-name', '119', 1095, 2);
 insert into group_app(service_group_id, name, description, tag_name, price, duration, multi_login_count ) VALUES (1, 'Lifetime', 'Lifetime', 'tag-name', '799', 1095, 2);
-insert into group_app(service_group_id, name, description, tag_name, price, duration, multi_login_count ) VALUES (1, 'Basic Monthly', 'Basic Monthly', 'tag-name', '3.99', 30, 1);
-insert into group_app(service_group_id, name, description, tag_name, price, duration, multi_login_count ) VALUES (1, 'Premium Monthly', 'Premium Monthly', 'tag-name', '6.99', 30, 5);
-insert into group_app(service_group_id, name, description, tag_name, price, duration, multi_login_count ) VALUES (1, 'Premium Family Monthly', 'Premium Family Monthly', 'tag-name', '11.99', 30, 25);
-insert into group_app(service_group_id, name, description, tag_name, price, duration, multi_login_count ) VALUES (1, 'Basic Yearly', 'Basic Yearly', 'tag-name', '21', 365, 1);
-insert into group_app(service_group_id, name, description, tag_name, price, duration, multi_login_count ) VALUES (1, 'Premium Yearly', 'Premium Yearly', 'tag-name', '49.08', 365, 5);
-insert into group_app(service_group_id, name, description, tag_name, price, duration, multi_login_count ) VALUES (1, 'Premium Family Yearly', 'Premium Family Yearly', 'tag-name', '79.08', 365, 25);
+insert into group_app(service_group_id, name, description, tag_name, price, duration, multi_login_count, registration_group) VALUES (1, 'Basic Monthly', 'Basic Monthly', 'tag-name', '3.99', 30, 1, 1);
+insert into group_app(service_group_id, name, description, tag_name, price, duration, multi_login_count, registration_group ) VALUES (1, 'Premium Monthly', 'Premium Monthly', 'tag-name', '6.99', 30, 5, 1);
+insert into group_app(service_group_id, name, description, tag_name, price, duration, multi_login_count, registration_group ) VALUES (1, 'Premium Family Monthly', 'Premium Family Monthly', 'tag-name', '11.99', 30, 25, 1);
+insert into group_app(service_group_id, name, description, tag_name, price, duration, multi_login_count, registration_group ) VALUES (1, 'Basic Yearly', 'Basic Yearly', 'tag-name', '21', 365, 1, 1);
+insert into group_app(service_group_id, name, description, tag_name, price, duration, multi_login_count, registration_group ) VALUES (1, 'Premium Yearly', 'Premium Yearly', 'tag-name', '49.08', 365, 5, 1);
+insert into group_app(service_group_id, name, description, tag_name, price, duration, multi_login_count, registration_group ) VALUES (1, 'Premium Family Yearly', 'Premium Family Yearly', 'tag-name', '79.08', 365, 25, 1);
 
 insert into group_app(service_group_id, name, description, tag_name, price, duration, multi_login_count ) VALUES (2, '3 Month', '3 Month', 'tag-name', '16',90, 2);
 insert into group_app(service_group_id, name, description, tag_name, price, duration, multi_login_count ) VALUES (2, '6 Month', '6 Month', 'tag-name', '28',90, 2);

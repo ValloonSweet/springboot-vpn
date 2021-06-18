@@ -8,6 +8,7 @@ type Query {
     serviceGroups: [ServiceGroupView]
     group(id: Int): GroupView
     groups(serviceGroupId: Int!): [GroupView]
+    registrationGroups: [GroupView]
     allGroups: [GroupView]
 
     server(id: Int!): ServerView

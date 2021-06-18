@@ -3,6 +3,9 @@ spring:
     url: jdbc:mysql://orb-radius.cjij5m9kax4h.eu-central-1.rds.amazonaws.com:3306/radius
     username: root
     password: ByzRsK28pW
+  mail:
+    username: info@orbvpn.com
+    password: nsoojhxetlcyjtgm
 
 oauth:
   google:
