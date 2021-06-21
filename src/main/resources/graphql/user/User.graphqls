@@ -12,6 +12,7 @@ type UserView {
     profile: UserProfileView
     createdAt: LocalDateTime
     updatedAt: LocalDateTime
+    userDevicesInfo: [UserDeviceInfo]
 }
 
 input UserProfileEdit {
@@ -77,4 +78,9 @@ type UserSubscriptionView {
     expiresAt: String
     createdAt: String
     updatedAt: String
+}
+
+type UserDeviceInfo {
+    name: String
+    active: Boolean
 }

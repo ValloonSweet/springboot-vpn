@@ -7,6 +7,7 @@ import com.orbvpn.api.domain.enums.PaymentStatus;
 import com.orbvpn.api.domain.enums.PaymentType;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +19,9 @@ public interface UserSubscriptionRepository extends JpaRepository<UserSubscripti
   UserSubscription findFirstByUserOrderByCreatedAtDesc(User user);
 
   Optional<UserSubscription> findByPaymentTypeAndPaymentId(PaymentType paymentType, String paymentId);
+
+  @Query("select sub from UserSubscription sub where sub.renew = true and sub.expiresAt < :dateTime")
+  List<UserSubscription> getSubscriptionsToRenew(LocalDateTime dateTime);
 
   @Query("select count(sub.id) from UserSubscription sub where sub.createdAt > :createdAt and sub.paymentStatus = :paymentStatus")
   int countTotalSubscriptionCount(LocalDateTime createdAt, PaymentStatus paymentStatus);

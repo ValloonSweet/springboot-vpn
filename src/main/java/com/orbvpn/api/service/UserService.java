@@ -11,6 +11,7 @@ import com.orbvpn.api.domain.entity.Group;
 import com.orbvpn.api.domain.entity.PasswordReset;
 import com.orbvpn.api.domain.entity.Role;
 import com.orbvpn.api.domain.entity.User;
+import com.orbvpn.api.domain.entity.UserDeviceInfo;
 import com.orbvpn.api.domain.entity.UserProfile;
 import com.orbvpn.api.domain.entity.UserSubscription;
 import com.orbvpn.api.domain.enums.PaymentStatus;
@@ -28,11 +29,14 @@ import com.orbvpn.api.reposiitory.PasswordResetRepository;
 import com.orbvpn.api.reposiitory.UserProfileRepository;
 import com.orbvpn.api.reposiitory.UserRepository;
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -230,9 +234,31 @@ public class UserService {
     return userSubscriptionViewMapper.toView(currentSubscription);
   }
 
+  public List<UserDeviceInfo> getUserDeviceInfo() {
+    User user = getUser();
+    String username = user.getUsername();
+
+    List<String> allDevices = userRepository.findAllUserDevices(username);
+    List<String> allActiveDevices = userRepository.findAllActiveUserDevices(username);
+
+    return allDevices.stream()
+      .filter(StringUtils::isNoneBlank)
+      .map(s -> {
+        UserDeviceInfo userDeviceInfo = new UserDeviceInfo();
+        userDeviceInfo.setName(s);
+        userDeviceInfo.setActive(allActiveDevices.contains(s));
+        return userDeviceInfo;
+      }).collect(Collectors.toList());
+  }
+
   public User getUserById(int id) {
     return userRepository.findById(id)
-      .orElseThrow(()->new NotFoundException(User.class, id));
+      .orElseThrow(() -> new NotFoundException(User.class, id));
+  }
+
+  public User getUserByEmail(String email) {
+    return userRepository.findByEmail(email)
+      .orElseThrow(() -> new NotFoundException(User.class, email));
   }
 
   public User getUser() {
@@ -253,6 +279,9 @@ public class UserService {
   public UserView getUserView() {
     User user = getUser();
 
-    return userViewMapper.toView(user);
+    UserView userView = userViewMapper.toView(user);
+    userView.setUserDevicesInfo(getUserDeviceInfo());
+
+    return userView;
   }
 }

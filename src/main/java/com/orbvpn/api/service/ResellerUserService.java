@@ -24,6 +24,7 @@ import com.orbvpn.api.mapper.UserViewMapper;
 import com.orbvpn.api.reposiitory.ResellerRepository;
 import com.orbvpn.api.reposiitory.UserRepository;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -182,6 +183,12 @@ public class ResellerUserService {
     return userViewMapper.toView(user);
   }
 
+  public UserView getUserByEmail(String email) {
+    User user = userService.getUserByEmail(email);
+    checkResellerUserAccess(user);
+    return userViewMapper.toView(user);
+  }
+
   public Page<UserView> getUsers(int page, int size) {
     User accessorUser = userService.getUser();
     Reseller reseller = accessorUser.getReseller();
@@ -193,6 +200,23 @@ public class ResellerUserService {
       queryResult = userRepository.findAll(pageable);
     } else {
       queryResult = userRepository.findAllByReseller(reseller, pageable);
+    }
+
+    return queryResult.map(userViewMapper::toView);
+  }
+
+  public Page<UserView> getExpiredUsers(int page, int size) {
+    User accessorUser = userService.getUser();
+    Reseller reseller = accessorUser.getReseller();
+    Role accessorRole = accessorUser.getRole();
+    Pageable pageable = PageRequest.of(page, size, Sort.by(DEFAULT_SORT));
+    LocalDateTime dateTime = LocalDateTime.now();
+
+    Page<User> queryResult;
+    if (accessorRole.getName() == RoleName.ADMIN) {
+      queryResult = userRepository.findAllExpiredUsers(dateTime, pageable);
+    } else {
+      queryResult = userRepository.findAllResellerExpiredUsers(reseller, dateTime, pageable);
     }
 
     return queryResult.map(userViewMapper::toView);

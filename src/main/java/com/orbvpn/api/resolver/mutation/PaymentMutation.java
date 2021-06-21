@@ -15,9 +15,9 @@ public class PaymentMutation implements GraphQLMutationResolver {
   private final PaymentService paymentService;
 
 
-  public StripeCreatePaymentIntentResponse stripeCreatePaymentIntent(int  groupId)
+  public StripeCreatePaymentIntentResponse stripeCreatePaymentIntent(int  groupId, boolean save)
     throws StripeException {
-    return paymentService.stripeCreatePaymentIntent(groupId);
+    return paymentService.stripeCreatePaymentIntent(groupId, save);
   }
 
 

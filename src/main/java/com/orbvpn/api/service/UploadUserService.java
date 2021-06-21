@@ -167,6 +167,7 @@ public class UploadUserService {
         userProfile.setPostalCode(postalCode);
         userProfile.setCity(city);
         userProfile.setCountry(country);
+        userProfile.setUser(user);
         user.setProfile(userProfile);
 
         // Set resellers

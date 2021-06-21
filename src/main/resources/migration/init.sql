@@ -336,10 +336,21 @@ create table user_subscription
     updated_at datetime(6) null,
     group_id int null,
     user_id int null,
+    renew bit null,
     constraint FKpsiiu2nyr0cbxeluuouw474s9
         foreign key (user_id) references user (id),
     constraint FKt4tua4acgi5d647mxbklr9a46
         foreign key (group_id) references group_app (id)
+);
+
+create table stripe_customer
+(
+    id        int auto_increment
+        primary key,
+    stripe_id varchar(255) null,
+    user_id   int          null,
+    constraint FK50iy5vrvy8g7u0nvbku22d6i5
+        foreign key (user_id) references radius.user (id)
 );
 
 CREATE TABLE IF NOT EXISTS radacct (

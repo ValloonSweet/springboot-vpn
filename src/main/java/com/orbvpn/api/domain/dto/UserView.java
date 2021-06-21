@@ -1,7 +1,9 @@
 package com.orbvpn.api.domain.dto;
 
+import com.orbvpn.api.domain.entity.UserDeviceInfo;
 import com.orbvpn.api.domain.enums.RoleName;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,4 +18,7 @@ public class UserView {
   private UserProfileView profile;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
+
+  private List<UserDeviceInfo> userDevicesInfo;
+
 }

@@ -1,12 +1,15 @@
 package com.orbvpn.api.service;
 
 import com.orbvpn.api.domain.entity.Group;
+import com.orbvpn.api.domain.entity.StripeCustomer;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.entity.UserSubscription;
 import com.orbvpn.api.domain.enums.PaymentStatus;
 import com.orbvpn.api.domain.enums.PaymentType;
+import com.orbvpn.api.reposiitory.StripeCustomerRepository;
 import com.orbvpn.api.reposiitory.UserSubscriptionRepository;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,7 @@ public class UserSubscriptionService {
   private final RadiusService radiusService;
   private final UserSubscriptionRepository userSubscriptionRepository;
 
+  private final StripeCustomerRepository stripeCustomerRepository;
 
   public UserSubscription createUserSubscription(User user, Group group,
     PaymentType type, PaymentStatus status, String pId) {

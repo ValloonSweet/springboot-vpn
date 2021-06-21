@@ -3,8 +3,10 @@ package com.orbvpn.api.resolver.query;
 import com.orbvpn.api.domain.dto.UserProfileView;
 import com.orbvpn.api.domain.dto.UserSubscriptionView;
 import com.orbvpn.api.domain.dto.UserView;
+import com.orbvpn.api.domain.entity.UserDeviceInfo;
 import com.orbvpn.api.service.UserService;
 import graphql.kickstart.tools.GraphQLQueryResolver;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

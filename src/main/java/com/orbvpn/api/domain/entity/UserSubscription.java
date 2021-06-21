@@ -70,6 +70,9 @@ public class UserSubscription {
   private LocalDateTime expiresAt;
 
   @Column
+  private boolean renew;
+
+  @Column
   @CreatedDate
   private LocalDateTime createdAt;
 

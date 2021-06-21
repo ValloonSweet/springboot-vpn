@@ -160,6 +160,14 @@ public class HelpCenterService {
     ticketRepository.deleteByCreatedAtBefore(monthBefore);
   }
 
+  public List<TicketView> getUserTickets() {
+    User user = userService.getUser();
+    return ticketRepository.findByCreator(user)
+      .stream()
+      .map(ticketViewMapper::toView)
+      .collect(Collectors.toList());
+  }
+
   public Ticket getTicket(int id) {
     return ticketRepository.findById(id)
       .orElseThrow(() -> new NotFoundException(Ticket.class, id));

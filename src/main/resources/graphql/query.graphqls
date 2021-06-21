@@ -21,7 +21,9 @@ type Query {
     getResellerLevelCoefficients: ResellerLevelCoefficientsView
     totalResellersCredit: String
     resellerGetUser (id: Int): UserView
+    resellerGetUserByEmail(email: String): UserView
     resellerGetUsers (page: Int, size: Int): UserPage
+    resellerGetExpiredUsers(page: Int, size: Int): UserPage
 
     geolocations: [GeolocationView]
 
@@ -33,6 +35,7 @@ type Query {
 
     ticket(id: Int): TicketView
     tickets(page: Int, size: Int, category: TicketCategory, status: TicketStatus): TicketPage
+    userTickets: [TicketView]
 
     accounting: AccountingView
     totalActiveUsers: Int
