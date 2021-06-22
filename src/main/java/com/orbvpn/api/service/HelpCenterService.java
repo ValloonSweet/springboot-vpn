@@ -89,6 +89,12 @@ public class HelpCenterService {
     log.info("Editing ticket with id {} with data {}", id);
 
     Ticket ticket = getTicket(id);
+
+    User user = userService.getUser();
+    if (user.getRole().getName() == RoleName.USER && ticket.getCreator().getId() != user.getId()) {
+      throw new AccessDeniedException("Can't close ticket");
+    }
+
     ticket.setStatus(TicketStatus.CLOSED);
     ticketRepository.save(ticket);
 

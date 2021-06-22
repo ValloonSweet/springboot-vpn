@@ -21,4 +21,6 @@ public class UserView {
 
   private List<UserDeviceInfo> userDevicesInfo;
 
+  private UserSubscriptionView subscription;
+
 }

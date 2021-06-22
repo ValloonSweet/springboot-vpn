@@ -13,6 +13,7 @@ type UserView {
     createdAt: LocalDateTime
     updatedAt: LocalDateTime
     userDevicesInfo: [UserDeviceInfo]
+    subscription: UserSubscriptionView
 }
 
 input UserProfileEdit {

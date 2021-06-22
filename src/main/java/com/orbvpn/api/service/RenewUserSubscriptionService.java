@@ -48,6 +48,7 @@ public class RenewUserSubscriptionService {
             null);
         PaymentIntent paymentIntent = paymentService.chargeStripeUserOffSession(user, group.getPrice());
         newSubscription.setPaymentId(paymentIntent.getId());
+        newSubscription.setRenewed(true);
         userSubscriptionService.fullFillSubscription(newSubscription);
       }
     } catch (Exception ex) {

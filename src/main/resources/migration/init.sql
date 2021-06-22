@@ -155,6 +155,7 @@ create table service_group
     discount decimal(19,2) null,
     language varchar(255) null,
     name varchar(255) not null,
+    deleted bit null,
     updated_at datetime(6) null
 );
 
@@ -176,6 +177,7 @@ create table group_app
     username_postfix varchar(255) null,
     username_postfix_id varchar(255) null,
     service_group_id int null,
+    deleted bit null,
     constraint FKtouoho0ujtluniystqjyoauoc
         foreign key (service_group_id) references service_group (id)
 );
@@ -337,6 +339,7 @@ create table user_subscription
     group_id int null,
     user_id int null,
     renew bit null,
+    renewed bit null,
     constraint FKpsiiu2nyr0cbxeluuouw474s9
         foreign key (user_id) references user (id),
     constraint FKt4tua4acgi5d647mxbklr9a46

@@ -170,6 +170,8 @@ public class ResellerUserService {
 
     User user = userService.getUserById(id);
     checkResellerUserAccess(user);
+    userSubscriptionService.deleteUserSubscriptions(user);
+    radiusService.deleteUserRadChecks(user);
     userService.deleteUser(user);
     UserView userView = userViewMapper.toView(user);
 
@@ -180,13 +182,19 @@ public class ResellerUserService {
   public UserView getUser(int id) {
     User user = userService.getUserById(id);
     checkResellerUserAccess(user);
-    return userViewMapper.toView(user);
+    return userService.getUserFullView(user);
   }
 
   public UserView getUserByEmail(String email) {
     User user = userService.getUserByEmail(email);
     checkResellerUserAccess(user);
-    return userViewMapper.toView(user);
+    return userService.getUserFullView(user);
+  }
+
+  public UserView getUserByUsername(String username) {
+    User user = userService.getUserByUsername(username);
+    checkResellerUserAccess(user);
+    return userService.getUserFullView(user);
   }
 
   public Page<UserView> getUsers(int page, int size) {

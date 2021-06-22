@@ -7,6 +7,7 @@ import com.stripe.model.EventDataObjectDeserializer;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.StripeObject;
 import com.stripe.net.Webhook;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,13 @@ public class WebHookController {
   private String STRIPE_SECRET_KEY;
 
   private final PaymentService paymentService;
+
+  @PostMapping("/appstore/events")
+  public ResponseEntity<?> handleAppStoreEvent(HttpServletRequest httpServletRequest) {
+
+
+    return ResponseEntity.ok().build();
+  }
 
   @PostMapping("/stripe/events")
   public ResponseEntity<?> handleWebHook(@RequestBody String payload, @RequestHeader("Stripe-Signature") String sigHeader) {

@@ -261,6 +261,11 @@ public class UserService {
       .orElseThrow(() -> new NotFoundException(User.class, email));
   }
 
+  public User getUserByUsername(String username) {
+    return userRepository.findByUsername(username)
+      .orElseThrow(() -> new NotFoundException(User.class, username));
+  }
+
   public User getUser() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     return (User) authentication.getPrincipal();
@@ -279,9 +284,15 @@ public class UserService {
   public UserView getUserView() {
     User user = getUser();
 
+    return getUserFullView(user);
+  }
+
+  public UserView getUserFullView(User user) {
+    UserSubscription subscription = userSubscriptionService.getCurrentSubscription(user);
+    user.setSubscription(subscription);
+
     UserView userView = userViewMapper.toView(user);
     userView.setUserDevicesInfo(getUserDeviceInfo());
-
     return userView;
   }
 }

@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +19,8 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -34,7 +37,8 @@ public class UserSubscription {
   @ManyToOne
   private User user;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
+  @NotFound(action = NotFoundAction.IGNORE)
   private Group group;
 
   @Column
@@ -71,6 +75,9 @@ public class UserSubscription {
 
   @Column
   private boolean renew;
+
+  @Column
+  private boolean renewed;
 
   @Column
   @CreatedDate

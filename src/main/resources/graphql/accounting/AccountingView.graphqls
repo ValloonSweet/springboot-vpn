@@ -9,4 +9,10 @@ type AccountingView {
 
     dayPurchaseCount: Int
     dayPurchase: String
+
+    monthRenewPurchaseCount: Int
+    monthRenewPurchase: String
+
+    dayRenewPurchaseCount: Int
+    dayRenewPurchase: String
 }

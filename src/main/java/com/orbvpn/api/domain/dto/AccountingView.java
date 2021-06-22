@@ -17,4 +17,10 @@ public class AccountingView {
 
   private int dayPurchaseCount;
   private BigDecimal dayPurchase;
+
+  private int monthRenewPurchaseCount;
+  private BigDecimal monthRenewPurchase;
+
+  private int dayRenewPurchaseCount;
+  private BigDecimal dayRenewPurchase;
 }

@@ -32,6 +32,11 @@ public class AccountingService {
     int dayPurchaseCount = userSubscriptionRepository.countTotalSubscriptionCount(currentDay, PaymentStatus.SUCCEEDED);
     BigDecimal dayPurchase = userSubscriptionRepository.getTotalSubscriptionPrice(currentDay, PaymentStatus.SUCCEEDED);
 
+    int monthRenewPurchaseCount = userSubscriptionRepository.countTotalRenewSubscriptionCount(currentMonth, PaymentStatus.SUCCEEDED);
+    BigDecimal monthRenewPurchase = userSubscriptionRepository.getTotalRenewSubscriptionPrice(currentMonth, PaymentStatus.SUCCEEDED);
+    int dayRenewPurchaseCount = userSubscriptionRepository.countTotalRenewSubscriptionCount(currentDay, PaymentStatus.SUCCEEDED);
+    BigDecimal dayRenewPurchase = userSubscriptionRepository.getTotalRenewSubscriptionPrice(currentDay, PaymentStatus.SUCCEEDED);
+
 
     accountingView.setTotalUsers(totalUsers);
     accountingView.setJoinedByDay(joinedByDay);
@@ -41,6 +46,10 @@ public class AccountingService {
     accountingView.setMonthPurchase(monthPurchase);
     accountingView.setDayPurchaseCount(dayPurchaseCount);
     accountingView.setDayPurchase(dayPurchase);
+    accountingView.setMonthRenewPurchaseCount(monthRenewPurchaseCount);
+    accountingView.setMonthRenewPurchase(monthRenewPurchase);
+    accountingView.setDayRenewPurchaseCount(dayRenewPurchaseCount);
+    accountingView.setDayRenewPurchase(dayRenewPurchase);
 
     return accountingView;
   }

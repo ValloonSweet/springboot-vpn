@@ -5,7 +5,7 @@ import com.orbvpn.api.domain.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = UserSubscriptionViewMapper.class)
 public interface UserViewMapper {
   @Mapping(source = "role.name", target = "role")
   UserView toView(User user);

@@ -25,7 +25,7 @@ public class TicketMutation implements GraphQLMutationResolver {
     return helpCenterService.createTicket(ticket);
   }
 
-  @RolesAllowed(ADMIN)
+
   public TicketView closeTicket(int id) {
     return helpCenterService.closeTicket(id);
   }

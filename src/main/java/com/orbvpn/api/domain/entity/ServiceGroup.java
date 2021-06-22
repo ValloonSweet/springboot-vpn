@@ -21,6 +21,7 @@ import javax.validation.constraints.DecimalMin;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -29,6 +30,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
+@SQLDelete(sql = "UPDATE group_app SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 public class ServiceGroup {
 
   @Id
@@ -61,6 +64,9 @@ public class ServiceGroup {
 
   @OneToMany(mappedBy = "serviceGroup", cascade = CascadeType.ALL)
   private List<Group> groups;
+
+  @Column
+  private boolean deleted;
 
   @Column
   @CreatedDate

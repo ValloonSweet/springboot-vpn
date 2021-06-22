@@ -68,6 +68,9 @@ public class User implements UserDetails {
   @Column
   private boolean enabled = true;
 
+
+  private transient UserSubscription subscription;
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return Collections.singleton(role.getName());
