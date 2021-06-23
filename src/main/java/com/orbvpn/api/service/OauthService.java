@@ -50,8 +50,6 @@ public class OauthService {
 
   public AuthenticatedUser oauthLogin(String token, SocialMedia socialMedia) {
 
-    getFacebookTokenData(token);
-
     TokenData tokenData = getTokenData(token, socialMedia);
 
     User user = userRepository.findByUsername(tokenData.getEmail())
@@ -110,15 +108,11 @@ public class OauthService {
     Payload payload = idTokenData.getPayload();
 
     String email = payload.getEmail();
-    String familyName = (String) payload.get("family_name");
-    String givenName = (String) payload.get("given_name");
     long exp = payload.getExpirationTimeSeconds();
     long iat = payload.getIssuedAtTimeSeconds();
 
     return TokenData.builder()
       .email(email)
-      .firstName(familyName)
-      .lastName(givenName)
       .exp(exp)
       .iat(iat).build();
   }
@@ -141,14 +135,12 @@ public class OauthService {
     }
 
     RestTemplate dataRequest = new RestTemplate();
-    String dataUrl = MessageFormat.format("https://graph.facebook.com/me?fields=email,first_name,last_name&access_token={0}", token);
+    String dataUrl = MessageFormat.format("https://graph.facebook.com/me?fields=email&access_token={0}", token);
     ResponseEntity<FBTokenData> fbTokenDataResponse = dataRequest.getForEntity(dataUrl, FBTokenData.class);
     FBTokenData fbTokenData = fbTokenDataResponse.getBody();
 
     return TokenData.builder()
       .email(fbTokenData.getEmail())
-      .firstName(fbTokenData.getFirstName())
-      .lastName(fbTokenData.getLastName())
       .build();
 
   }

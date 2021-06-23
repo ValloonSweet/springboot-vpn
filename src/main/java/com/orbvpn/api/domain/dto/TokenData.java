@@ -9,8 +9,6 @@ import lombok.Setter;
 @Builder
 public class TokenData {
   private String email;
-  private String firstName;
-  private String lastName;
   private long exp;
   private long iat;
 }
