@@ -5,6 +5,7 @@ import com.orbvpn.api.domain.dto.FileView;
 import com.orbvpn.api.domain.entity.File;
 import com.orbvpn.api.domain.entity.News;
 import com.orbvpn.api.domain.entity.Role;
+import com.orbvpn.api.domain.enums.RoleName;
 import com.orbvpn.api.exception.AccessDeniedException;
 import com.orbvpn.api.exception.NotFoundException;
 import com.orbvpn.api.mapper.FileEditMapper;
@@ -31,7 +32,8 @@ public class FileService {
 
     return fileRepository.findAll()
       .stream()
-      .filter(it -> it.getRoles().contains(currentUserRole))
+      .filter(it -> currentUserRole.getName() != RoleName.ADMIN && !it.getRoles()
+        .contains(currentUserRole))
       .map(fileViewMapper::toView)
       .collect(Collectors.toList());
   }
@@ -40,7 +42,7 @@ public class FileService {
     Role currentUserRole = userService.getUserRole();
     File file = getById(id);
 
-    if (file.getRoles().contains(currentUserRole)) {
+    if (currentUserRole.getName() != RoleName.ADMIN && !file.getRoles().contains(currentUserRole)) {
       throw new AccessDeniedException(News.class);
     }
 

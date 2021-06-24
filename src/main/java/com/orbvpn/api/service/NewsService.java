@@ -4,6 +4,7 @@ import com.orbvpn.api.domain.dto.NewsEdit;
 import com.orbvpn.api.domain.dto.NewsView;
 import com.orbvpn.api.domain.entity.News;
 import com.orbvpn.api.domain.entity.Role;
+import com.orbvpn.api.domain.enums.RoleName;
 import com.orbvpn.api.exception.AccessDeniedException;
 import com.orbvpn.api.exception.NotFoundException;
 import com.orbvpn.api.mapper.NewsEditMapper;
@@ -31,7 +32,8 @@ public class NewsService {
 
     return newsRepository.findAll()
       .stream()
-      .filter(it -> it.getRoles().contains(currentUserRole))
+      .filter(it -> currentUserRole.getName() != RoleName.ADMIN && !it.getRoles()
+        .contains(currentUserRole))
       .map(newsViewMapper::toView)
       .collect(Collectors.toList());
   }
@@ -40,7 +42,7 @@ public class NewsService {
     Role currentUserRole = userService.getUserRole();
     News news = getById(id);
 
-    if (news.getRoles().contains(currentUserRole)) {
+    if (currentUserRole.getName() != RoleName.ADMIN && !news.getRoles().contains(currentUserRole)) {
       throw new AccessDeniedException(News.class);
     }
 
