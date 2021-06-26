@@ -32,7 +32,7 @@ public class FileService {
 
     return fileRepository.findAll()
       .stream()
-      .filter(it -> currentUserRole.getName() != RoleName.ADMIN && !it.getRoles()
+      .filter(it -> currentUserRole.getName() == RoleName.ADMIN || it.getRoles()
         .contains(currentUserRole))
       .map(fileViewMapper::toView)
       .collect(Collectors.toList());

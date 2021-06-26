@@ -32,7 +32,7 @@ public class NewsService {
 
     return newsRepository.findAll()
       .stream()
-      .filter(it -> currentUserRole.getName() != RoleName.ADMIN && !it.getRoles()
+      .filter(it -> currentUserRole.getName() == RoleName.ADMIN || it.getRoles()
         .contains(currentUserRole))
       .map(newsViewMapper::toView)
       .collect(Collectors.toList());
