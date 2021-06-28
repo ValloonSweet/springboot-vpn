@@ -1,16 +1,12 @@
 package com.orbvpn.api.service;
 
-import com.orbvpn.api.domain.entity.Group;
-import com.orbvpn.api.domain.entity.StripeCustomer;
-import com.orbvpn.api.domain.entity.User;
-import com.orbvpn.api.domain.entity.UserSubscription;
-import com.orbvpn.api.domain.enums.PaymentStatus;
-import com.orbvpn.api.domain.enums.PaymentType;
+import com.orbvpn.api.domain.entity.Payment;
+import com.orbvpn.api.reposiitory.PaymentRepository;
 import com.orbvpn.api.reposiitory.StripeCustomerRepository;
 import com.orbvpn.api.reposiitory.UserSubscriptionRepository;
-import com.stripe.model.PaymentIntent;
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,6 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class RenewUserSubscriptionService {
 
   private final PaymentService paymentService;
@@ -25,32 +22,23 @@ public class RenewUserSubscriptionService {
   private final StripeCustomerRepository stripeCustomerRepository;
   private final UserSubscriptionRepository userSubscriptionRepository;
   private final UserSubscriptionService userSubscriptionService;
+  private final PaymentRepository paymentRepository;
 
   public void renewSubscriptions() {
     LocalDateTime now = LocalDateTime.now();
 
-    List<UserSubscription> subscriptionsToRenew = userSubscriptionRepository
-      .getSubscriptionsToRenew(now);
+    List<Payment> paymentsToRenew = paymentRepository
+      .findAllSubscriptionPaymentsToRenew(now);
 
-    for (UserSubscription userSubscription : subscriptionsToRenew) {
-      renewSubscription(userSubscription);
+    for (Payment payment : paymentsToRenew) {
+      renewPayment(payment);
     }
 
   }
 
-  public void renewSubscription(UserSubscription userSubscription) {
+  public void renewPayment(Payment payment) {
     try {
-      if (userSubscription.getPaymentType() == PaymentType.STRIPE) {
-        User user = userSubscription.getUser();
-        Group group = userSubscription.getGroup();
-        UserSubscription newSubscription = userSubscriptionService
-          .createUserSubscription(user, group, PaymentType.STRIPE, PaymentStatus.PENDING,
-            null);
-        PaymentIntent paymentIntent = paymentService.chargeStripeUserOffSession(user, group.getPrice());
-        newSubscription.setPaymentId(paymentIntent.getId());
-        newSubscription.setRenewed(true);
-        userSubscriptionService.fullFillSubscription(newSubscription);
-      }
+      paymentService.renewPayment(payment);
     } catch (Exception ex) {
       log.error("Couldn't renew user subscription", ex.getMessage());
     }

@@ -182,13 +182,13 @@ public class UploadUserService {
         Integer groupId = getGroupId(groupName, servicePackage);
         Group group = groupRepository.getOne(groupId);
         String paymentId = UUID.randomUUID().toString();
-        UserSubscription userSubscription = userSubscriptionService
-          .createUserSubscription(user, group, PaymentType.RESELLER_CREDIT, PaymentStatus.PENDING,
-            paymentId);
-
-        userSubscription.setMultiLoginCount((int) multiLoginCount);
-        userSubscription.setExpiresAt(expirationDateTime);
-        userSubscriptionService.fullFillSubscription(userSubscription);
+//        UserSubscription userSubscription = userSubscriptionService
+//          .createUserSubscription(user, group, PaymentType.RESELLER_CREDIT, PaymentStatus.PENDING,
+//            paymentId);
+//
+//        userSubscription.setMultiLoginCount((int) multiLoginCount);
+//        userSubscription.setExpiresAt(expirationDateTime);
+//        userSubscriptionService.fullFillSubscription(userSubscription);
       }
     } catch (IOException ioException) {
       throw new RuntimeException("Can not upload users");

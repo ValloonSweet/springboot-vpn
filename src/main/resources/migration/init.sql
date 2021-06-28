@@ -155,7 +155,7 @@ create table service_group
     discount decimal(19,2) null,
     language varchar(255) null,
     name varchar(255) not null,
-    deleted bit null,
+    deleted bit DEFAULT 0,
     updated_at datetime(6) null
 );
 
@@ -177,7 +177,8 @@ create table group_app
     username_postfix varchar(255) null,
     username_postfix_id varchar(255) null,
     service_group_id int null,
-    deleted bit null,
+    deleted bit DEFAULT 0,
+    registration_group bit DEFAULT 0,
     constraint FKtouoho0ujtluniystqjyoauoc
         foreign key (service_group_id) references service_group (id)
 );
@@ -321,30 +322,32 @@ create table user_profile
         foreign key (user_id) references user (id)
 );
 
-create table user_subscription
+create table radius.user_subscription
 (
-    id int auto_increment
+    id                int auto_increment
         primary key,
-    created_at datetime(6) null,
-    daily_bandwidth decimal(19,2) null,
-    download_upload decimal(19,2) null,
-    duration int null,
-    expires_at datetime(6) null,
-    multi_login_count int null,
-    payment_id varchar(255) null,
-    payment_status varchar(255) null,
-    payment_type varchar(255) null,
-    price decimal(19,2) null,
-    updated_at datetime(6) null,
-    group_id int null,
-    user_id int null,
-    renew bit null,
-    renewed bit null,
+    created_at        datetime(6)    null,
+    daily_bandwidth   decimal(19, 2) null,
+    download_upload   decimal(19, 2) null,
+    duration          int            null,
+    expires_at        datetime(6)    null,
+    multi_login_count int            null,
+    price             decimal(19, 2) null,
+    updated_at        datetime(6)    null,
+    group_id          int            null,
+    user_id           int            null,
+    renew             bit            null,
+    renewed           bit            null,
+    payment_id        int            null,
+    constraint FKomhvaxv1gibt7yjmc4f7axw8m
+        foreign key (payment_id) references radius.payment (id),
     constraint FKpsiiu2nyr0cbxeluuouw474s9
-        foreign key (user_id) references user (id),
+        foreign key (user_id) references radius.user (id),
     constraint FKt4tua4acgi5d647mxbklr9a46
-        foreign key (group_id) references group_app (id)
+        foreign key (group_id) references radius.group_app (id)
 );
+
+
 
 create table stripe_customer
 (
@@ -355,6 +358,28 @@ create table stripe_customer
     constraint FK50iy5vrvy8g7u0nvbku22d6i5
         foreign key (user_id) references radius.user (id)
 );
+
+create table radius.payment
+(
+    id                int auto_increment
+        primary key,
+    category          int            not null,
+    created_at        datetime(6)    null,
+    expires_at        datetime(6)    null,
+    gateway           int            not null,
+    group_id          int            null,
+    multi_login_count int            null,
+    payment_id        varchar(255)   not null,
+    price             decimal(19, 2) null,
+    renew             bit            null,
+    renewed           bit            null,
+    status            int            not null,
+    updated_at        datetime(6)    null,
+    user_id           int            null,
+    constraint FK4spfnm9si9dowsatcqs5or42i
+        foreign key (user_id) references radius.user (id)
+);
+
 
 CREATE TABLE IF NOT EXISTS radacct (
     radacctid bigint(21) NOT NULL auto_increment,

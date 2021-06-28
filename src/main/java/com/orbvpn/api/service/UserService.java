@@ -9,11 +9,14 @@ import com.orbvpn.api.domain.dto.UserSubscriptionView;
 import com.orbvpn.api.domain.dto.UserView;
 import com.orbvpn.api.domain.entity.Group;
 import com.orbvpn.api.domain.entity.PasswordReset;
+import com.orbvpn.api.domain.entity.Payment;
 import com.orbvpn.api.domain.entity.Role;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.entity.UserDeviceInfo;
 import com.orbvpn.api.domain.entity.UserProfile;
 import com.orbvpn.api.domain.entity.UserSubscription;
+import com.orbvpn.api.domain.enums.GatewayName;
+import com.orbvpn.api.domain.enums.PaymentCategory;
 import com.orbvpn.api.domain.enums.PaymentStatus;
 import com.orbvpn.api.domain.enums.PaymentType;
 import com.orbvpn.api.domain.enums.RoleName;
@@ -26,6 +29,7 @@ import com.orbvpn.api.mapper.UserProfileViewMapper;
 import com.orbvpn.api.mapper.UserSubscriptionViewMapper;
 import com.orbvpn.api.mapper.UserViewMapper;
 import com.orbvpn.api.reposiitory.PasswordResetRepository;
+import com.orbvpn.api.reposiitory.PaymentRepository;
 import com.orbvpn.api.reposiitory.UserProfileRepository;
 import com.orbvpn.api.reposiitory.UserRepository;
 import java.text.MessageFormat;
@@ -33,6 +37,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -63,6 +68,7 @@ public class UserService {
   private final JavaMailSender javaMailSender;
 
   private final PasswordResetRepository passwordResetRepository;
+  private final PaymentRepository paymentRepository;
 
   private final UserProfileRepository userProfileRepository;
   private final UserProfileEditMapper userProfileEditMapper;
@@ -75,7 +81,12 @@ public class UserService {
   private final UserSubscriptionService userSubscriptionService;
   private final RadiusService radiusService;
   private final PasswordService passwordService;
+  private final PaymentService paymentService;
 
+  @PostConstruct
+  public void init() {
+    paymentService.setUserService(this);
+  }
 
   public AuthenticatedUser register(UserCreate userCreate) {
     log.info("Creating user with data {}", userCreate);
@@ -107,10 +118,18 @@ public class UserService {
     // Assign trial group
     Group group = groupService.getById(1);
     String paymentId = UUID.randomUUID().toString();
-    UserSubscription userSubscription = userSubscriptionService
-      .createUserSubscription(user, group, PaymentType.RESELLER_CREDIT, PaymentStatus.PENDING,
-        paymentId);
-    userSubscriptionService.fullFillSubscription(userSubscription);
+    Payment payment = Payment.builder()
+      .user(user)
+      .status(PaymentStatus.PENDING)
+      .gateway(GatewayName.FREE)
+      .category(PaymentCategory.GROUP)
+      .price(group.getPrice())
+      .groupId(group.getId())
+      .paymentId(paymentId)
+      .build();
+    paymentRepository.save(payment);
+
+    paymentService.fullFillPayment(payment);
   }
 
   public String generateRandomString() {

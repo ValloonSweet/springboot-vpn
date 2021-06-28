@@ -1,28 +1,23 @@
 package com.orbvpn.api.service;
 
-import com.orbvpn.api.config.PayPalClient;
 import com.orbvpn.api.domain.dto.StripeCreatePaymentIntentResponse;
 import com.orbvpn.api.domain.entity.Group;
-import com.orbvpn.api.domain.entity.StripeCustomer;
+import com.orbvpn.api.domain.entity.Payment;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.entity.UserSubscription;
+import com.orbvpn.api.domain.enums.GatewayName;
+import com.orbvpn.api.domain.enums.PaymentCategory;
 import com.orbvpn.api.domain.enums.PaymentStatus;
-import com.orbvpn.api.domain.enums.PaymentType;
-import com.orbvpn.api.reposiitory.StripeCustomerRepository;
-import com.stripe.Stripe;
+import com.orbvpn.api.exception.PaymentException;
+import com.orbvpn.api.reposiitory.GroupRepository;
+import com.orbvpn.api.reposiitory.PaymentRepository;
+import com.orbvpn.api.reposiitory.UserSubscriptionRepository;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Customer;
 import com.stripe.model.PaymentIntent;
-import com.stripe.model.PaymentMethod;
-import com.stripe.model.PaymentMethodCollection;
-import com.stripe.param.CustomerCreateParams;
-import com.stripe.param.PaymentIntentCreateParams;
-import com.stripe.param.PaymentIntentCreateParams.Builder;
-import com.stripe.param.PaymentMethodListParams;
 import java.math.BigDecimal;
-import javax.annotation.PostConstruct;
+import java.text.MessageFormat;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,101 +26,135 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class PaymentService {
 
-  @Value("${stripe.api.public-key}")
-  private String STRIPE_PUBLIC_KEY;
-  @Value("${stripe.api.secret-key}")
-  private String STRIPE_SECRET_KEY;
 
-  private String PAYMENT_CURRENCY= "usd";
-
-  private final UserService userService;
-  private final GroupService groupService;
+  private final StripeService stripeService;
   private final UserSubscriptionService userSubscriptionService;
-  private final PayPalClient paypalClient;
+  private final RadiusService radiusService;
+  private final GroupService groupService;
+  private final GroupRepository groupRepository;
+  private final PaymentRepository paymentRepository;
+  private final UserSubscriptionRepository userSubscriptionRepository;
+  @Setter
+  private UserService userService;
 
-  private final StripeCustomerRepository stripeCustomerRepository;
+  public void fullFillPayment(GatewayName gateway, String paymentId) {
+    Payment payment = paymentRepository
+      .findByGatewayAndPaymentId(gateway, paymentId)
+      .orElseThrow(() -> new RuntimeException("Payment not found"));
 
-  @PostConstruct
-  public void init() {
-    Stripe.apiKey = STRIPE_SECRET_KEY;
+    fullFillPayment(payment);
   }
 
-  public StripeCreatePaymentIntentResponse stripeCreatePaymentIntent(int groupId, boolean save)
+  public void fullFillPayment(Payment payment) {
+    if (payment.getStatus() == PaymentStatus.SUCCEEDED) {
+      throw new PaymentException("Payment is already fulfilled");
+    }
+
+    if (payment.getCategory() == PaymentCategory.GROUP) {
+      Group group = groupRepository.getGroupIgnoreDelete(payment.getGroupId());
+      UserSubscription userSubscription = userSubscriptionService
+        .createUserSubscription(payment, group);
+      payment.setExpiresAt(userSubscription.getExpiresAt());
+      paymentRepository.save(payment);
+    } else if (payment.getCategory() == PaymentCategory.MORE_LOGIN) {
+      User user = payment.getUser();
+      UserSubscription userSubscription = userSubscriptionService.getCurrentSubscription(user);
+      int multiLoginCount = userSubscription.getMultiLoginCount() + payment.getMoreLoginCount();
+      userSubscription.setMultiLoginCount(multiLoginCount);
+      userSubscriptionRepository.save(userSubscription);
+      radiusService.editUserMultiLoginCount(user, multiLoginCount);
+    }
+
+    payment.setStatus(PaymentStatus.SUCCEEDED);
+    paymentRepository.save(payment);
+  }
+
+  public Payment renewPayment(Payment payment) throws Exception {
+    Payment newPayment = Payment.builder()
+      .user(payment.getUser())
+      .status(PaymentStatus.PENDING)
+      .gateway(payment.getGateway())
+      .category(payment.getCategory())
+      .price(payment.getPrice())
+      .groupId(payment.getGroupId())
+      .renew(true)
+      .renewed(true)
+      .build();
+
+    if (payment.getGateway() == GatewayName.STRIPE) {
+      PaymentIntent paymentIntent = stripeService.renewStripePayment(newPayment);
+      newPayment.setPaymentId(paymentIntent.getId());
+    } else {
+      throw new PaymentException(
+        MessageFormat.format("Not supported ooffline payment %s", payment.getGateway()));
+    }
+
+    paymentRepository.save(newPayment);
+    fullFillPayment(newPayment);
+
+    return newPayment;
+  }
+
+
+  public StripeCreatePaymentIntentResponse stripeCreatePayment(PaymentCategory category,
+    int groupId,
+    int moreLoginCount, boolean renew)
     throws StripeException {
+
+    Payment payment = createPayment(GatewayName.STRIPE, category, groupId, moreLoginCount, renew);
+    User user = userService.getUser();
+    return stripeService.createStripePayment(payment, user);
+  }
+
+  public Payment createPayment(GatewayName gateway, PaymentCategory category, int groupId,
+    int moreLoginCount, boolean renew) {
+    if (category == PaymentCategory.GROUP) {
+      return createGroupPayment(groupId, renew, gateway);
+    }
+
+    if (category == PaymentCategory.MORE_LOGIN) {
+      return createBuyMoreLoginPayment(moreLoginCount, gateway);
+    }
+
+    throw new PaymentException("Not supported category");
+  }
+
+  public Payment createGroupPayment(int groupId, boolean renew, GatewayName gateway) {
+    User user = userService.getUser();
     Group group = groupService.getById(groupId);
+
+    Payment payment = Payment.builder()
+      .user(user)
+      .status(PaymentStatus.PENDING)
+      .gateway(gateway)
+      .category(PaymentCategory.GROUP)
+      .price(group.getPrice())
+      .groupId(groupId)
+      .renew(renew)
+      .build();
+
+    paymentRepository.save(payment);
+    return payment;
+  }
+
+  public Payment createBuyMoreLoginPayment(int number, GatewayName gateway) {
     User user = userService.getUser();
 
-    StripeCustomer stripeCustomer = stripeCustomerRepository.findByUser(user);
+    Payment payment = Payment.builder()
+      .user(user)
+      .status(PaymentStatus.PENDING)
+      .gateway(gateway)
+      .category(PaymentCategory.MORE_LOGIN)
+      .price(getBuyMoreLoginPrice(number))
+      .moreLoginCount(number)
+      .build();
 
-    if(stripeCustomer == null) {
-      CustomerCreateParams params =
-        CustomerCreateParams.builder()
-          .build();
-
-      Customer customer = Customer.create(params);
-      stripeCustomer = new StripeCustomer();
-      stripeCustomer.setUser(user);
-      stripeCustomer.setStripeId(customer.getId());
-      stripeCustomerRepository.save(stripeCustomer);
-    }
-
-    BigDecimal price = group.getPrice().multiply(new BigDecimal(100));
-
-    Builder builder = new Builder()
-      .setCurrency(PAYMENT_CURRENCY)
-      .setAmount(price.longValue());
-
-    if (save) {
-      builder.setCustomer(stripeCustomer.getStripeId());
-      builder.setSetupFutureUsage(PaymentIntentCreateParams.SetupFutureUsage.OFF_SESSION);
-    }
-
-    PaymentIntentCreateParams createParams = builder.build();
-    // Create a PaymentIntent with the order amount and currency
-    PaymentIntent intent = PaymentIntent.create(createParams);
-
-    UserSubscription userSubscription = userSubscriptionService
-      .createUserSubscription(user, group, PaymentType.STRIPE, PaymentStatus.PENDING,
-        intent.getId());
-
-    userSubscription.setRenew(save);
-
-    StripeCreatePaymentIntentResponse stripeCreatePaymentIntentResponse = new StripeCreatePaymentIntentResponse();
-    stripeCreatePaymentIntentResponse.setClientSecret(intent.getClientSecret());
-    return stripeCreatePaymentIntentResponse;
+    paymentRepository.save(payment);
+    return payment;
   }
 
-
-  public PaymentIntent chargeStripeUserOffSession(User user, BigDecimal price) throws Exception {
-    StripeCustomer stripeCustomer = stripeCustomerRepository.findByUser(user);
-    BigDecimal priceInCents = price.multiply(new BigDecimal(100));
-    String customerId =  stripeCustomer.getStripeId();
-
-    PaymentMethodListParams custParams =
-      PaymentMethodListParams.builder()
-        .setCustomer(customerId)
-        .setType(PaymentMethodListParams.Type.CARD)
-        .build();
-
-    PaymentMethodCollection paymentMethods = PaymentMethod.list(custParams);
-
-    String paymentId = paymentMethods.getData().get(0).getId();
-
-    PaymentIntentCreateParams params =
-      PaymentIntentCreateParams.builder()
-        .setCurrency("usd")
-        .setAmount(priceInCents.longValue())
-        .setCustomer(customerId)
-        .setPaymentMethod(paymentId)
-        .setConfirm(true)
-        .setOffSession(true)
-        .build();
-
-    return PaymentIntent.create(params);
-  }
-
-  public void fullFillStripeSubscription(String pid) {
-    userSubscriptionService.fullFillSubscription(PaymentType.STRIPE, pid);
+  public BigDecimal getBuyMoreLoginPrice(int number) {
+    return new BigDecimal("100");
   }
 
 

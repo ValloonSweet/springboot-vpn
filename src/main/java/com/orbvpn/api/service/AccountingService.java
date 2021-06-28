@@ -2,6 +2,7 @@ package com.orbvpn.api.service;
 
 import com.orbvpn.api.domain.dto.AccountingView;
 import com.orbvpn.api.domain.enums.PaymentStatus;
+import com.orbvpn.api.reposiitory.PaymentRepository;
 import com.orbvpn.api.reposiitory.UserRepository;
 import com.orbvpn.api.reposiitory.UserSubscriptionRepository;
 import java.math.BigDecimal;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class AccountingService {
   private final UserRepository userRepository;
   private final UserSubscriptionRepository userSubscriptionRepository;
+  private final PaymentRepository paymentRepository;
 
   public AccountingView getAccounting() {
     AccountingView accountingView = new AccountingView();
@@ -27,15 +29,15 @@ public class AccountingService {
     int joinedByDay = (int) userRepository.countByCreatedAtAfter(currentDay);
     int joinedByMonth = (int) userRepository.countByCreatedAtAfter(currentMonth);
     int joinedByYear = (int) userRepository.countByCreatedAtAfter(currentYear);
-    int monthPurchaseCount = userSubscriptionRepository.countTotalSubscriptionCount(currentMonth, PaymentStatus.SUCCEEDED);
-    BigDecimal monthPurchase = userSubscriptionRepository.getTotalSubscriptionPrice(currentMonth, PaymentStatus.SUCCEEDED);
-    int dayPurchaseCount = userSubscriptionRepository.countTotalSubscriptionCount(currentDay, PaymentStatus.SUCCEEDED);
-    BigDecimal dayPurchase = userSubscriptionRepository.getTotalSubscriptionPrice(currentDay, PaymentStatus.SUCCEEDED);
+    int monthPurchaseCount = userSubscriptionRepository.countTotalSubscriptionCount(currentMonth);
+    BigDecimal monthPurchase = userSubscriptionRepository.getTotalSubscriptionPrice(currentMonth);
+    int dayPurchaseCount = userSubscriptionRepository.countTotalSubscriptionCount(currentDay);
+    BigDecimal dayPurchase = userSubscriptionRepository.getTotalSubscriptionPrice(currentDay);
 
-    int monthRenewPurchaseCount = userSubscriptionRepository.countTotalRenewSubscriptionCount(currentMonth, PaymentStatus.SUCCEEDED);
-    BigDecimal monthRenewPurchase = userSubscriptionRepository.getTotalRenewSubscriptionPrice(currentMonth, PaymentStatus.SUCCEEDED);
-    int dayRenewPurchaseCount = userSubscriptionRepository.countTotalRenewSubscriptionCount(currentDay, PaymentStatus.SUCCEEDED);
-    BigDecimal dayRenewPurchase = userSubscriptionRepository.getTotalRenewSubscriptionPrice(currentDay, PaymentStatus.SUCCEEDED);
+    int monthRenewPurchaseCount = paymentRepository.getTotalRenewSubscriptionCount(currentMonth);
+    BigDecimal monthRenewPurchase = paymentRepository.getTotalRenewSubscriptionPrice(currentMonth);
+    int dayRenewPurchaseCount = paymentRepository.getTotalRenewSubscriptionCount(currentDay);
+    BigDecimal dayRenewPurchase = paymentRepository.getTotalRenewSubscriptionPrice(currentDay);
 
 
     accountingView.setTotalUsers(totalUsers);

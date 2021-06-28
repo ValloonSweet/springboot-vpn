@@ -1,5 +1,8 @@
 package com.orbvpn.api.controller;
 
+import com.orbvpn.api.domain.entity.Payment;
+import com.orbvpn.api.domain.enums.GatewayName;
+import com.orbvpn.api.reposiitory.PaymentRepository;
 import com.orbvpn.api.service.PaymentService;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
@@ -26,6 +29,7 @@ public class WebHookController {
   private String STRIPE_SECRET_KEY;
 
   private final PaymentService paymentService;
+  private final PaymentRepository paymentRepository;
 
   @PostMapping("/appstore/events")
   public ResponseEntity<?> handleAppStoreEvent(HttpServletRequest httpServletRequest) {
@@ -66,7 +70,7 @@ public class WebHookController {
         PaymentIntent paymentIntent = (PaymentIntent) stripeObject;
         log.info("Payment for " + paymentIntent.getAmount() + " succeeded.");
         // Then define and call a method to handle the successful payment intent.
-        paymentService.fullFillStripeSubscription(paymentIntent.getId());
+        paymentService.fullFillPayment(GatewayName.STRIPE, paymentIntent.getId());
         break;
       default:
         System.out.println("Unhandled event type: " + event.getType());

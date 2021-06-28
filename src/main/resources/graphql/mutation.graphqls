@@ -47,7 +47,7 @@ type Mutation {
     replyToTicket(ticketId: Int!, reply: TicketReplyCreate): TicketReplyView
 
     # payment
-    stripeCreatePaymentIntent(groupId: Int!, save: Boolean): StripeCreatePaymentIntentResponse
+    stripeCreatePayment(category: PaymentCategory!, groupId: Int, moreLoginCount: Int, renew: Boolean): StripeCreatePaymentIntentResponse
 
     # upload users
     uploadUsers: Boolean

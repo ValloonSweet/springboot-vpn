@@ -18,34 +18,23 @@ public interface UserSubscriptionRepository extends JpaRepository<UserSubscripti
 
   UserSubscription findFirstByUserOrderByCreatedAtDesc(User user);
 
-  Optional<UserSubscription> findByPaymentTypeAndPaymentId(PaymentType paymentType, String paymentId);
+  @Query("select count(sub.id) from UserSubscription sub where sub.createdAt > :createdAt")
+  int countTotalSubscriptionCount(LocalDateTime createdAt);
 
-  @Query("select sub from UserSubscription sub where sub.renew = true and sub.expiresAt < :dateTime")
-  List<UserSubscription> getSubscriptionsToRenew(LocalDateTime dateTime);
-
-  @Query("select count(sub.id) from UserSubscription sub where sub.createdAt > :createdAt and sub.paymentStatus = :paymentStatus")
-  int countTotalSubscriptionCount(LocalDateTime createdAt, PaymentStatus paymentStatus);
-
-  @Query("select count(sub.id) from UserSubscription sub where sub.createdAt > :createdAt and sub.paymentStatus = :paymentStatus and sub.renewed = true")
-  int countTotalRenewSubscriptionCount(LocalDateTime createdAt, PaymentStatus paymentStatus);
-
-  @Query("select sum(sub.price) from UserSubscription sub where sub.createdAt > :createdAt and sub.paymentStatus = :paymentStatus")
-  BigDecimal getTotalSubscriptionPrice(LocalDateTime createdAt, PaymentStatus paymentStatus);
-
-  @Query("select sum(sub.price) from UserSubscription sub where sub.createdAt > :createdAt and sub.paymentStatus = :paymentStatus and sub.renewed = true")
-  BigDecimal getTotalRenewSubscriptionPrice(LocalDateTime createdAt, PaymentStatus paymentStatus);
+  @Query("select sum(sub.price) from UserSubscription sub where sub.createdAt > :createdAt")
+  BigDecimal getTotalSubscriptionPrice(LocalDateTime createdAt);
 
   // Resellers queries
 
-  @Query("select count(sub.id) from UserSubscription sub where sub.expiresAt > current_date and sub.paymentStatus = 'SUCCEEDED' and sub.user.reseller = :reseller")
+  @Query("select count(sub.id) from UserSubscription sub where sub.expiresAt > current_date and sub.user.reseller = :reseller")
   BigDecimal countResellerActiveSubscriptions(Reseller reseller);
 
-  @Query("select count(sub.id) from UserSubscription sub where sub.expiresAt > current_date and sub.paymentStatus = 'SUCCEEDED' and sub.user.reseller.level <> 'OWNER'")
+  @Query("select count(sub.id) from UserSubscription sub where sub.expiresAt > current_date and sub.user.reseller.level <> 'OWNER'")
   BigDecimal countAllResellersActiveSubscriptions();
 
-  @Query("select sum(sub.price) from UserSubscription sub where sub.createdAt > :createdAt and sub.paymentStatus = 'SUCCEEDED' and sub.user.reseller = :reseller")
+  @Query("select sum(sub.price) from UserSubscription sub where sub.createdAt > :createdAt and sub.user.reseller = :reseller")
   BigDecimal getResellerTotalSale(Reseller reseller, LocalDateTime createdAt);
 
-  @Query("select sum(sub.price) from UserSubscription sub where sub.createdAt > :createdAt and sub.paymentStatus = 'SUCCEEDED' and sub.user.reseller.level <> 'OWNER'")
+  @Query("select sum(sub.price) from UserSubscription sub where sub.createdAt > :createdAt and sub.user.reseller.level <> 'OWNER'")
   BigDecimal getAllResellerTotalSale(LocalDateTime createdAt);
 }

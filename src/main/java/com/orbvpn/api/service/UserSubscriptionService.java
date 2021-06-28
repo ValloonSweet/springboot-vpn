@@ -1,11 +1,13 @@
 package com.orbvpn.api.service;
 
 import com.orbvpn.api.domain.entity.Group;
+import com.orbvpn.api.domain.entity.Payment;
 import com.orbvpn.api.domain.entity.StripeCustomer;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.entity.UserSubscription;
 import com.orbvpn.api.domain.enums.PaymentStatus;
 import com.orbvpn.api.domain.enums.PaymentType;
+import com.orbvpn.api.reposiitory.GroupRepository;
 import com.orbvpn.api.reposiitory.StripeCustomerRepository;
 import com.orbvpn.api.reposiitory.UserSubscriptionRepository;
 import java.time.LocalDateTime;
@@ -25,50 +27,27 @@ public class UserSubscriptionService {
   private final UserSubscriptionRepository userSubscriptionRepository;
 
   private final StripeCustomerRepository stripeCustomerRepository;
+  private final GroupRepository groupRepository;
 
-  public UserSubscription createUserSubscription(User user, Group group,
-    PaymentType type, PaymentStatus status, String pId) {
+  public UserSubscription createUserSubscription(Payment payment, Group group) {
+    User user = payment.getUser();
+
     log.info("Creating subscription for user with id {} for group {}", user.getId(), group.getId());
     UserSubscription userSubscription = new UserSubscription();
 
     userSubscription.setUser(user);
     userSubscription.setGroup(group);
-    userSubscription.setPrice(group.getPrice());
+    userSubscription.setPayment(payment);
     userSubscription.setDuration(group.getDuration());
     userSubscription.setDailyBandwidth(group.getDailyBandwidth());
     userSubscription.setDownloadUpload(group.getDownloadUpload());
     userSubscription.setMultiLoginCount(group.getMultiLoginCount());
-
-    userSubscription.setPaymentType(type);
-    userSubscription.setPaymentStatus(status);
-    userSubscription.setPaymentId(pId);
+    userSubscription.setExpiresAt(LocalDateTime.now().plusDays(group.getDuration()));
 
     userSubscriptionRepository.save(userSubscription);
-
+    radiusService.deleteUserRadChecks(user);
+    radiusService.createUserRadChecks(userSubscription);
     return userSubscription;
-  }
-
-
-  public UserSubscription fullFillSubscription(PaymentType type, String pId) {
-    UserSubscription subscription = getSubscription(type, pId);
-    return fullFillSubscription(subscription);
-  }
-
-
-  public UserSubscription fullFillSubscription(UserSubscription subscription) {
-    if(subscription.getPaymentStatus() == PaymentStatus.SUCCEEDED) {
-      return subscription;
-    }
-
-    subscription.setPaymentStatus(PaymentStatus.SUCCEEDED);
-    if(subscription.getExpiresAt() == null) {
-      subscription.setExpiresAt(LocalDateTime.now().plusDays(subscription.getDuration()));
-    }
-
-    userSubscriptionRepository.save(subscription);
-    radiusService.deleteUserRadChecks(subscription.getUser());
-    radiusService.createUserRadChecks(subscription);
-    return subscription;
   }
 
   public void deleteUserSubscriptions(User user) {
@@ -80,11 +59,6 @@ public class UserSubscriptionService {
     subscription.setMultiLoginCount(multiLoginCount);
     userSubscriptionRepository.save(subscription);
     radiusService.editUserMultiLoginCount(user, multiLoginCount);
-  }
-
-  public UserSubscription getSubscription(PaymentType type, String pid) {
-    return userSubscriptionRepository.findByPaymentTypeAndPaymentId(type, pid)
-      .orElseThrow(()->new RuntimeException("Payment not found"));
   }
 
   public UserSubscription getCurrentSubscription(User user) {
