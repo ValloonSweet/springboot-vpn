@@ -1,12 +1,13 @@
 package com.orbvpn.api.service;
 
 import com.orbvpn.api.config.PayPalClient;
-import com.orbvpn.api.domain.dto.PaypalCreateOrderResponse;
+import com.orbvpn.api.domain.dto.PaypalCreatePaymentResponse;
+import com.orbvpn.api.domain.entity.Payment;
 import com.paypal.http.HttpResponse;
 import com.paypal.orders.AmountWithBreakdown;
-import com.paypal.orders.ApplicationContext;
 import com.paypal.orders.Order;
 import com.paypal.orders.OrderRequest;
+import com.paypal.orders.OrdersCaptureRequest;
 import com.paypal.orders.OrdersCreateRequest;
 import com.paypal.orders.PurchaseUnitRequest;
 import java.io.IOException;
@@ -21,14 +22,14 @@ public class PaypalService {
 
   private final PayPalClient paypalClient;
 
-  public PaypalCreateOrderResponse createOrder(int groupId) throws IOException {
+  public PaypalCreatePaymentResponse createPayment(Payment payment) throws IOException {
 
     OrdersCreateRequest request = new OrdersCreateRequest();
     request.prefer("return=representation");
-    request.requestBody(buildRequestBody("7.99", ""));
+    request.requestBody(buildRequestBody(payment.getPrice().toString()));
     //3. Call PayPal to set up a transaction
     HttpResponse<Order> response = paypalClient.client().execute(request);
-    PaypalCreateOrderResponse paypalResponse = new PaypalCreateOrderResponse();
+    PaypalCreatePaymentResponse paypalResponse = new PaypalCreatePaymentResponse();
     if (response.statusCode() == 201) {
       paypalResponse.setOrderId(response.result().id());
     }
@@ -36,19 +37,25 @@ public class PaypalService {
     return paypalResponse;
   }
 
-  private OrderRequest buildRequestBody(String amount, String capture) {
-    OrderRequest orderRequest = new OrderRequest();
-    orderRequest.checkoutPaymentIntent(capture);
+  public boolean capturePayment(String orderId, boolean debug) throws IOException {
+    OrdersCaptureRequest request = new OrdersCaptureRequest(orderId);
+    request.requestBody(new OrderRequest());
+    //3. Call PayPal to capture an order
+    HttpResponse<Order> response = paypalClient.client().execute(request);
+    //4. Save the capture ID to your database. Implement logic to save capture to your database for future reference.
 
-//    ApplicationContext applicationContext = new ApplicationContext().brandName(brandName).landingPage(landingPage);
-//    orderRequest.applicationContext(applicationContext);
-//
-//    List<PurchaseUnitRequest> purchaseUnitRequests = new ArrayList<PurchaseUnitRequest>();
-//    PurchaseUnitRequest purchaseUnitRequest = new PurchaseUnitRequest().referenceId(referenceId)
-//      .description(description).customId(customId).softDescriptor(descriptor)
-//      .amountWithBreakdown(new AmountWithBreakdown().currencyCode("USD").value(amount));
-//    purchaseUnitRequests.add(purchaseUnitRequest);
-//    orderRequest.purchaseUnits(purchaseUnitRequests);
+    return true;
+  }
+
+  private OrderRequest buildRequestBody(String amount) {
+    OrderRequest orderRequest = new OrderRequest();
+    orderRequest.checkoutPaymentIntent("CAPTURE");
+
+    List<PurchaseUnitRequest> purchaseUnitRequests = new ArrayList<>();
+    PurchaseUnitRequest purchaseUnitRequest = new PurchaseUnitRequest()
+      .amountWithBreakdown(new AmountWithBreakdown().currencyCode("USD").value(amount));
+    purchaseUnitRequests.add(purchaseUnitRequest);
+    orderRequest.purchaseUnits(purchaseUnitRequests);
     return orderRequest;
   }
 }

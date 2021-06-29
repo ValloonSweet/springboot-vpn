@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,15 +38,18 @@ public class Payment {
   private User user;
 
   @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
   private PaymentStatus status;
 
   @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
   private GatewayName gateway;
 
   @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
   private PaymentCategory category;
 
-  @Column(nullable = false)
+  @Column
   private String paymentId;
 
   @Column

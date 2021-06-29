@@ -10,3 +10,7 @@ input StripeCreatePaymentIntent {
 type StripeCreatePaymentIntentResponse {
     clientSecret: String
 }
+
+type PaypalCreatePaymentResponse {
+    orderId: String
+}

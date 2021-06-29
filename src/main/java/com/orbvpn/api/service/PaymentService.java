@@ -1,5 +1,6 @@
 package com.orbvpn.api.service;
 
+import com.orbvpn.api.domain.dto.PaypalCreatePaymentResponse;
 import com.orbvpn.api.domain.dto.StripeCreatePaymentIntentResponse;
 import com.orbvpn.api.domain.entity.Group;
 import com.orbvpn.api.domain.entity.Payment;
@@ -28,6 +29,7 @@ public class PaymentService {
 
 
   private final StripeService stripeService;
+  private final PaypalService paypalService;
   private final UserSubscriptionService userSubscriptionService;
   private final RadiusService radiusService;
   private final GroupService groupService;
@@ -104,6 +106,15 @@ public class PaymentService {
     Payment payment = createPayment(GatewayName.STRIPE, category, groupId, moreLoginCount, renew);
     User user = userService.getUser();
     return stripeService.createStripePayment(payment, user);
+  }
+
+  public PaypalCreatePaymentResponse paypalCreatePayment(PaymentCategory category, int groupId, int moreLoginCount) throws Exception {
+    Payment payment = createPayment(GatewayName.STRIPE, category, groupId, moreLoginCount, false);
+    return paypalService.createPayment(payment);
+  }
+
+  public boolean paypalApprovePayment(String orderId) throws Exception {
+    return paypalService.capturePayment(orderId, false);
   }
 
   public Payment createPayment(GatewayName gateway, PaymentCategory category, int groupId,

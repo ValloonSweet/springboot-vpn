@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PaypalCreateOrderResponse {
+public class PaypalCreatePaymentResponse {
   private String orderId;
 }

@@ -339,8 +339,6 @@ create table radius.user_subscription
     renew             bit            null,
     renewed           bit            null,
     payment_id        int            null,
-    constraint FKomhvaxv1gibt7yjmc4f7axw8m
-        foreign key (payment_id) references radius.payment (id),
     constraint FKpsiiu2nyr0cbxeluuouw474s9
         foreign key (user_id) references radius.user (id),
     constraint FKt4tua4acgi5d647mxbklr9a46
@@ -369,7 +367,7 @@ create table radius.payment
     gateway           int            not null,
     group_id          int            null,
     multi_login_count int            null,
-    payment_id        varchar(255)   not null,
+    payment_id        varchar(255)   null,
     price             decimal(19, 2) null,
     renew             bit            null,
     renewed           bit            null,
