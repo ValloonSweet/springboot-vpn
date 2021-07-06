@@ -2,6 +2,7 @@ package com.orbvpn.api.service;
 
 import com.orbvpn.api.domain.dto.PaypalCreatePaymentResponse;
 import com.orbvpn.api.domain.dto.StripeCreatePaymentIntentResponse;
+import com.orbvpn.api.domain.entity.AppleReceipt;
 import com.orbvpn.api.domain.entity.Group;
 import com.orbvpn.api.domain.entity.Payment;
 import com.orbvpn.api.domain.entity.User;
@@ -10,6 +11,7 @@ import com.orbvpn.api.domain.enums.GatewayName;
 import com.orbvpn.api.domain.enums.PaymentCategory;
 import com.orbvpn.api.domain.enums.PaymentStatus;
 import com.orbvpn.api.exception.PaymentException;
+import com.orbvpn.api.reposiitory.AppleReceiptRepository;
 import com.orbvpn.api.reposiitory.GroupRepository;
 import com.orbvpn.api.reposiitory.PaymentRepository;
 import com.orbvpn.api.reposiitory.UserSubscriptionRepository;
@@ -19,25 +21,30 @@ import java.math.BigDecimal;
 import java.text.MessageFormat;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class PaymentService {
 
 
   private final StripeService stripeService;
   private final PaypalService paypalService;
+  private final AppleService appleService;
   private final UserSubscriptionService userSubscriptionService;
   private final RadiusService radiusService;
   private final GroupService groupService;
+  @Setter
+  private UserService userService;
+
+  private final AppleReceiptRepository appleReceiptRepository;
   private final GroupRepository groupRepository;
   private final PaymentRepository paymentRepository;
   private final UserSubscriptionRepository userSubscriptionRepository;
-  @Setter
-  private UserService userService;
 
   public void fullFillPayment(GatewayName gateway, String paymentId) {
     Payment payment = paymentRepository
@@ -111,6 +118,26 @@ public class PaymentService {
   public PaypalCreatePaymentResponse paypalCreatePayment(PaymentCategory category, int groupId, int moreLoginCount) throws Exception {
     Payment payment = createPayment(GatewayName.STRIPE, category, groupId, moreLoginCount, false);
     return paypalService.createPayment(payment);
+  }
+
+  public boolean appleCreatePayment(String receipt) {
+    log.info("Creating payment for apple");
+
+    User user = userService.getUser();
+    AppleReceipt receiptEntity = new AppleReceipt();
+    receiptEntity.setReceipt(receipt);
+    receiptEntity.setUserId(user.getId());
+    appleReceiptRepository.save(receiptEntity);
+
+    int groupId = appleService.getGroupId(receipt);
+    Payment payment = createPayment(GatewayName.APPLE, PaymentCategory.GROUP, groupId, 0, true);
+    fullFillPayment(payment);
+
+    receiptEntity.setPaymentStatus(PaymentStatus.SUCCEEDED);
+    appleReceiptRepository.save(receiptEntity);
+    log.info("Created payment for apple receipt", payment);
+
+    return true;
   }
 
   public boolean paypalApprovePayment(String orderId) throws Exception {

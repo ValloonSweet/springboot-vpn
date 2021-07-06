@@ -8,7 +8,7 @@ spring:
     password: ByzRsK28pW
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
@@ -56,6 +56,10 @@ paypal:
   client-id: AQLq6ju_TV-1obwarCVgpoOFkEYuZzG0f4fWMvZ3W9OlO1Pzv1yviba1DWWkFaqMUQ_YUdoguIfxkj-f
   secret: EDS3YYiH3P7u7Rnwq5tdjH0_JAfR4RDSPVAtydY3cCbUtnnNC9FFQyRW2FkZ0yuLR5-e7nkTwbp-KfOp
   mode: sandbox
+
+app-store:
+  url: https://sandbox.itunes.apple.com
+  secret: 2b117fe8579946e68445aa2ac3fe5ecc
 
 oauth:
   google:

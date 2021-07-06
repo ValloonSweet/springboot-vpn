@@ -50,6 +50,7 @@ type Mutation {
     stripeCreatePayment(category: PaymentCategory!, groupId: Int, moreLoginCount: Int, renew: Boolean): StripeCreatePaymentIntentResponse
     paypalCreatePayment(category: PaymentCategory!, groupId: Int, moreLoginCount: Int): PaypalCreatePaymentResponse
     paypalApprovePayment(orderId: String): Boolean
+    appleCreatePayment(receipt: String): Boolean
 
     # upload users
     uploadUsers: Boolean

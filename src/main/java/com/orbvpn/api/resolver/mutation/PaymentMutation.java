@@ -34,4 +34,8 @@ public class PaymentMutation implements GraphQLMutationResolver {
     return paymentService.paypalApprovePayment(orderId);
   }
 
+  public boolean appleCreatePayment(String receipt) {
+    return paymentService.appleCreatePayment(receipt);
+  }
+
 }

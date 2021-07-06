@@ -118,6 +118,7 @@ public class ResellerUserService {
       .paymentId(paymentId)
       .build();
 
+    paymentRepository.save(payment);
     paymentService.fullFillPayment(payment);
   }
 

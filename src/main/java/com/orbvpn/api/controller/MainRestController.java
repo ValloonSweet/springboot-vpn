@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-public class WebHookController {
+public class MainRestController {
 
   @Value("${stripe.api.webhook-secret}")
   private String STRIPE_SECRET_KEY;
@@ -78,5 +79,19 @@ public class WebHookController {
     }
 
     return ResponseEntity.ok().build();
+  }
+
+  @GetMapping("/facebook-delete")
+  public ResponseEntity<?> handleFacebookDelete(HttpServletRequest request) {
+
+    System.out.println("lapitulicai");
+    return ResponseEntity.badRequest().build();
+  }
+
+  @PostMapping("/facebook-delete")
+  public ResponseEntity<?> handleFacebookDeletePost(HttpServletRequest request) {
+
+    System.out.println("lapitulicai");
+    return ResponseEntity.badRequest().build();
   }
 }
