@@ -9,6 +9,7 @@ import lombok.Setter;
 @Builder
 public class TokenData {
   private String email;
+  private String oauthId;
   private long exp;
   private long iat;
 }

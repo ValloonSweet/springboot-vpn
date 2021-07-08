@@ -219,9 +219,19 @@ public class UserService {
   }
 
   public void deleteUser(User user) {
+    paymentService.deleteUserPayments(user);
     userSubscriptionService.deleteUserSubscriptions(user);
     radiusService.deleteUserRadChecks(user);
     userRepository.delete(user);
+  }
+
+  public User deleteOauthUser(String oauthId) {
+    User user = userRepository.findByOauthId(oauthId)
+      .orElseThrow(()->new NotFoundException("User not found"));
+
+    deleteUser(user);
+
+    return user;
   }
 
   public UserProfileView editProfile(UserProfileEdit userProfileEdit) {

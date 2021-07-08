@@ -81,6 +81,7 @@ public class OauthService {
     Role role = roleService.getByName(RoleName.USER);
     user.setRole(role);
     user.setReseller(resellerService.getOwnerReseller());
+    user.setOauthId(tokenData.getOauthId());
 
     userRepository.save(user);
 
@@ -141,6 +142,7 @@ public class OauthService {
 
     return TokenData.builder()
       .email(fbTokenData.getEmail())
+      .oauthId(fbTokenData.getId())
       .build();
 
   }

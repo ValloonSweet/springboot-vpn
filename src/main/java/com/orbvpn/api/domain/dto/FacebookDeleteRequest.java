@@ -8,16 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FBTokenData {
-
-  private String id;
-
-  @JsonProperty("email")
-  private String email;
-
-  @JsonProperty("first_name")
-  private String firstName;
-
-  @JsonProperty("last_name")
-  private String lastName;
+public class FacebookDeleteRequest {
+  @JsonProperty("user_id")
+  private String userId;
 }

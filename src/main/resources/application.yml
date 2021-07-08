@@ -30,7 +30,7 @@ spring:
 
 
 application:
-  website-url: http://example.com
+  website-url: https://orbnet.xyz
 
 jwt:
   secret: secret

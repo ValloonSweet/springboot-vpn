@@ -12,6 +12,8 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
+  Optional<User> findByOauthId(String oauthId);
+
   Optional<User> findByUsername(String username);
 
   Optional<User> findByEmail(String email);

@@ -42,6 +42,9 @@ public class User implements UserDetails {
   @Column
   private String password;
 
+  @Column
+  private String oauthId;
+
   @ManyToOne
   private Role role;
 

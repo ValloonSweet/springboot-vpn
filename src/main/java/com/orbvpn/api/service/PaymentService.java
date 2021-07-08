@@ -46,6 +46,10 @@ public class PaymentService {
   private final PaymentRepository paymentRepository;
   private final UserSubscriptionRepository userSubscriptionRepository;
 
+  public void deleteUserPayments(User user) {
+    paymentRepository.deleteByUser(user);
+  }
+
   public void fullFillPayment(GatewayName gateway, String paymentId) {
     Payment payment = paymentRepository
       .findByGatewayAndPaymentId(gateway, paymentId)

@@ -373,9 +373,18 @@ create table radius.payment
     renewed           bit            null,
     status            int            not null,
     updated_at        datetime(6)    null,
-    user_id           int            null,
-    constraint FK4spfnm9si9dowsatcqs5or42i
-        foreign key (user_id) references radius.user (id)
+    user_id           int            null
+);
+
+create table radius.apple_receipt
+(
+    id             int auto_increment
+        primary key,
+    created_at     datetime(6)  null,
+    payment_status varchar(255) null,
+    receipt        text         null,
+    updated_at     datetime(6)  null,
+    user_id        int          not null
 );
 
 

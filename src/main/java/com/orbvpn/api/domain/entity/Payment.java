@@ -10,9 +10,11 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.DecimalMin;
 import lombok.AllArgsConstructor;
@@ -40,6 +42,7 @@ public class Payment {
   private int id;
 
   @ManyToOne
+  @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "none"))
   private User user;
 
   @Column(nullable = false)
