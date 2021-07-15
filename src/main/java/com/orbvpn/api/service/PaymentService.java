@@ -1,24 +1,28 @@
 package com.orbvpn.api.service;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
+import com.orbvpn.api.domain.dto.AppleSubscriptionData;
 import com.orbvpn.api.domain.dto.PaypalCreatePaymentResponse;
 import com.orbvpn.api.domain.dto.StripeCreatePaymentIntentResponse;
-import com.orbvpn.api.domain.entity.AppleReceipt;
 import com.orbvpn.api.domain.entity.Group;
+import com.orbvpn.api.domain.entity.MoreLoginCount;
 import com.orbvpn.api.domain.entity.Payment;
+import com.orbvpn.api.domain.entity.ServiceGroup;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.entity.UserSubscription;
 import com.orbvpn.api.domain.enums.GatewayName;
 import com.orbvpn.api.domain.enums.PaymentCategory;
 import com.orbvpn.api.domain.enums.PaymentStatus;
 import com.orbvpn.api.exception.PaymentException;
-import com.orbvpn.api.reposiitory.AppleReceiptRepository;
 import com.orbvpn.api.reposiitory.GroupRepository;
+import com.orbvpn.api.reposiitory.MoreLoginCountRepository;
 import com.orbvpn.api.reposiitory.PaymentRepository;
 import com.orbvpn.api.reposiitory.UserSubscriptionRepository;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import java.math.BigDecimal;
-import java.text.MessageFormat;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -41,10 +45,10 @@ public class PaymentService {
   @Setter
   private UserService userService;
 
-  private final AppleReceiptRepository appleReceiptRepository;
   private final GroupRepository groupRepository;
   private final PaymentRepository paymentRepository;
   private final UserSubscriptionRepository userSubscriptionRepository;
+  private final MoreLoginCountRepository moreLoginCountRepository;
 
   public void deleteUserPayments(User user) {
     paymentRepository.deleteByUser(user);
@@ -65,17 +69,29 @@ public class PaymentService {
 
     if (payment.getCategory() == PaymentCategory.GROUP) {
       Group group = groupRepository.getGroupIgnoreDelete(payment.getGroupId());
-      UserSubscription userSubscription = userSubscriptionService
-        .createUserSubscription(payment, group);
-      payment.setExpiresAt(userSubscription.getExpiresAt());
-      paymentRepository.save(payment);
+
+      // For apple we are using expiresAt from api
+      if(payment.getExpiresAt() == null) {
+        payment.setExpiresAt(LocalDateTime.now().plusDays(group.getDuration()));
+      }
+
+      userSubscriptionService.createUserSubscription(payment, group);
     } else if (payment.getCategory() == PaymentCategory.MORE_LOGIN) {
       User user = payment.getUser();
       UserSubscription userSubscription = userSubscriptionService.getCurrentSubscription(user);
+      LocalDateTime expiresAt = userSubscription.getExpiresAt();
+
       int multiLoginCount = userSubscription.getMultiLoginCount() + payment.getMoreLoginCount();
       userSubscription.setMultiLoginCount(multiLoginCount);
       userSubscriptionRepository.save(userSubscription);
-      radiusService.editUserMultiLoginCount(user, multiLoginCount);
+      radiusService.addUserMoreLoginCount(user, multiLoginCount);
+      payment.setExpiresAt(expiresAt);
+
+      MoreLoginCount moreLoginCountEntity = new MoreLoginCount();
+      moreLoginCountEntity.setUser(user);
+      moreLoginCountEntity.setExpiresAt(expiresAt);
+      moreLoginCountEntity.setNumber(payment.getMoreLoginCount());
+      moreLoginCountRepository.save(moreLoginCountEntity);
     }
 
     payment.setStatus(PaymentStatus.SUCCEEDED);
@@ -97,9 +113,12 @@ public class PaymentService {
     if (payment.getGateway() == GatewayName.STRIPE) {
       PaymentIntent paymentIntent = stripeService.renewStripePayment(newPayment);
       newPayment.setPaymentId(paymentIntent.getId());
-    } else {
-      throw new PaymentException(
-        MessageFormat.format("Not supported ooffline payment %s", payment.getGateway()));
+    } else if(payment.getGateway() == GatewayName.APPLE) {
+      AppleSubscriptionData subscriptionData = appleService
+        .getSubscriptionData(payment.getMetaData());
+      payment.setPaymentId(subscriptionData.getOriginalTransactionId());
+      payment.setExpiresAt(subscriptionData.getExpiresAt());
+      payment.setMetaData(payment.getMetaData());
     }
 
     paymentRepository.save(newPayment);
@@ -127,18 +146,14 @@ public class PaymentService {
   public boolean appleCreatePayment(String receipt) {
     log.info("Creating payment for apple");
 
-    User user = userService.getUser();
-    AppleReceipt receiptEntity = new AppleReceipt();
-    receiptEntity.setReceipt(receipt);
-    receiptEntity.setUserId(user.getId());
-    appleReceiptRepository.save(receiptEntity);
-
-    int groupId = appleService.getGroupId(receipt);
-    Payment payment = createPayment(GatewayName.APPLE, PaymentCategory.GROUP, groupId, 0, true);
+    AppleSubscriptionData appleSubscriptionData = appleService.getSubscriptionData(receipt);
+    Payment payment = createPayment(GatewayName.APPLE, PaymentCategory.GROUP, appleSubscriptionData.getGroupId(), 0, true);
+    payment.setPaymentId(appleSubscriptionData.getOriginalTransactionId());
+    payment.setMetaData(receipt);
+    payment.setExpiresAt(appleSubscriptionData.getExpiresAt());
     fullFillPayment(payment);
 
-    receiptEntity.setPaymentStatus(PaymentStatus.SUCCEEDED);
-    appleReceiptRepository.save(receiptEntity);
+
     log.info("Created payment for apple receipt", payment);
 
     return true;
@@ -196,7 +211,25 @@ public class PaymentService {
   }
 
   public BigDecimal getBuyMoreLoginPrice(int number) {
-    return new BigDecimal("100");
+    LocalDateTime now = LocalDateTime.now();
+    User user = userService.getUser();
+    UserSubscription subscription = userSubscriptionService.getCurrentSubscription(user);
+    Group group = subscription.getGroup();
+    ServiceGroup serviceGroup = group.getServiceGroup();
+
+    BigDecimal groupPrice = group.getPrice();
+
+    BigDecimal serviceGroupDiscountMultiplier = BigDecimal.ONE
+      .subtract(serviceGroup.getDiscount().divide(new BigDecimal(100)));
+
+    LocalDateTime expiresAt = subscription.getExpiresAt();
+    BigDecimal expirationDays  = new BigDecimal(DAYS.between(now, expiresAt));
+
+    BigDecimal accountDays = new BigDecimal(DAYS.between(user.getCreatedAt(), now));
+
+   BigDecimal multiLoginPrice = new BigDecimal(number).multiply(groupPrice).multiply(serviceGroupDiscountMultiplier).multiply(expirationDays).divide(accountDays);
+
+    return multiLoginPrice;
   }
 
 

@@ -3,6 +3,10 @@ package com.orbvpn.api.service;
 import com.orbvpn.api.domain.dto.AppStoreVerifyReceiptRequest;
 import com.orbvpn.api.domain.dto.AppStoreVerifyReceiptResponse;
 import com.orbvpn.api.domain.dto.AppStoreVerifyReceiptResponse.LatestReceiptInfo;
+import com.orbvpn.api.domain.dto.AppleSubscriptionData;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +29,7 @@ public class AppleService {
   @Value("${app-store.secret}")
   private String SECRET;
 
-  public int getGroupId(String receipt) {
+  public AppleSubscriptionData getSubscriptionData(String receipt) {
     AppStoreVerifyReceiptRequest verifyReceiptRequest = new AppStoreVerifyReceiptRequest();
     verifyReceiptRequest.setReceiptData(receipt);
     verifyReceiptRequest.setPassword(SECRET);
@@ -39,7 +43,17 @@ public class AppleService {
     LatestReceiptInfo latestReceiptInfo = response.getLatestReceiptInfo().get(0);
     String productSku = latestReceiptInfo.getProductId();
 
-    return groupMap.get(productSku);
+    Integer groupId = groupMap.get(productSku);
+    LocalDateTime expiresAt = Instant.ofEpochMilli(Long.valueOf(latestReceiptInfo.getExpiresDateMs()))
+      .atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+    AppleSubscriptionData appleSubscriptionData = new AppleSubscriptionData();
+    appleSubscriptionData.setGroupId(groupId);
+    appleSubscriptionData.setExpiresAt(expiresAt);
+    appleSubscriptionData.setReceipt(receipt);
+    appleSubscriptionData.setOriginalTransactionId(latestReceiptInfo.getOriginalTransactionId());
+
+    return appleSubscriptionData;
 
   }
 }

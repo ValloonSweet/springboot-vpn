@@ -104,7 +104,7 @@ public class RadiusService {
     }
   }
 
-  public void editUserMultiLoginCount(User user, int multiLoginCount) {
+  public void editUserMoreLoginCount(User user, int multiLoginCount) {
     String username = user.getUsername();
 
     Optional<RadCheck> radCheckOptional = radCheckRepository
@@ -113,6 +113,37 @@ public class RadiusService {
     if(radCheckOptional.isPresent()) {
       RadCheck radCheck = radCheckOptional.get();
       radCheck.setValue(String.valueOf(multiLoginCount));
+      radCheckRepository.save(radCheck);
+    }
+  }
+
+  public void addUserMoreLoginCount(User user, int moreLoginCount) {
+    String username = user.getUsername();
+
+    Optional<RadCheck> radCheckOptional = radCheckRepository
+      .findByUsernameAndAttribute(username, "Simultaneous-Use");
+
+    if(radCheckOptional.isPresent()) {
+      RadCheck radCheck = radCheckOptional.get();
+      Integer currentValue = Integer.valueOf(radCheck.getValue());
+      radCheck.setValue(String.valueOf(moreLoginCount + currentValue));
+      radCheckRepository.save(radCheck);
+    }
+  }
+
+  public void subUserMoreLoginCount(User user, int moreLoginCount) {
+    String username = user.getUsername();
+
+    Optional<RadCheck> radCheckOptional = radCheckRepository
+      .findByUsernameAndAttribute(username, "Simultaneous-Use");
+
+    if(radCheckOptional.isPresent()) {
+      RadCheck radCheck = radCheckOptional.get();
+      Integer currentValue = Integer.valueOf(radCheck.getValue());
+      Integer newValue = currentValue - moreLoginCount;
+      newValue = newValue <= 0 ? 1 : newValue;
+
+      radCheck.setValue(String.valueOf(newValue));
       radCheckRepository.save(radCheck);
     }
   }

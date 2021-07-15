@@ -20,6 +20,7 @@ import com.orbvpn.api.exception.OauthLoginException;
 import com.orbvpn.api.reposiitory.UserRepository;
 import java.text.MessageFormat;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;

@@ -2,16 +2,13 @@ package com.orbvpn.api.service;
 
 import com.orbvpn.api.domain.entity.Group;
 import com.orbvpn.api.domain.entity.Payment;
-import com.orbvpn.api.domain.entity.StripeCustomer;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.entity.UserSubscription;
-import com.orbvpn.api.domain.enums.PaymentStatus;
-import com.orbvpn.api.domain.enums.PaymentType;
+import com.orbvpn.api.domain.enums.GatewayName;
 import com.orbvpn.api.reposiitory.GroupRepository;
 import com.orbvpn.api.reposiitory.StripeCustomerRepository;
 import com.orbvpn.api.reposiitory.UserSubscriptionRepository;
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -42,7 +39,7 @@ public class UserSubscriptionService {
     userSubscription.setDailyBandwidth(group.getDailyBandwidth());
     userSubscription.setDownloadUpload(group.getDownloadUpload());
     userSubscription.setMultiLoginCount(group.getMultiLoginCount());
-    userSubscription.setExpiresAt(LocalDateTime.now().plusDays(group.getDuration()));
+    userSubscription.setExpiresAt(payment.getExpiresAt());
 
     userSubscriptionRepository.save(userSubscription);
     radiusService.deleteUserRadChecks(user);
@@ -58,7 +55,7 @@ public class UserSubscriptionService {
     UserSubscription subscription = getCurrentSubscription(user);
     subscription.setMultiLoginCount(multiLoginCount);
     userSubscriptionRepository.save(subscription);
-    radiusService.editUserMultiLoginCount(user, multiLoginCount);
+    radiusService.editUserMoreLoginCount(user, multiLoginCount);
   }
 
   public UserSubscription getCurrentSubscription(User user) {

@@ -10,6 +10,7 @@ public class UserSubscriptionView {
   private int duration;
   private int multiLoginCount;
   private String expiresAt;
+  private boolean expired;
   private String createdAt;
   private String updatedAt;
 }

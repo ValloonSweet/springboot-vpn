@@ -21,5 +21,11 @@ public class AppStoreVerifyReceiptResponse {
   public static class LatestReceiptInfo {
     @JsonProperty("product_id")
     private String productId;
+
+    @JsonProperty("expires_date_ms")
+    private String expiresDateMs;
+
+    @JsonProperty("original_transaction_id")
+    private String originalTransactionId;
   }
 }

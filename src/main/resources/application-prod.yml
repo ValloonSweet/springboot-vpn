@@ -8,8 +8,6 @@ spring:
     password: nsoojhxetlcyjtgm
 
 oauth:
-  google:
-    client-ids: 159610264827-8qoc1ai11afi5lsn556mbs1rfd8123io.apps.googleusercontent.com
   facebook:
     app-id: 838668077053807
     app-secret: fc420c2366504297e88ce941395c7f13

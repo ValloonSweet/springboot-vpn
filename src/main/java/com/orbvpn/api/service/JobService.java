@@ -14,6 +14,7 @@ public class JobService {
   private final HelpCenterService helpCenterService;
   private final ResellerLevelService resellerLevelService;
   private final RenewUserSubscriptionService renewUserSubscriptionService;
+  private final MoreLoginCountService moreLoginCountService;
 
   @Scheduled(fixedRate = HOUR_RATE)
   public void removeOldTickets() {
@@ -34,6 +35,13 @@ public class JobService {
     log.info("Started renewing user subscriptions");
     renewUserSubscriptionService.renewSubscriptions();
     log.info("Finished job renewing subscriptions");
+  }
+
+  @Scheduled(fixedRate = HOUR_RATE)
+  public void removeExpiredMoreLoginCount() {
+    log.info("Started removing expired moore login count");
+    moreLoginCountService.removeExpiredMoreLoginCount();
+    log.info("Finished removing expired more login count");
   }
 
 }

@@ -59,8 +59,10 @@ public class UserSubscription {
   @DecimalMin(value = "0")
   private BigInteger downloadUpload;
 
+  // For subscriptions we have expiration data big value
   @Column
   private LocalDateTime expiresAt;
+
 
   @Column
   @CreatedDate

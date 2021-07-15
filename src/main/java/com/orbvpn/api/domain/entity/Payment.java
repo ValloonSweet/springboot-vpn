@@ -60,6 +60,9 @@ public class Payment {
   @Column
   private String paymentId;
 
+  @Column(columnDefinition = "TEXT")
+  private String metaData;
+
   @Column
   @DecimalMin(value = "0.0", inclusive = true)
   private BigDecimal price;
