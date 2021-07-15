@@ -1,4 +1,4 @@
-# OrbVpn API
+# OrbVPN API
 This project provides REST API for orbvpn project. The project is written using Spring Boot
 framework.
 
