@@ -1,5 +1,11 @@
 package com.orbvpn.api.service;
 
+import com.auth0.jwk.Jwk;
+import com.auth0.jwk.JwkProvider;
+import com.auth0.jwk.UrlJwkProvider;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
@@ -18,6 +24,9 @@ import com.orbvpn.api.domain.enums.RoleName;
 import com.orbvpn.api.domain.enums.SocialMedia;
 import com.orbvpn.api.exception.OauthLoginException;
 import com.orbvpn.api.reposiitory.UserRepository;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import java.security.interfaces.RSAPublicKey;
 import java.text.MessageFormat;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -66,6 +75,8 @@ public class OauthService {
         return getGoogleTokenData(token);
       case FACEBOOK:
         return getFacebookTokenData(token);
+      case APPLE:
+        return getAppleTokenData(token);
       default:
         throw new OauthLoginException();
     }
@@ -145,6 +156,28 @@ public class OauthService {
       .email(fbTokenData.getEmail())
       .oauthId(fbTokenData.getId())
       .build();
+
+  }
+
+  private TokenData getAppleTokenData(String encryptedToken) {
+    try {
+      DecodedJWT jwt = JWT.decode(encryptedToken);
+
+      JwkProvider provider = new UrlJwkProvider("https://appleid.apple.com/auth/keys");
+      Jwk jwk = provider.get(jwt.getKeyId());
+      Algorithm algorithm = Algorithm.RSA256((RSAPublicKey) jwk.getPublicKey(), null);
+      algorithm.verify(jwt);
+
+      Claims claims = Jwts.parser().setSigningKey((RSAPublicKey)
+        jwk.getPublicKey()).parseClaimsJws(encryptedToken).getBody();
+
+      return TokenData.builder()
+        .email(claims.get("email", String.class))
+        .build();
+    } catch (Exception ex) {
+      throw new OauthLoginException(ex.getMessage());
+    }
+
 
   }
 
