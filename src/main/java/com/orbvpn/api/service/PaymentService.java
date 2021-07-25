@@ -3,6 +3,7 @@ package com.orbvpn.api.service;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 import com.orbvpn.api.domain.dto.AppleSubscriptionData;
+import com.orbvpn.api.domain.dto.ParspalCreatePaymentResponse;
 import com.orbvpn.api.domain.dto.PaypalCreatePaymentResponse;
 import com.orbvpn.api.domain.dto.StripeCreatePaymentIntentResponse;
 import com.orbvpn.api.domain.entity.Group;
@@ -42,6 +43,7 @@ public class PaymentService {
   private final UserSubscriptionService userSubscriptionService;
   private final RadiusService radiusService;
   private final GroupService groupService;
+  private final ParspalService parspalService;
   @Setter
   private UserService userService;
 
@@ -139,7 +141,7 @@ public class PaymentService {
   }
 
   public PaypalCreatePaymentResponse paypalCreatePayment(PaymentCategory category, int groupId, int moreLoginCount) throws Exception {
-    Payment payment = createPayment(GatewayName.STRIPE, category, groupId, moreLoginCount, false);
+    Payment payment = createPayment(GatewayName.PAYPAL, category, groupId, moreLoginCount, false);
     return paypalService.createPayment(payment);
   }
 
@@ -160,7 +162,26 @@ public class PaymentService {
   }
 
   public boolean paypalApprovePayment(String orderId) throws Exception {
-    return paypalService.capturePayment(orderId, false);
+    boolean approved = paypalService.approvePayment(orderId);
+    if (approved) {
+      fullFillPayment(GatewayName.PAYPAL, orderId);
+    }
+
+    return approved;
+  }
+
+  public ParspalCreatePaymentResponse parspalCreatePayment(PaymentCategory category, int groupId,
+    int moreLoginCount) {
+    Payment payment = createPayment(GatewayName.PARSPAL, category, groupId, moreLoginCount, false);
+    return parspalService.createPayment(payment);
+  }
+
+  public boolean parspalApprovePayment(String payment_id, String receipt_number) {
+    boolean approved = parspalService.approvePayment(payment_id, receipt_number);
+    if (approved) {
+      fullFillPayment(GatewayName.PARSPAL, payment_id);
+    }
+    return approved;
   }
 
   public Payment createPayment(GatewayName gateway, PaymentCategory category, int groupId,

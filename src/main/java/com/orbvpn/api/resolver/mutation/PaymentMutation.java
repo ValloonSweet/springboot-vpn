@@ -1,4 +1,5 @@
 package com.orbvpn.api.resolver.mutation;
+import com.orbvpn.api.domain.dto.ParspalCreatePaymentResponse;
 import com.orbvpn.api.domain.dto.PaypalCreatePaymentResponse;
 import com.orbvpn.api.domain.dto.StripeCreatePaymentIntentResponse;
 import com.orbvpn.api.domain.enums.PaymentCategory;
@@ -32,6 +33,17 @@ public class PaymentMutation implements GraphQLMutationResolver {
 
   public boolean paypalApprovePayment(String orderId) throws Exception {
     return paymentService.paypalApprovePayment(orderId);
+  }
+
+
+  public ParspalCreatePaymentResponse parspalCreatePayment(PaymentCategory category, int groupId,
+    int moreLoginCount)
+    throws Exception {
+    return paymentService.parspalCreatePayment(category, groupId, moreLoginCount);
+  }
+
+  public boolean parspalApprovePayment(String payment_id, String receipt_number) {
+    return paymentService.parspalApprovePayment(payment_id, receipt_number);
   }
 
   public boolean appleCreatePayment(String receipt) {

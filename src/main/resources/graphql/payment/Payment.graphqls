@@ -14,3 +14,12 @@ type StripeCreatePaymentIntentResponse {
 type PaypalCreatePaymentResponse {
     orderId: String
 }
+
+type ParspalCreatePaymentResponse {
+    payment_id: String,
+    link: String,
+    status: String,
+    message: String,
+    error_type: String,
+    error_code: String
+}

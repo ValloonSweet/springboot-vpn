@@ -51,6 +51,8 @@ type Mutation {
     paypalCreatePayment(category: PaymentCategory!, groupId: Int, moreLoginCount: Int): PaypalCreatePaymentResponse
     paypalApprovePayment(orderId: String): Boolean
     appleCreatePayment(receipt: String): Boolean
+    parspalCreatePayment(category: PaymentCategory!, groupId: Int, moreLoginCount: Int) : ParspalCreatePaymentResponse
+    parspalApprovePayment(payment_id: String, receipt_number: String): Boolean
 
     # upload users
     uploadUsers: Boolean
