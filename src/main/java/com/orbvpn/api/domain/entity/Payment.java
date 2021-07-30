@@ -60,7 +60,7 @@ public class Payment {
   @Column
   private String paymentId;
 
-  @Column(columnDefinition = "TEXT")
+  @Column(columnDefinition = "LONGTEXT")
   private String metaData;
 
   @Column
