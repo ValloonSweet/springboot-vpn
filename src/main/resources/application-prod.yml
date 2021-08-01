@@ -9,8 +9,8 @@ spring:
 
 oauth:
   facebook:
-    app-id: 838668077053807
-    app-secret: fc420c2366504297e88ce941395c7f13
+    app-id: 2998455443765493
+    app-secret: 690acb522724caa05e0c70083c1333dc
 
 stripe:
   api:
