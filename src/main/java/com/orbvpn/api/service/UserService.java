@@ -99,7 +99,6 @@ public class UserService {
     User user = userCreateMapper.createEntity(userCreate);
     user.setUsername(userCreate.getEmail());
     passwordService.setPassword(user, userCreate.getPassword());
-    user.setRadAccess(userCreate.getPassword());
     Role role = roleService.getByName(RoleName.USER);
     user.setRole(role);
     user.setReseller(resellerService.getOwnerReseller());
