@@ -361,19 +361,20 @@ create table radius.payment
 (
     id                int auto_increment
         primary key,
-    category          int            not null,
+    category          varchar(255)   not null,
     created_at        datetime(6)    null,
     expires_at        datetime(6)    null,
-    gateway           int            not null,
+    gateway           varchar(255)   not null,
     group_id          int            null,
-    multi_login_count int            null,
+    more_login_count int            null,
     payment_id        varchar(255)   null,
     price             decimal(19, 2) null,
     renew             bit            null,
     renewed           bit            null,
-    status            int            not null,
+    status            varchar(255)   not null,
     updated_at        datetime(6)    null,
-    user_id           int            null
+    user_id           int            null,
+    meta_data         longtext       null
 );
 
 create table radius.apple_receipt
