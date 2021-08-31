@@ -8,6 +8,7 @@ import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.entity.UserSubscription;
 import com.orbvpn.api.exception.NotFoundException;
 import com.orbvpn.api.reposiitory.NasRepository;
+import com.orbvpn.api.reposiitory.RadAcctRepository;
 import com.orbvpn.api.reposiitory.RadCheckRepository;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -28,6 +29,7 @@ public class RadiusService {
 
   private final NasRepository nasRepository;
   private final RadCheckRepository radCheckRepository;
+  private final RadAcctRepository radAcctRepository;
 
 
   public void createNas(Server server) {
@@ -88,6 +90,10 @@ public class RadiusService {
 
   public void deleteUserRadChecks(User user) {
     radCheckRepository.deleteByUsername(user.getUsername());
+  }
+
+  public void deleteUserRadAcct(User user) {
+    radAcctRepository.deleteByUsername(user.getUsername());
   }
 
   public void editUserPassword(User user) {

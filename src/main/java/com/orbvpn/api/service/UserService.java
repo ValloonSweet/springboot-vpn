@@ -221,6 +221,7 @@ public class UserService {
     paymentService.deleteUserPayments(user);
     userSubscriptionService.deleteUserSubscriptions(user);
     radiusService.deleteUserRadChecks(user);
+    radiusService.deleteUserRadAcct(user);
     userRepository.delete(user);
   }
 
