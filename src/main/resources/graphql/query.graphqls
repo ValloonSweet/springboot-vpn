@@ -42,4 +42,7 @@ type Query {
     totalActiveUsers: Int
     activeUsers(page: Int, size: Int): UserPage
     inactiveUsers(page: Int, size: Int): UserPage
+
+    getConnectionHistory(userId: Int!): [ConnectionHistoryView]
+    getOnlineSessions(userId: Int!) : [OnlineSessionView]
 }

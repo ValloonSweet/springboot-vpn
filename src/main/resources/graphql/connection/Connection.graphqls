@@ -1,0 +1,23 @@
+type ConnectionHistoryView {
+    id: Int
+    nasIpAddress: String
+    nasPortId:String
+    nasPortType: String
+    startTime:LocalDateTime
+    stopTime: LocalDateTime
+    connectInfoStart:String
+    callingStationId:String
+    terminateCause:String
+    framedIpAddress:String
+}
+
+type OnlineSessionView {
+    id: Int
+    nasIpAddress: String
+    nasPortId:String
+    nasPortType: String
+    startTime:LocalDateTime
+    connectInfoStart:String
+    callingStationId:String
+    framedIpAddress:String
+}
