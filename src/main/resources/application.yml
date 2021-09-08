@@ -30,7 +30,7 @@ spring:
 
 
 application:
-  website-url: http://3.237.49.55
+  website-url: http://174.129.134.218
 
 jwt:
   secret: secret
