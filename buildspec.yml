@@ -2,6 +2,8 @@ version: 0.2
 
 phases:
   install:
+     runtime-versions:
+      java: corretto11
    commands:
      - echo Entering install phase...
      - echo Nothing to do now
@@ -9,6 +11,7 @@ phases:
     commands:
      - echo Build started on `date`
      - ./gradlew build
+     - mv build/libs/app.war build/libs/ROOT.war
 artifacts:
   type: zip
   files:
