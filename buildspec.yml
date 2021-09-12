@@ -9,8 +9,7 @@ phases:
     commands:
      - echo Build started on `date`
      - ./gradlew build
-     - mv build/libs/*.war ./Root.war
 artifacts:
   type: zip
   files:
-    - '**/*.war'
+    - 'build/libs/*.war'
