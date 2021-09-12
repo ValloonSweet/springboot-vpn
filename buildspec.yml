@@ -13,4 +13,4 @@ phases:
 artifacts:
   type: zip
   files:
-    - 'build/libs/*.war'
+    - '**/*.war'
