@@ -13,4 +13,4 @@ phases:
 artifacts:
   type: zip
   files:
-    - '**/*.war'
+    - '**/*'
