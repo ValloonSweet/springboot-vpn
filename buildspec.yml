@@ -12,4 +12,4 @@ phases:
 artifacts:
   type: zip
   files:
-    - 'build/libs/*.jar'
+    - 'build/libs/*.war'
