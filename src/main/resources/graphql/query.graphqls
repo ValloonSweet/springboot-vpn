@@ -45,4 +45,5 @@ type Query {
 
     getConnectionHistory(userId: Int!): [ConnectionHistoryView]
     getOnlineSessions(userId: Int!) : [OnlineSessionView]
+    getOnlineUsers(page: Int, size: Int, serverId: Int, groupId: Int, roleId: Int, serviceGroupId: Int) : UserPage
 }
