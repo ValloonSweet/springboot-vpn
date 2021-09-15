@@ -31,6 +31,7 @@ spring:
 
 application:
   website-url: http://orbnet.xyz
+  secure-key: Gu4yDjzHYxqMc+q9uz5soZEsG0AtPDZi39bLPbLO4r0=
 
 jwt:
   secret: secret

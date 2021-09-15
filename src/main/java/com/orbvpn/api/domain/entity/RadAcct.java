@@ -97,4 +97,7 @@ public class RadAcct {
     @Column
     private String delegatedipv6prefix;
 
+    public Boolean isOnlineSession() {
+        return acctstoptime == null;
+    }
 }

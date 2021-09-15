@@ -56,4 +56,8 @@ type Mutation {
 
     # upload users
     uploadUsers: Boolean
+
+    #connections
+    disconnect (onlineSessionId: String!): Boolean
+
 }
