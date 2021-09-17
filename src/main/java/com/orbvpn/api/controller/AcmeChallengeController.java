@@ -6,6 +6,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,17 +17,17 @@ import java.io.InputStream;
 @RestController
 @RequestMapping("/.well-known/acme-challenge")
 @Slf4j
-public class DownloadController {
+public class AcmeChallengeController {
 
     @Autowired
     private ResourceLoader resourceLoader;
 
-    @RequestMapping("/dR-WZ4e6S_a8GpzgxQp66no41qNfcmeHfEGQV_8ph5s")///file/{fileName:.+}
-    public void downloadSslId(HttpServletResponse response) throws IOException {
-        //HttpServletRequest request, @PathVariable("fileName") String fileName
-        String fileName = "deployment/dR-WZ4e6S_a8GpzgxQp66no41qNfcmeHfEGQV_8ph5s";
+    @RequestMapping("/{fileName:.+}")
+    public void downloadAcmeChallenge(HttpServletResponse response,
+                                      @PathVariable("fileName") String fileName) throws IOException {
+        //HttpServletRequest request,
         Resource resource = resourceLoader
-                .getResource("classpath:" + fileName);
+                .getResource("classpath:deployment/" + fileName);
         if (resource.exists()) {
             response.setContentType(MediaType.TEXT_PLAIN_VALUE);
             response.setHeader("Content-Disposition",
