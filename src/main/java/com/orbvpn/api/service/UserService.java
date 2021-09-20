@@ -201,13 +201,17 @@ public class UserService {
     return true;
   }
 
+  /**
+   * Delete user and the whole dependant entities including:
+   * 	userProfile, reseller, resellerAddCredit, userSubscription, PasswordReset, Payment, radaacct, radcheck
+   *
+   * these not finalized entities are not checked yet : StripeCustomer, Ticket, MoreLoginCount, OathToken, TicketReply
+   * @param user
+   */
   public void deleteUser(User user) {
-    paymentService.deleteUserPayments(user);
-    userSubscriptionService.deleteUserSubscriptions(user);
     radiusService.deleteUserRadChecks(user);
     radiusService.deleteUserRadAcct(user);
     resellerService.deleteAllByUser(user);
-    passwordResetRepository.deleteAllByUser(user);
     userRepository.delete(user);
   }
 

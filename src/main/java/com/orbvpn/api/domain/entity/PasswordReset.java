@@ -1,13 +1,8 @@
 package com.orbvpn.api.domain.entity;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -21,8 +16,8 @@ public class PasswordReset {
   @Id
   private String token;
 
-  @ManyToOne
-  private User user;
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    private User user;
 
   @Column
   @CreatedDate

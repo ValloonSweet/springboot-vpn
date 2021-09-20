@@ -1,20 +1,6 @@
 package com.orbvpn.api.domain.entity;
 
 
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -22,6 +8,13 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Getter
@@ -73,6 +66,18 @@ public class User implements UserDetails {
 
 
   private transient UserSubscription subscription;
+
+  @OneToMany(orphanRemoval = true, mappedBy = "user")
+  private List<PasswordReset> passwordResetList;
+
+  @OneToMany(orphanRemoval = true, mappedBy = "creator")
+  private List<Ticket> ticketList;
+
+  @OneToMany(orphanRemoval = true, mappedBy = "user")
+  private List<UserSubscription> userSubscriptionList;
+
+  @OneToMany(orphanRemoval = true, mappedBy = "user")
+  private List<Payment> paymentList;
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
