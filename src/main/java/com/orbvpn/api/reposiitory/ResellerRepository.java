@@ -18,4 +18,6 @@ public interface ResellerRepository extends JpaRepository<Reseller, Integer> {
 
   @Query("select sum(r.credit) from Reseller r where r.level <> 'OWNER'")
   BigDecimal getResellersTotalCredit();
+
+  void deleteAllByUser(User user);
 }

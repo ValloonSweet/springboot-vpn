@@ -1,41 +1,27 @@
 package com.orbvpn.api.service;
 
-import com.orbvpn.api.domain.dto.ResellerCreate;
-import com.orbvpn.api.domain.dto.ResellerEdit;
-import com.orbvpn.api.domain.dto.ResellerLevelCoefficientsEdit;
-import com.orbvpn.api.domain.dto.ResellerLevelCoefficientsView;
-import com.orbvpn.api.domain.dto.ResellerLevelEdit;
-import com.orbvpn.api.domain.dto.ResellerLevelView;
-import com.orbvpn.api.domain.dto.ResellerView;
-import com.orbvpn.api.domain.entity.Reseller;
-import com.orbvpn.api.domain.entity.ResellerAddCredit;
-import com.orbvpn.api.domain.entity.ResellerLevel;
-import com.orbvpn.api.domain.entity.ResellerLevelCoefficients;
-import com.orbvpn.api.domain.entity.ServiceGroup;
-import com.orbvpn.api.domain.entity.User;
+import com.orbvpn.api.domain.dto.*;
+import com.orbvpn.api.domain.entity.*;
 import com.orbvpn.api.domain.enums.ResellerLevelName;
 import com.orbvpn.api.domain.enums.RoleName;
 import com.orbvpn.api.exception.InternalException;
 import com.orbvpn.api.exception.NotFoundException;
-import com.orbvpn.api.mapper.ResellerEditMapper;
-import com.orbvpn.api.mapper.ResellerLevelCoefficientsMapper;
-import com.orbvpn.api.mapper.ResellerLevelEditMapper;
-import com.orbvpn.api.mapper.ResellerLevelViewMapper;
-import com.orbvpn.api.mapper.ResellerViewMapper;
+import com.orbvpn.api.mapper.*;
 import com.orbvpn.api.reposiitory.ResellerAddCreditRepository;
 import com.orbvpn.api.reposiitory.ResellerLevelCoefficientsRepository;
 import com.orbvpn.api.reposiitory.ResellerLevelRepository;
 import com.orbvpn.api.reposiitory.ResellerRepository;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -125,6 +111,10 @@ public class ResellerService {
     resellerRepository.delete(reseller);
 
     return resellerViewMapper.toView(reseller);
+  }
+
+  void deleteAllByUser(User user) {
+    resellerRepository.deleteAllByUser(user);
   }
 
   public ResellerView addResellerServiceGroup(int resellerId, int serviceGroupId) {

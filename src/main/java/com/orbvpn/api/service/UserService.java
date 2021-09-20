@@ -1,43 +1,20 @@
 package com.orbvpn.api.service;
 
 import com.orbvpn.api.config.security.JwtTokenUtil;
-import com.orbvpn.api.domain.dto.AuthenticatedUser;
-import com.orbvpn.api.domain.dto.UserCreate;
-import com.orbvpn.api.domain.dto.UserProfileEdit;
-import com.orbvpn.api.domain.dto.UserProfileView;
-import com.orbvpn.api.domain.dto.UserSubscriptionView;
-import com.orbvpn.api.domain.dto.UserView;
-import com.orbvpn.api.domain.entity.Group;
-import com.orbvpn.api.domain.entity.PasswordReset;
-import com.orbvpn.api.domain.entity.Payment;
-import com.orbvpn.api.domain.entity.Role;
-import com.orbvpn.api.domain.entity.User;
-import com.orbvpn.api.domain.entity.UserDeviceInfo;
-import com.orbvpn.api.domain.entity.UserProfile;
-import com.orbvpn.api.domain.entity.UserSubscription;
+import com.orbvpn.api.domain.dto.*;
+import com.orbvpn.api.domain.entity.*;
 import com.orbvpn.api.domain.enums.GatewayName;
 import com.orbvpn.api.domain.enums.PaymentCategory;
 import com.orbvpn.api.domain.enums.PaymentStatus;
-import com.orbvpn.api.domain.enums.PaymentType;
 import com.orbvpn.api.domain.enums.RoleName;
 import com.orbvpn.api.exception.BadCredentialsException;
 import com.orbvpn.api.exception.BadRequestException;
 import com.orbvpn.api.exception.NotFoundException;
-import com.orbvpn.api.mapper.UserCreateMapper;
-import com.orbvpn.api.mapper.UserProfileEditMapper;
-import com.orbvpn.api.mapper.UserProfileViewMapper;
-import com.orbvpn.api.mapper.UserSubscriptionViewMapper;
-import com.orbvpn.api.mapper.UserViewMapper;
+import com.orbvpn.api.mapper.*;
 import com.orbvpn.api.reposiitory.PasswordResetRepository;
 import com.orbvpn.api.reposiitory.PaymentRepository;
 import com.orbvpn.api.reposiitory.UserProfileRepository;
 import com.orbvpn.api.reposiitory.UserRepository;
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -51,6 +28,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.PostConstruct;
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -222,6 +206,8 @@ public class UserService {
     userSubscriptionService.deleteUserSubscriptions(user);
     radiusService.deleteUserRadChecks(user);
     radiusService.deleteUserRadAcct(user);
+    resellerService.deleteAllByUser(user);
+    passwordResetRepository.deleteAllByUser(user);
     userRepository.delete(user);
   }
 
