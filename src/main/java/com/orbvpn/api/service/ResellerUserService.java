@@ -212,7 +212,7 @@ public class ResellerUserService {
     User accessorUser = userService.getUser();
     Reseller reseller = accessorUser.getReseller();
     Role accessorRole = accessorUser.getRole();
-    Pageable pageable = PageRequest.of(page, size, Sort.by(DEFAULT_SORT));
+    Pageable pageable = PageRequest.of(page, size, Sort.by(DEFAULT_SORT).descending());
 
     Page<User> queryResult;
     if (accessorRole.getName() == RoleName.ADMIN) {
