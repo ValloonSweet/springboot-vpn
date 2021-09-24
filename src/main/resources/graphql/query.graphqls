@@ -23,6 +23,7 @@ type Query {
     resellerGetUser (id: Int): UserView
     resellerGetUserByEmail(email: String): UserView
     resellerGetUserByUsername(username: String): UserView
+    resellerGetUserById(id: Int): UserView
     resellerGetUsers (page: Int, size: Int): UserPage
     resellerGetExpiredUsers(page: Int, size: Int): UserPage
 

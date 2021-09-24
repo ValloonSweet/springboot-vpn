@@ -12,11 +12,9 @@ import com.orbvpn.api.domain.entity.ResellerLevel;
 import com.orbvpn.api.domain.entity.Role;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.entity.UserProfile;
-import com.orbvpn.api.domain.entity.UserSubscription;
 import com.orbvpn.api.domain.enums.GatewayName;
 import com.orbvpn.api.domain.enums.PaymentCategory;
 import com.orbvpn.api.domain.enums.PaymentStatus;
-import com.orbvpn.api.domain.enums.PaymentType;
 import com.orbvpn.api.domain.enums.ResellerLevelName;
 import com.orbvpn.api.domain.enums.RoleName;
 import com.orbvpn.api.exception.BadRequestException;
@@ -204,6 +202,12 @@ public class ResellerUserService {
 
   public UserView getUserByUsername(String username) {
     User user = userService.getUserByUsername(username);
+    checkResellerUserAccess(user);
+    return userService.getUserFullView(user);
+  }
+
+  public UserView getUserById(Integer id) {
+    User user = userService.getUserById(id);
     checkResellerUserAccess(user);
     return userService.getUserFullView(user);
   }

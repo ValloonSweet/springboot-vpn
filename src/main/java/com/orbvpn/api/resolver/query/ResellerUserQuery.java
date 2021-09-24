@@ -24,6 +24,10 @@ public class ResellerUserQuery implements GraphQLQueryResolver  {
     return resellerUserService.getUserByUsername(username);
   }
 
+  public UserView resellerGetUserById(Integer id) {
+    return resellerUserService.getUserById(id);
+  }
+
   public Page<UserView> resellerGetUsers(int page, int size) {
     return resellerUserService.getUsers(page, size);
   }
