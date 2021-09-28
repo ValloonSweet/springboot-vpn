@@ -177,14 +177,14 @@ public class ResellerUserService {
   }
 
   public UserView deleteUser(int id) {
-    log.info("Deleting user with id {}", id);
+    log.debug("Deleting user with id {}", id);
 
     User user = userService.getUserById(id);
     checkResellerUserAccess(user);
     userService.deleteUser(user);
     UserView userView = userViewMapper.toView(user);
-
-    log.info("Deleted user with id {}", id);
+    User accessorUser = userService.getUser();
+    log.info("Deleted user with username {} by user with username {}", user.getUsername(), accessorUser.getUsername());
     return userView;
   }
 
