@@ -43,6 +43,8 @@ repositories {
     mavenCentral()
 }
 
+//Notice that you don't need to specify the version number of an artifact. Spring Boot will figure out what version to use – all you need to specify is the version of spring-boot-starter-parent artifact.
+
 dependencies {
     implementation 'com.graphql-java-kickstart:graphql-spring-boot-starter:11.0.0'
     implementation("com.zhokhov.graphql:graphql-datetime-spring-boot-starter:4.0.0")
@@ -52,7 +54,11 @@ dependencies {
     implementation group: 'org.springframework', name: 'spring-aspects'
 
 
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-logging'
+
+    implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
+    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -88,8 +94,11 @@ dependencies {
     implementation group: 'com.jcraft', name: 'jsch', version: '0.1.55'
 
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
+
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-quartz', version: '2.5.4'
+
 }
 
-test {
-    useJUnitPlatform()
-}
+//test {
+//    useJUnitPlatform()
+//}
