@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 public class JobService {
 
   private static final int HOUR_RATE = 60 * 60 * 1000;
-  private static final int FIVE_MIN_RATE = 5 * 60 * 1000;
 
   private final HelpCenterService helpCenterService;
   private final ResellerLevelService resellerLevelService;
@@ -48,7 +47,7 @@ public class JobService {
     log.info("Finished removing expired more login count");
   }
 
-  @Scheduled(fixedRate = FIVE_MIN_RATE)
+  @Scheduled(fixedRate = HOUR_RATE)
   public void removeAllRadacctTemporarily() {
     //https://freeradius-users.freeradius.narkive.com/5ULrgWHb/user-freezing
     log.info("Started removing all radacct records");
