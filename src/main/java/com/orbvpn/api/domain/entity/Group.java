@@ -16,6 +16,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
@@ -49,7 +51,7 @@ public class Group {
   private String tagName;
 
   @Column
-  @Positive
+  @PositiveOrZero
   private int duration;
 
   @Column
