@@ -3,6 +3,8 @@ type Query {
     userProfile: UserProfileView
     userSubscription: UserSubscriptionView
 
+    getAllUserRoles: [RoleView]
+
     gateways: [GatewayView]
     serviceGroup(id: Int!): ServiceGroupView
     serviceGroups: [ServiceGroupView]

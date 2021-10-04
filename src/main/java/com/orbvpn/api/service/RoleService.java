@@ -3,9 +3,10 @@ package com.orbvpn.api.service;
 import com.orbvpn.api.domain.entity.Role;
 import com.orbvpn.api.domain.enums.RoleName;
 import com.orbvpn.api.reposiitory.RoleRepository;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -19,5 +20,9 @@ public class RoleService {
 
   public List<Role> findAllById(List<Integer> id) {
     return roleRepository.findAllById(id);
+  }
+
+  public List<Role> findAll() {
+    return roleRepository.findAll();
   }
 }

@@ -117,9 +117,7 @@ public class UserService {
 
   public String generateRandomString() {
     int length = 10;
-    boolean useLetters = true;
-    boolean useNumbers = true;
-    return RandomStringUtils.random(length, useLetters, useNumbers);
+    return RandomStringUtils.random(length, true, true);
   }
 
   public AuthenticatedUser login(String email, String password) {
@@ -142,8 +140,7 @@ public class UserService {
     UserView userView = userViewMapper.toView(user);
     String token = jwtTokenUtil.generateAccessToken(user);
 
-    AuthenticatedUser authenticatedUser = new AuthenticatedUser(token, userView);
-    return authenticatedUser;
+    return new AuthenticatedUser(token, userView);
   }
 
   public boolean requestResetPassword(String email) {
@@ -163,7 +160,7 @@ public class UserService {
     msg.setTo(email);
 
     msg.setSubject("Reset your password");
-    msg.setText(MessageFormat.format("Please use code: {0} to update yout password", token));
+    msg.setText(MessageFormat.format("Please use code: {0} to update your password", token));
 
     javaMailSender.send(msg);
 
@@ -206,7 +203,7 @@ public class UserService {
    * 	userProfile, reseller, resellerAddCredit, userSubscription, PasswordReset, Payment, radaacct, radcheck
    *
    * these not finalized entities are not checked yet : StripeCustomer, Ticket, MoreLoginCount, OathToken, TicketReply
-   * @param user
+   * @param user: user for deletion
    */
   public void deleteUser(User user) {
     radiusService.deleteUserRadChecks(user);
