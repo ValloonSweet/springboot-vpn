@@ -7,51 +7,65 @@ import java.io.ByteArrayOutputStream;
 
 @Slf4j
 public class SshUtil {
-    public static String executeCommandUsingPss(String username, String password,
-                                                String host, int port, String command) throws JSchException, InterruptedException {
-        Session session = null;
-        ChannelExec channel = null;
-
-        try {
-            session = new JSch().getSession(username, host, port);
-            session.setPassword(password);
-            session.setConfig("StrictHostKeyChecking", "no");
-            session.connect();
-            String channelType = "exec";
-            channel = (ChannelExec) session.openChannel(channelType);
-            channel.setCommand(command);
-            ByteArrayOutputStream responseStream = new ByteArrayOutputStream();
-            channel.setOutputStream(responseStream);
-            channel.connect();
-
-            while (channel.isConnected()) {
-                Thread.sleep(100);
-            }
-            return responseStream.toString();
-        } finally {
-            if (session != null) {
-                session.disconnect();
-            }
-            if (channel != null) {
-                channel.disconnect();
-            }
-        }
+    public static String executeCommandUsingPss(String username, String sshPassword, String host, int port,
+                                                String command) throws JSchException, InterruptedException {
+        return executeCommand(username, sshPassword, null, host, port,
+                null, null, command);
     }
 
-    public static String executeCommandUsingPrivateKey(String username, String prvKeyAbsolutePath,
-                                                       String host, int port, String command) throws JSchException, InterruptedException {
+    public static String executeCommandUsingPrivateKey(String username, String prvKeyAbsolutePath, String host, int port,
+                                                       String command) throws JSchException, InterruptedException {
+        return executeCommand(username, null, prvKeyAbsolutePath, host, port,
+                null, null, command);
+    }
+
+    /**
+     * this method is currently used for Cisco servers
+     */
+    public static String executeCommandUsingPss(String username, String sshPass, String host, int port,
+                                                String rootCommand, String rootPassword, String command)
+            throws JSchException, InterruptedException {
+        return executeCommand(username, sshPass, null, host, port, rootCommand, rootPassword, command);
+    }
+
+
+    private static String executeCommand(String username, String sshPassword, String prvKeyAbsolutePath, String host,
+                                         int port, String rootCommand, String rootPassword, String mainCommand)
+            throws JSchException, InterruptedException {
+
+        if(sshPassword != null && prvKeyAbsolutePath != null){
+            throw new RuntimeException("both ssh key and private key are provid");
+        } else if(sshPassword == null && prvKeyAbsolutePath == null){
+            throw new RuntimeException("non of ssh key and private key are provid");
+        }
+
         Session session = null;
         ChannelExec channel = null;
 
         try {
             JSch jSch = new JSch();
-            jSch.addIdentity(prvKeyAbsolutePath);
+            if (prvKeyAbsolutePath != null) {
+                jSch.addIdentity(prvKeyAbsolutePath);
+            }
             session = jSch.getSession(username, host, port);
+            if (sshPassword != null) {
+                session.setPassword(sshPassword);
+            }
+            // todo http://stackoverflow.com/questions/30178936/jsch-sftp-security-with-session-setconfigstricthostkeychecking-no
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect();
+            String channelType = "exec";
+            channel = (ChannelExec) session.openChannel(channelType);
+            //channel.setErrStream(System.err);
+            //channel.setPty(true);
+            if(rootCommand != null && rootPassword != null){
+                channel.setCommand(rootCommand);
+                Thread.sleep(1000);
+                channel.setCommand(rootPassword);
+                Thread.sleep(1000);
+            }
 
-            channel = (ChannelExec) session.openChannel("exec");
-            channel.setCommand(command);
+            channel.setCommand(mainCommand);
             ByteArrayOutputStream responseStream = new ByteArrayOutputStream();
             channel.setOutputStream(responseStream);
             channel.connect();
@@ -59,7 +73,6 @@ public class SshUtil {
             while (channel.isConnected()) {
                 Thread.sleep(100);
             }
-
             return responseStream.toString();
         } finally {
             if (session != null) {

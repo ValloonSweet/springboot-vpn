@@ -8,4 +8,6 @@ public interface RadCheckRepository extends JpaRepository<RadCheck, Integer> {
   long deleteByUsername(String username);
 
   Optional<RadCheck> findByUsernameAndAttribute(String username, String attribute);
+
+  void deleteByUsernameAndAttribute(String username, String attribute);
 }

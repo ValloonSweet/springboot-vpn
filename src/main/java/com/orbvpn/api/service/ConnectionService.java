@@ -2,6 +2,7 @@ package com.orbvpn.api.service;
 
 import com.jcraft.jsch.JSchException;
 import com.orbvpn.api.domain.dto.ConnectionHistoryView;
+import com.orbvpn.api.domain.dto.DeviceIdInput;
 import com.orbvpn.api.domain.dto.OnlineSessionView;
 import com.orbvpn.api.domain.dto.UserView;
 import com.orbvpn.api.domain.entity.RadAcct;
@@ -9,7 +10,7 @@ import com.orbvpn.api.domain.entity.Server;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.mapper.ConnectionMapper;
 import com.orbvpn.api.mapper.UserViewMapper;
-import com.orbvpn.api.reposiitory.ConnectionRepository;
+import com.orbvpn.api.reposiitory.RadAcctRepository;
 import com.orbvpn.api.reposiitory.ServerRepository;
 import com.orbvpn.api.reposiitory.UserRepository;
 import com.orbvpn.api.service.common.AesUtil;
@@ -50,8 +51,9 @@ import java.util.stream.Collectors;
 @Transactional
 public class ConnectionService {
 
+    private final DeviceService deviceService;
     private static final boolean isPosix = FileSystems.getDefault().supportedFileAttributeViews().contains("posix");
-    private final ConnectionRepository connectionRepository;
+    private final RadAcctRepository radAcctRepository;
     private final UserRepository userRepository;
     private final ServerRepository serverRepository;
     private final ConnectionMapper connectionMapper;
@@ -77,14 +79,14 @@ public class ConnectionService {
     }
 
     public List<ConnectionHistoryView> getConnectionHistory(Integer userId) {
-        List<RadAcct> radaccts = connectionRepository.findConnectionHistory(userId);
+        List<RadAcct> radaccts = radAcctRepository.findConnectionHistory(userId);
         return radaccts.stream()
                 .map(connectionMapper::connectionHistoryView)
                 .collect(Collectors.toList());
     }
 
     public List<OnlineSessionView> getOnlineSessions(Integer userId) {
-        List<RadAcct> radaccts = connectionRepository.findOnlineSessions(userId);
+        List<RadAcct> radaccts = radAcctRepository.findOnlineSessions(userId);
         return radaccts.stream()
                 .map(connectionMapper::onlineSessionView)
                 .collect(Collectors.toList());
@@ -98,7 +100,7 @@ public class ConnectionService {
     }
 
     public Boolean disconnect(String onlineSessionId) {
-        RadAcct radAcct = connectionRepository.findByAcctsessionid(onlineSessionId);
+        RadAcct radAcct = radAcctRepository.findByAcctsessionid(onlineSessionId);
         if (radAcct == null)
             throw new RuntimeException("Invalid sessionId");
         else if (!radAcct.isOnlineSession())
@@ -187,5 +189,10 @@ public class ConnectionService {
         }
         log.info("disconnect request is done for session id:" + onlineSessionId);
         return true;
+    }
+
+    public Boolean disconnect(Integer userId, DeviceIdInput deviceIdInput) {
+        String sessionId = deviceService.getOnlineSessionId (userId, deviceIdInput);
+        return disconnect(sessionId);
     }
 }
