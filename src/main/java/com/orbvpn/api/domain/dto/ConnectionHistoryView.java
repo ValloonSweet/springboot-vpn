@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 public class ConnectionHistoryView {
+    private String sessionId;
     private Integer id;
     private String nasIpAddress;
     private String nasPortId;

@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ConnectionMapper {
     @Mapping(source = "radacctid", target = "id")
+    @Mapping(source = "acctsessionid", target = "sessionId")
     @Mapping(source = "nasipaddress", target = "nasIpAddress")
     @Mapping(source = "nasportid", target = "nasPortId")
     @Mapping(source = "nasporttype", target = "nasPortType")
@@ -21,6 +22,7 @@ public interface ConnectionMapper {
     ConnectionHistoryView connectionHistoryView(RadAcct radAcct);
 
     @Mapping(source = "radacctid", target = "id")
+    @Mapping(source = "acctsessionid", target = "sessionId")
     @Mapping(source = "nasipaddress", target = "nasIpAddress")
     @Mapping(source = "nasportid", target = "nasPortId")
     @Mapping(source = "nasporttype", target = "nasPortType")

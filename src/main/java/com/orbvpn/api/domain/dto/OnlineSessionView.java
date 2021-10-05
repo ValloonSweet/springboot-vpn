@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @ToString
 public class OnlineSessionView {
     private Integer id;
+    private String sessionId;
     private String nasIpAddress;
     private String nasPortId;
     private String nasPortType;

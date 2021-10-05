@@ -1,5 +1,6 @@
 type ConnectionHistoryView {
     id: Int
+    sessionId: String
     nasIpAddress: String
     nasPortId:String
     nasPortType: String
@@ -13,6 +14,7 @@ type ConnectionHistoryView {
 
 type OnlineSessionView {
     id: Int
+    sessionId: String
     nasIpAddress: String
     nasPortId:String
     nasPortType: String
