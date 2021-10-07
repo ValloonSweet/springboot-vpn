@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.NotFound;
@@ -38,7 +40,7 @@ public class UserSubscription {
   private BigDecimal price;
 
   @Column
-  @Positive
+  @PositiveOrZero
   private int duration;
 
   @Column

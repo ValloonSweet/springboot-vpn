@@ -3,10 +3,8 @@ package com.orbvpn.api.domain.dto;
 import com.orbvpn.api.domain.enums.IpType;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,7 +24,7 @@ public class GroupEdit {
   @NotBlank
   private String tagName;
 
-  @Positive
+  @PositiveOrZero
   private int duration;
 
   @DecimalMin(value = "0.0", inclusive = false)
