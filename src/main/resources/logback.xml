@@ -10,7 +10,7 @@
     <property name="QUERY_PARAMETERS_LEVEL" value="ERROR"/> <!--should be on trace level to log query parameters-->
     <property name="EXCEPTION_DEPTH" value="100"/>
     <property name="MAX_FILE_SIZE" value="10MB"/>
-    <property name="ORB_LOG_PATH" value="/opt/ndb/orb/log"/>
+    <property name="ORB_LOG_PATH" value="/var/log"/>
 
     <property name="ORB_PATTERN" value="%d{yyyy-MM-dd} | %d{HH:mm:ss.SSS} | %-20.20thread | %5p | %-25.25logger{25} | %12(ID: %8mdc{id}) | %m %rEx{${EXCEPTION_DEPTH}}%n"/>
     <property name="SQL_PATTERN" value="%d{yyyy-MM-dd} | %d{HH:mm:ss.SSS} | %-20.20thread | %5p | %-25.25logger{25} | %12(ID: %8mdc{id}) | %m %rEx{${EXCEPTION_DEPTH}}%n"/>
