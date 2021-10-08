@@ -1,6 +1,5 @@
 package com.orbvpn.api.reposiitory;
 
-import com.orbvpn.api.domain.dto.DeviceIdInput;
 import com.orbvpn.api.domain.entity.Device;
 import com.orbvpn.api.domain.entity.RadAcct;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,7 +26,11 @@ public interface RadAcctRepository extends JpaRepository<RadAcct, Integer> {
             "radAcct.connectinfo_start IS NOT NULL GROUP BY radAcct.connectinfo_start")
     List<Device> getDevices(Integer userId);
 
-    @Query("SELECT max(radAcct.acctsessionid) FROM RadAcct radAcct, User user WHERE radAcct.username = user.email AND " +
-            "user.id = :userId AND radAcct.acctstoptime IS NULL AND  radAcct.connectinfo_start like  '%'|| (:deviceId) ||'%' ")
-    String getOnlineSessionId(Integer userId, String deviceId);
+    @Query("SELECT radAcct FROM RadAcct radAcct, User user WHERE radAcct.username = user.email AND  user.id = :userId AND " +
+            "radAcct.acctstoptime IS NULL AND radAcct.connectinfo_start LIKE  '%'|| (:deviceId) ||'%' ")
+    RadAcct getOnlineSessionByUseridAndDeviceId(Integer userId, String deviceId);
+
+    @Query("SELECT radAcct FROM RadAcct radAcct, User user WHERE radAcct.username = :username AND " +
+            "radAcct.acctstoptime IS NULL AND radAcct.connectinfo_start LIKE  '%'|| (:deviceId) ||'%'")
+    RadAcct getOnlineSessionByUsernameAndDeviceId(String username, String deviceId);
 }

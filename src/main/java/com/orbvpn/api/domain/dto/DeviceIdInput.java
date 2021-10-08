@@ -22,6 +22,6 @@ public class DeviceIdInput {
             return serial;
         if(name != null)
             return name;
-        throw new RuntimeException("non of device id parts don't have value.");
+        throw new RuntimeException("non of device id parts have value.");
     }
 }

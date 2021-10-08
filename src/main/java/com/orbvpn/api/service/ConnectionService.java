@@ -1,10 +1,8 @@
 package com.orbvpn.api.service;
 
 import com.jcraft.jsch.JSchException;
-import com.orbvpn.api.domain.dto.ConnectionHistoryView;
-import com.orbvpn.api.domain.dto.DeviceIdInput;
-import com.orbvpn.api.domain.dto.OnlineSessionView;
-import com.orbvpn.api.domain.dto.UserView;
+import com.orbvpn.api.domain.dto.*;
+import com.orbvpn.api.domain.entity.Device;
 import com.orbvpn.api.domain.entity.RadAcct;
 import com.orbvpn.api.domain.entity.Server;
 import com.orbvpn.api.domain.entity.User;
@@ -51,8 +49,8 @@ import java.util.stream.Collectors;
 @Transactional
 public class ConnectionService {
 
-    private final DeviceService deviceService;
     private static final boolean isPosix = FileSystems.getDefault().supportedFileAttributeViews().contains("posix");
+    private final DeviceService deviceService;
     private final RadAcctRepository radAcctRepository;
     private final UserRepository userRepository;
     private final ServerRepository serverRepository;
@@ -101,16 +99,66 @@ public class ConnectionService {
 
     public Boolean disconnect(String onlineSessionId) {
         RadAcct radAcct = radAcctRepository.findByAcctsessionid(onlineSessionId);
+        return disconnect(radAcct);
+    }
+
+    /**
+     * @param userId
+     * @param deviceIdInput
+     * @return throws exception if there is no related online session id
+     */
+    public Boolean disconnect(Integer userId, DeviceIdInput deviceIdInput) {
+        String deviceId = deviceIdInput.getValue();
+        if (deviceId == null || deviceId.equals(""))
+            throw new RuntimeException("Disconnect by userId and device id is valid for devices with valid deviceId.");
+        RadAcct radAcct = radAcctRepository.getOnlineSessionIdByUseridAndDeviceId(userId,
+                Device.getDeviceIdWrappedBySeparators(deviceId));
+        return disconnect(radAcct);
+    }
+
+    /**
+     * @param userName
+     * @param deviceId
+     * @return true if there is an online session and we can disconnect successfully or there is no related online session
+     */
+    private Boolean disconnectIfExists(String userName, String deviceId) {
+        if (deviceId == null || deviceId.equals(""))
+            throw new RuntimeException("Disconnect by userName and device id is valid for devices with valid deviceId.");
+        RadAcct radAcct = radAcctRepository.getOnlineSessionIdByUsernameAndDeviceId(userName,
+                Device.getDeviceIdWrappedBySeparators(deviceId));
+        if (radAcct == null) {
+            return true;
+        }
+        log.info("is going to disconnect sessionId = " + radAcct.getAcctsessionid() + " for userName = " + userName +
+                ", deviceId: " + deviceId);
+        Boolean result = false;
+        try {
+            result = disconnect(radAcct);
+        } catch (Exception e) {
+            log.error("can not disconnect " + "sessionId = " + radAcct.getAcctsessionid() + " for userName = " + userName +
+                    ", deviceId: " + deviceId);
+        }
+        return result;
+    }
+
+    public void disconnectDeactivatedUsers() {
+        List<UserDevice> userDevices = deviceService.getAllDeactivatedDevices();
+        for (UserDevice userDevice : userDevices) {
+            disconnectIfExists(userDevice.getUsername(), userDevice.getDeviceId());
+        }
+    }
+
+    private Boolean disconnect(RadAcct radAcct) {
         if (radAcct == null)
             throw new RuntimeException("Invalid sessionId");
         else if (!radAcct.isOnlineSession())
             throw new RuntimeException("This session is not online");
         String userNameToKill = radAcct.getUsername();
-        String serverPublicIpAddress = radAcct.getNasipaddress();
-        Server server = serverRepository.findByPrivateIp(serverPublicIpAddress);
+        String serverPrivateIpAddress = radAcct.getNasipaddress();
+        Server server = serverRepository.findByPrivateIp(serverPrivateIpAddress);
 
         if (server == null)
-            throw new RuntimeException("Undefined server with ip = " + serverPublicIpAddress);
+            throw new RuntimeException("Undefined server with private ip = " + serverPrivateIpAddress);
 
         Map<String, String> values = new HashMap<>();
         values.put("username", userNameToKill);
@@ -187,12 +235,7 @@ public class ConnectionService {
         } else {
             throw new RuntimeException("Both ssh password and private key are not specified for server with id = " + server.getId());
         }
-        log.info("disconnect request is done for session id:" + onlineSessionId);
+        log.info("disconnect request is done for session id:" + radAcct.getAcctsessionid());
         return true;
-    }
-
-    public Boolean disconnect(Integer userId, DeviceIdInput deviceIdInput) {
-        String sessionId = deviceService.getOnlineSessionId (userId, deviceIdInput);
-        return disconnect(sessionId);
     }
 }

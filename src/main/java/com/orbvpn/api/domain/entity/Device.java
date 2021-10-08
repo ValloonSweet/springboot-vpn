@@ -88,4 +88,8 @@ public class Device {
             }
         }
     }
+
+    public static String getDeviceIdWrappedBySeparators(String deviceId) {
+        return SEPARATOR + deviceId + SEPARATOR;
+    }
 }

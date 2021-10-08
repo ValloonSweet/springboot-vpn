@@ -2,10 +2,12 @@ package com.orbvpn.api.service;
 
 import com.orbvpn.api.domain.dto.DeviceIdInput;
 import com.orbvpn.api.domain.dto.DeviceView;
+import com.orbvpn.api.domain.dto.UserDevice;
 import com.orbvpn.api.domain.entity.Device;
 import com.orbvpn.api.domain.entity.RadCheck;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.mapper.DeviceMapper;
+import com.orbvpn.api.mapper.UserDeviceMapper;
 import com.orbvpn.api.reposiitory.RadAcctRepository;
 import com.orbvpn.api.reposiitory.RadCheckRepository;
 import com.orbvpn.api.reposiitory.UserRepository;
@@ -27,32 +29,43 @@ public class DeviceService {
     private final RadCheckRepository radCheckRepository;
     private final UserRepository userRepository;
     private final DeviceMapper deviceMapper;
-
-    public Boolean activateDevice(Integer userId, DeviceIdInput deviceIdInput) {
-        Optional<User> user = userRepository.findById(userId);
-        radCheckRepository.deleteByUsernameAndAttribute(user.get().getUsername(), "Auth-Type");
-        return true;
-    }
+    private final UserDeviceMapper userDeviceMapper;
 
     public Boolean deactivateDevice(Integer userId, DeviceIdInput deviceIdInput) {
+        if(deviceIdInput.getValue() == null || deviceIdInput.getValue().equals("")){
+            throw  new RuntimeException("deactivation is just for devices with valid id ");
+        }
         Optional<User> user = userRepository.findById(userId);
         RadCheck deactivateCheck = new RadCheck();
         deactivateCheck.setUsername(user.get().getUsername());
-        deactivateCheck.setAttribute("Auth-Type");
+        deactivateCheck.setAttribute("Deactivated-Device");
         deactivateCheck.setOp(":=");
-        deactivateCheck.setValue("Reject");
+        deactivateCheck.setValue(deviceIdInput.getValue());
         radCheckRepository.save(deactivateCheck);
         return true;
     }
 
-    public String getOnlineSessionId(Integer userId, DeviceIdInput deviceIdInput) {
-        return radAcctRepository.getOnlineSessionId(userId, deviceIdInput.getValue());
+    public Boolean activateDevice(Integer userId, DeviceIdInput deviceIdInput) {
+        if(deviceIdInput.getValue() == null || deviceIdInput.getValue().equals("")){
+            throw  new RuntimeException("activation is just for devices with valid id ");
+        }
+        Optional<User> user = userRepository.findById(userId);
+        radCheckRepository.deleteByUsernameAndAttributeAndValue(user.get().getUsername(), "Deactivated-Device",
+                deviceIdInput.getValue());
+        return true;
     }
 
     public List<DeviceView> getDevices(Integer userId) {
         List<Device> devices = radAcctRepository.getDevices(userId);
         return devices.stream()
                 .map(deviceMapper::deviceView)
+                .collect(Collectors.toList());
+    }
+
+    public List<UserDevice> getAllDeactivatedDevices() {
+        List<RadCheck> radChecks = radCheckRepository.findByAttribute("Deactivated-Device");
+        return radChecks.stream()
+                .map(userDeviceMapper::userDevice)
                 .collect(Collectors.toList());
     }
 }

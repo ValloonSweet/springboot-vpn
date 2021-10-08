@@ -12,12 +12,14 @@ import org.springframework.stereotype.Service;
 public class JobService {
 
   private static final int HOUR_RATE = 60 * 60 * 1000;
+  private static final int TEN_MINUTES_RATE = 10 * 60 * 1000;
 
   private final HelpCenterService helpCenterService;
   private final ResellerLevelService resellerLevelService;
   private final RenewUserSubscriptionService renewUserSubscriptionService;
   private final MoreLoginCountService moreLoginCountService;
   private final RadAcctRepository radAcctRepository;
+  private final ConnectionService connectionService;
 
   @Scheduled(fixedRate = HOUR_RATE)
   public void removeOldTickets() {
@@ -54,5 +56,12 @@ public class JobService {
     radAcctRepository.deleteAllInBatch();
     moreLoginCountService.removeExpiredMoreLoginCount();
     log.info("Finished removing all radacct records");
+  }
+
+  @Scheduled(fixedRate = TEN_MINUTES_RATE)
+  public void disconnectDeactivatedUsers() {
+    log.info("Started Disconnecting Deactivated Users");
+    connectionService.disconnectDeactivatedUsers();
+    log.info("Finished Disconnecting Deactivated Users");
   }
 }
