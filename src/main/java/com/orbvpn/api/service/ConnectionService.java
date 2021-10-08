@@ -111,7 +111,7 @@ public class ConnectionService {
         String deviceId = deviceIdInput.getValue();
         if (deviceId == null || deviceId.equals(""))
             throw new RuntimeException("Disconnect by userId and device id is valid for devices with valid deviceId.");
-        RadAcct radAcct = radAcctRepository.getOnlineSessionIdByUseridAndDeviceId(userId,
+        RadAcct radAcct = radAcctRepository.getOnlineSessionByUseridAndDeviceId(userId,
                 Device.getDeviceIdWrappedBySeparators(deviceId));
         return disconnect(radAcct);
     }
@@ -124,7 +124,7 @@ public class ConnectionService {
     private Boolean disconnectIfExists(String userName, String deviceId) {
         if (deviceId == null || deviceId.equals(""))
             throw new RuntimeException("Disconnect by userName and device id is valid for devices with valid deviceId.");
-        RadAcct radAcct = radAcctRepository.getOnlineSessionIdByUsernameAndDeviceId(userName,
+        RadAcct radAcct = radAcctRepository.getOnlineSessionByUsernameAndDeviceId(userName,
                 Device.getDeviceIdWrappedBySeparators(deviceId));
         if (radAcct == null) {
             return true;
