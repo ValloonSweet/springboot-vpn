@@ -26,7 +26,7 @@ public class UserSubscription {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
 
-  @ManyToOne (cascade = CascadeType.REMOVE)
+  @ManyToOne
   private User user;
 
   @ManyToOne(fetch = FetchType.LAZY)

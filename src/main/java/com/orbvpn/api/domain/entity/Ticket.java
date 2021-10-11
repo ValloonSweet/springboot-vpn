@@ -46,7 +46,7 @@ public class Ticket {
   @Enumerated(EnumType.STRING)
   private TicketStatus status;
 
-  @ManyToOne (cascade = CascadeType.REMOVE)
+  @ManyToOne
   private User creator;
 
   @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)

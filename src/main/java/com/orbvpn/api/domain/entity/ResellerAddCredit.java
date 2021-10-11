@@ -21,7 +21,7 @@ public class ResellerAddCredit {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
 
-  @ManyToOne(cascade = CascadeType.REMOVE)
+  @ManyToOne
   private Reseller reseller;
 
   @Column

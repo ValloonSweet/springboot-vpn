@@ -67,16 +67,16 @@ public class User implements UserDetails {
 
   private transient UserSubscription subscription;
 
-  @OneToMany(orphanRemoval = true, mappedBy = "user")
+  @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
   private List<PasswordReset> passwordResetList;
 
-  @OneToMany(orphanRemoval = true, mappedBy = "creator")
+  @OneToMany(mappedBy = "creator", cascade = CascadeType.REMOVE)
   private List<Ticket> ticketList;
 
-  @OneToMany(orphanRemoval = true, mappedBy = "user")
+  @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
   private List<UserSubscription> userSubscriptionList;
 
-  @OneToMany(orphanRemoval = true, mappedBy = "user")
+  @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
   private List<Payment> paymentList;
 
   @Override

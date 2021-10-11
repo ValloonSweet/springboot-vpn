@@ -53,6 +53,6 @@ public class Reseller {
   @LastModifiedDate
   private LocalDateTime updatedAt;
 
-  @OneToMany(mappedBy = "reseller", orphanRemoval = true)
+  @OneToMany(mappedBy = "reseller", cascade = CascadeType.REMOVE)
   private List<ResellerAddCredit> resellerAddCreditList;
 }

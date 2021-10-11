@@ -16,7 +16,7 @@ public class PasswordReset {
   @Id
   private String token;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     private User user;
 
   @Column
