@@ -13,11 +13,11 @@ public class ConnectionMutation implements GraphQLMutationResolver {
     private final ConnectionService connectionService;
     private final DeviceService deviceService;
 
-    public Boolean disconnect(String onlineSessionId) {
+    public Boolean disconnectBySessionId(String onlineSessionId) {
         return connectionService.disconnect(onlineSessionId);
     }
 
-    public Boolean disconnect(Integer userId, DeviceIdInput deviceIdInput) {
+    public Boolean disconnectByUserIdAndDeviceId(Integer userId, DeviceIdInput deviceIdInput) {
         return connectionService.disconnect(userId, deviceIdInput);
     }
 

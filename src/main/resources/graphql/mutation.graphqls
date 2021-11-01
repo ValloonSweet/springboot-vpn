@@ -58,8 +58,8 @@ type Mutation {
     uploadUsers: Boolean
 
     #connections and devices
-    disconnect (onlineSessionId: String!): Boolean
-    disconnect(userId: Int!, deviceIdInput: DeviceIdInput): Boolean
+    disconnectBySessionId (onlineSessionId: String!): Boolean
+    disconnectByUserIdAndDeviceId(userId: Int!, deviceIdInput: DeviceIdInput): Boolean
     activateDevice(userId: Int!, deviceIdInput: DeviceIdInput): Boolean
     deactivateDevice(userId: Int!, deviceIdInput: DeviceIdInput): Boolean
 }
