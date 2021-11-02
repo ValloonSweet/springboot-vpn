@@ -24,7 +24,14 @@ type DeviceView {
     deviceOsType : DeviceOsType
     deviceIdView: DeviceIdView
     appVersion: String
-    maxConnectionStartTime: LocalDateTime
+
+    lastConnectionStartTime: LocalDateTime
+    lastConnectionStopTime: LocalDateTime
     isConnected: Boolean
+    lastSessionId: String
+    isDeactivated: Boolean
+
+    lastConnectedServerId: Int
+    lastConnectedServerCountry: String
 }
 

@@ -18,4 +18,14 @@ public class DeviceIdView {
     private String uuid;
     private String serial;
     private String name;
+
+    public String getValue(){
+        if(uuid != null)
+            return uuid;
+        else if(serial != null)
+            return serial;
+        if(name != null)
+            return name;
+        throw new RuntimeException("non of device id parts have value.");
+    }
 }

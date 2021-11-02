@@ -20,10 +20,21 @@ public interface RadAcctRepository extends JpaRepository<RadAcct, Integer> {
 
     RadAcct findByAcctsessionid(String acctsessionid);
 
-    @Query("SELECT new com.orbvpn.api.domain.entity.Device(radAcct.connectinfo_start, MAX(radAcct.acctstarttime), " +
-            "COUNT(radAcct.acctstarttime), COUNT(radAcct.acctstoptime)) " +
-            "FROM RadAcct radAcct, User user WHERE radAcct.username = user.email AND user.id = :userId AND " +
-            "radAcct.connectinfo_start IS NOT NULL GROUP BY radAcct.connectinfo_start")
+    @Query(value = "SELECT radAcct.connectinfo_start as deviceInfo, radAcct.acctstarttime as lastConnectionStartTime, " +
+            "radAcct.acctstoptime as lastConnectionStopTime, radAcct.acctsessionid as lastSessionId, " +
+            "srv.id as lastConnectedServerId, srv.country as lastConnectedServerCountry " +
+            "from RadAcct radAcct, server srv " +
+            "where radAcct.nasipaddress = srv.private_ip AND " +
+            "        radAcct.radacctid in " +
+            "        ((select max(radAcct.radacctid) " +
+            "          FROM RadAcct radAcct, User user " +
+            "          WHERE radAcct.username = user.email AND user.id = :userId " +
+            "          GROUP BY radAcct.connectinfo_start) " +
+            "         union " +
+            "         (select radAcct.radacctid " +
+            "          FROM RadAcct radAcct, User user " +
+            "          WHERE radAcct.username = user.email AND user.id = :userId AND " +
+            "              radAcct.acctstoptime IS NULL))", nativeQuery = true )
     List<Device> getDevices(Integer userId);
 
     @Query("SELECT radAcct FROM RadAcct radAcct, User user WHERE radAcct.username = user.email AND  user.id = :userId AND " +

@@ -2,7 +2,6 @@ package com.orbvpn.api.service;
 
 import com.jcraft.jsch.JSchException;
 import com.orbvpn.api.domain.dto.*;
-import com.orbvpn.api.domain.entity.Device;
 import com.orbvpn.api.domain.entity.RadAcct;
 import com.orbvpn.api.domain.entity.Server;
 import com.orbvpn.api.domain.entity.User;
@@ -103,29 +102,29 @@ public class ConnectionService {
     }
 
     /**
-     * @param userId
-     * @param deviceIdInput
-     * @return throws exception if there is no related online session id
+     * throws exception if there is no related online session id
      */
     public Boolean disconnect(Integer userId, DeviceIdInput deviceIdInput) {
         String deviceId = deviceIdInput.getValue();
         if (deviceId == null || deviceId.equals(""))
             throw new RuntimeException("Disconnect by userId and device id is valid for devices with valid deviceId.");
         RadAcct radAcct = radAcctRepository.getOnlineSessionByUseridAndDeviceId(userId,
-                Device.getDeviceIdWrappedBySeparators(deviceId));
+                getDeviceIdWrappedBySeparators(deviceId));
         return disconnect(radAcct);
     }
 
+    private static String getDeviceIdWrappedBySeparators(String deviceId) {
+        return DeviceService.SEPARATOR + deviceId +  DeviceService.SEPARATOR;
+    }
+
     /**
-     * @param userName
-     * @param deviceId
-     * @return true if there is an online session and we can disconnect successfully or there is no related online session
+     * return true if there is an online session and we can disconnect successfully or there is no related online session
      */
     private Boolean disconnectIfExists(String userName, String deviceId) {
         if (deviceId == null || deviceId.equals(""))
             throw new RuntimeException("Disconnect by userName and device id is valid for devices with valid deviceId.");
         RadAcct radAcct = radAcctRepository.getOnlineSessionByUsernameAndDeviceId(userName,
-                Device.getDeviceIdWrappedBySeparators(deviceId));
+                getDeviceIdWrappedBySeparators(deviceId));
         if (radAcct == null) {
             return true;
         }
@@ -164,9 +163,9 @@ public class ConnectionService {
         values.put("username", userNameToKill);
         String killCommand = StringSubstitutor.replace(server.getKillCommand(), values, "{", "}");
 
-        String response = null;
+        String response;
         if (server.getSshKey() != null && !server.getSshKey().equals("")) {
-            String password = null;
+            String password;
             try {
                 password = decryptServerPass(server.getSshKey(), secureKey);
             } catch (Exception e) {
@@ -187,7 +186,7 @@ public class ConnectionService {
                 throw new RuntimeException("failed to execute disconnect commands.");
             }
         } else if (server.getSshPrivateKey() != null && !server.getSshPrivateKey().equals("")) {
-            Path privateKeyFile = null;
+            Path privateKeyFile;
             try {
                 String filePrefix = "sshPrivateKey-" + userNameToKill + "-" + System.currentTimeMillis();
                 if (isPosix) {
@@ -200,6 +199,7 @@ public class ConnectionService {
                 }
             } catch (IOException e) {
                 log.error("failed to create security file", e);
+                return false;
             }
             try {
                 log.debug("Temp file : " + privateKeyFile + " is created.");

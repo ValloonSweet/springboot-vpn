@@ -25,11 +25,14 @@ import java.util.stream.Collectors;
 @Slf4j
 @Transactional
 public class DeviceService {
+    public static final String SEPARATOR = " - ";
+
     private final RadAcctRepository radAcctRepository;
     private final RadCheckRepository radCheckRepository;
     private final UserRepository userRepository;
     private final DeviceMapper deviceMapper;
     private final UserDeviceMapper userDeviceMapper;
+    private final UserService userService;
 
     public Boolean deactivateDevice(Integer userId, DeviceIdInput deviceIdInput) {
         if(deviceIdInput.getValue() == null || deviceIdInput.getValue().equals("")){
@@ -57,13 +60,38 @@ public class DeviceService {
 
     public List<DeviceView> getDevices(Integer userId) {
         List<Device> devices = radAcctRepository.getDevices(userId);
-        return devices.stream()
+        List<DeviceView> deviceViews = devices.stream()
                 .map(deviceMapper::deviceView)
                 .collect(Collectors.toList());
+        User user = userService.getUserById(userId);
+        setDeactivatedDevices(user.getUsername(), deviceViews);
+        return deviceViews;
+    }
+
+    private void setDeactivatedDevices(String userName, List<DeviceView> deviceViews) {
+        List<UserDevice> deactivatedDevices = getDeactivatedDevicesByUser(userName);
+
+        for (DeviceView device : deviceViews) {
+            device.setIsDeactivated(false);
+            for (UserDevice deactivatedDevice : deactivatedDevices) {
+                if(device.getDeviceIdView() != null &&
+                        device.getDeviceIdView().getValue().equals(deactivatedDevice.getDeviceId())){
+                    device.setIsDeactivated(true);
+                    break;
+                }
+            }
+        }
     }
 
     public List<UserDevice> getAllDeactivatedDevices() {
         List<RadCheck> radChecks = radCheckRepository.findByAttribute("Deactivated-Device");
+        return radChecks.stream()
+                .map(userDeviceMapper::userDevice)
+                .collect(Collectors.toList());
+    }
+
+    public List<UserDevice> getDeactivatedDevicesByUser(String userName) {
+        List<RadCheck> radChecks = radCheckRepository.findByAttributeAndUsername("Deactivated-Device", userName);
         return radChecks.stream()
                 .map(userDeviceMapper::userDevice)
                 .collect(Collectors.toList());
