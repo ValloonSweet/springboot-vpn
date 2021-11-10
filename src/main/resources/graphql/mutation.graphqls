@@ -62,4 +62,8 @@ type Mutation {
     disconnectByUserIdAndDeviceId(userId: Int!, deviceIdInput: DeviceIdInput): Boolean
     activateDevice(userId: Int!, deviceIdInput: DeviceIdInput): Boolean
     deactivateDevice(userId: Int!, deviceIdInput: DeviceIdInput): Boolean
+
+    #scheduling
+    schedule(time: Int!): Boolean
+
 }
