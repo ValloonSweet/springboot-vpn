@@ -26,7 +26,7 @@ public class ScheduleEmailRequest {
     private LocalDateTime dateTime;
 
     @NotNull
-    private ZoneId timeZone;
+    private String timeZone;
     
 }
 

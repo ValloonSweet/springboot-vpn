@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.UUID;
@@ -19,12 +21,17 @@ import java.util.UUID;
 @Slf4j
 @Transactional
 public class EmailJobScheduler {
+
+    Integer WAITING_SECONDS = 2;
+
     @Autowired
     private Scheduler scheduler;
 
     public ScheduleEmailResponse scheduleEmail(ScheduleEmailRequest scheduleEmailRequest) {
+        scheduleEmailRequest = checkScheduleEmailRequestParams(scheduleEmailRequest);
         try {
-            ZonedDateTime dateTime = ZonedDateTime.of(scheduleEmailRequest.getDateTime(), scheduleEmailRequest.getTimeZone());
+            ZoneId zoneId = ZoneId.of(scheduleEmailRequest.getTimeZone());
+            ZonedDateTime dateTime = ZonedDateTime.of(scheduleEmailRequest.getDateTime(), zoneId);
             if (dateTime.isBefore(ZonedDateTime.now())) {
                 ScheduleEmailResponse scheduleEmailResponse = new ScheduleEmailResponse(false,
                         "dateTime must be after current time");
@@ -45,6 +52,17 @@ public class EmailJobScheduler {
                     "Error scheduling email. Please try later!");
             return scheduleEmailResponse;
         }
+    }
+
+    private ScheduleEmailRequest checkScheduleEmailRequestParams(ScheduleEmailRequest scheduleEmailRequest) {
+        if(scheduleEmailRequest.getDateTime() == null){
+            scheduleEmailRequest.setDateTime(LocalDateTime.now().plusSeconds(WAITING_SECONDS));
+        }
+
+        if (scheduleEmailRequest.getTimeZone() == null){
+            scheduleEmailRequest.setTimeZone(ZoneId.systemDefault().getId());
+        }
+        return scheduleEmailRequest;
     }
 
     private JobDetail buildJobDetail(ScheduleEmailRequest scheduleEmailRequest) {

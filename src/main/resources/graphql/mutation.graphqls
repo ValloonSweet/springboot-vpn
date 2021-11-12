@@ -64,6 +64,6 @@ type Mutation {
     deactivateDevice(userId: Int!, deviceIdInput: DeviceIdInput): Boolean
 
     #scheduling
-    schedule(time: Int!): Boolean
+    scheduleEmail(scheduleEmailRequest: ScheduleEmailRequest): Boolean
 
 }

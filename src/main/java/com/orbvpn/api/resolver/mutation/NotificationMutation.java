@@ -17,19 +17,13 @@ import java.time.ZoneId;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class SchedulingMutation implements GraphQLMutationResolver {
+public class NotificationMutation implements GraphQLMutationResolver {
     @Autowired
     private EmailJobScheduler emailJobScheduler;
 
-    public Boolean schedule(Integer time){
-        ScheduleEmailRequest scheduleEmailRequest = new ScheduleEmailRequest();
-        scheduleEmailRequest.setEmail("atefeh@ndb.technology");
-        scheduleEmailRequest.setSubject("test scheduling");
-        scheduleEmailRequest.setTimeZone(ZoneId.systemDefault());
-        scheduleEmailRequest.setBody("I Love U");
-        scheduleEmailRequest.setDateTime(LocalDateTime.now().plusSeconds(time));
+    public Boolean scheduleEmail(ScheduleEmailRequest scheduleEmailRequest){
         ScheduleEmailResponse scheduleEmailResponse = emailJobScheduler.scheduleEmail(scheduleEmailRequest);
-        log.info(scheduleEmailResponse.toString());
+        log.info("email is scheduled. " + scheduleEmailResponse.toString());
         return scheduleEmailResponse.isSuccess();
     }
 }
