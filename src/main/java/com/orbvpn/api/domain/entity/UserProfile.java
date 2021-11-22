@@ -49,6 +49,10 @@ public class UserProfile {
 
   @Column
   @CreatedDate
+  private LocalDateTime birthDate;
+
+  @Column
+  @CreatedDate
   private LocalDateTime createdAt;
 
   @Column

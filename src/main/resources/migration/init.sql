@@ -319,6 +319,7 @@ create table user_profile
     postal_code varchar(255) null,
     updated_at datetime(6) null,
     user_id int null,
+    birth_date datetime(6) null,
     constraint FK6kwj5lk78pnhwor4pgosvb51r
         foreign key (user_id) references user (id)
 );
