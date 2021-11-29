@@ -28,6 +28,11 @@ spring:
             enable: true
 
 
+  quartz:
+    job-store-type: jdbc
+    properties:
+      org.quartz.threadPool:
+        threadCount: 5
 
 application:
   website-url: http://orbnet.xyz
