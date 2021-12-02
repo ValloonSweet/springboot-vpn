@@ -1,5 +1,6 @@
 package com.orbvpn.api.resolver.mutation;
 
+import static com.orbvpn.api.domain.enums.RoleName.Constants.ADMIN;
 
 import com.orbvpn.api.domain.dto.ScheduleEmailRequest;
 import com.orbvpn.api.domain.dto.ScheduleEmailResponse;
@@ -10,8 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import javax.annotation.security.RolesAllowed;
 
 
 @Slf4j
@@ -21,6 +21,7 @@ public class NotificationMutation implements GraphQLMutationResolver {
     @Autowired
     private EmailJobScheduler emailJobScheduler;
 
+    @RolesAllowed(ADMIN)
     public Boolean scheduleEmail(ScheduleEmailRequest scheduleEmailRequest){
         ScheduleEmailResponse scheduleEmailResponse = emailJobScheduler.scheduleEmail(scheduleEmailRequest);
         log.info("email is scheduled. " + scheduleEmailResponse.toString());
