@@ -24,7 +24,7 @@ input UserProfileEdit {
     city: String
     country: String
     postalCode: String
-    birthDate: LocalDateTime
+    birthDate: LocalDate
 }
 
 type UserProfileView {
@@ -35,7 +35,7 @@ type UserProfileView {
     city: String
     country: String
     postalCode: String
-    birthDate: LocalDateTime
+    birthDate: LocalDate
 }
 
 type RoleView {
