@@ -78,3 +78,8 @@ oauth:
   facebook:
     app-id: 1148726045646863
     app-secret: cc5724526559fd8501f77edb67e85d9b
+
+twilio:
+  account_sid: AC983acf66eda74bccfd6fb88a9a91dcf5
+  auth_token: SK51cd06fbd4b25a96c2edd5da7ca3260d
+  number: SK8622e7fc9d9a66c6a011a1e16c7796c6
