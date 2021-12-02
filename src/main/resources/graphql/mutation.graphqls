@@ -66,4 +66,5 @@ type Mutation {
     #scheduling
     scheduleEmail(scheduleEmailRequest: ScheduleEmailRequest): Boolean
 
+    sendSms(smsRequest: SmsRequest): Boolean
 }
