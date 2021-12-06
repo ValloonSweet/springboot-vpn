@@ -37,6 +37,10 @@ spring:
 application:
   website-url: http://orbnet.xyz
   secure-key: Gu4yDjzHYxqMc+q9uz5soZEsG0AtPDZi39bLPbLO4r0=
+  default-timezone: Europe/London
+  nginx:
+    file-name: NGINX.CONG.txt
+    destination-path: etc/nginx/
 
 jwt:
   secret: secret
