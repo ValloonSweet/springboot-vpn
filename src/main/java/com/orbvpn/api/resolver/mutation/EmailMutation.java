@@ -17,7 +17,7 @@ import javax.annotation.security.RolesAllowed;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class NotificationMutation implements GraphQLMutationResolver {
+public class EmailMutation implements GraphQLMutationResolver {
     @Autowired
     private EmailJobScheduler emailJobScheduler;
 

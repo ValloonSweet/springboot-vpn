@@ -97,7 +97,7 @@ dependencies {
 
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-quartz', version: '2.5.4'
 
-    implementation group: "com.twilio.sdk", name: "twilio", version: "8.22.0"
+    implementation group: "com.twilio.sdk", name: "twilio", version: "8.23.0"
 }
 
 //test {

@@ -1,7 +1,6 @@
 package com.orbvpn.api.resolver.mutation;
 
 import com.orbvpn.api.domain.entity.SmsRequest;
-import com.orbvpn.api.service.BirthdayService;
 import com.orbvpn.api.service.SmsService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +15,7 @@ import static com.orbvpn.api.domain.enums.RoleName.Constants.ADMIN;
 @Component
 @RequiredArgsConstructor
 public class SmsMutation implements GraphQLMutationResolver {
-
-    private SmsService smsService;
-    private BirthdayService birthdayService;
+    private final SmsService smsService;
 
     @RolesAllowed(ADMIN)
     public Boolean sendSms(SmsRequest smsRequest) {

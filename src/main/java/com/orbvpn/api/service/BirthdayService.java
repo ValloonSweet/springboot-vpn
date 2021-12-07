@@ -1,11 +1,8 @@
 package com.orbvpn.api.service;
 
-import com.orbvpn.api.config.sms.TwilioConfig;
+import com.orbvpn.api.domain.entity.SmsRequest;
 import com.orbvpn.api.domain.entity.UserProfile;
 import com.orbvpn.api.reposiitory.UserProfileRepository;
-import com.twilio.rest.api.v2010.account.Message;
-import com.twilio.rest.api.v2010.account.MessageCreator;
-import com.twilio.type.PhoneNumber;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.mail.MailProperties;
@@ -13,8 +10,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -22,35 +17,49 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class BirthdayService {
+    private static final String EVERY_DAY_8AM = "0 0 8 * * ?";
 
     private final UserProfileRepository userProfileRepository;
-    private final TwilioConfig twilioConfig;
     private final EmailService emailService;
     private final MailProperties mailProperties;
+    private final SmsService smsService;
 
-    @PostConstruct
-    public List<UserProfile> loadUsers() {
-        List<UserProfile> userListByBirthDate = userProfileRepository.findByBirthDate(LocalDate.now());
-        return userListByBirthDate;
-    }
-
-    @Scheduled(cron = "0 8 * * * *") // runs every 8:00 am every day and sends birthday SMS to user if they have.
+    @Scheduled(cron = EVERY_DAY_8AM)
     public void sendBirthdayWishSms() {
-        List<UserProfile> users = loadUsers(); // gives users whose birthday is today
+        log.info("sending birthday sms...");
+        List<UserProfile> users = userProfileRepository.findUsersBornToday();
         for (UserProfile user : users) {
-            MessageCreator creator = Message.creator(new PhoneNumber(user.getPhone()),
-                    new PhoneNumber(twilioConfig.getTrialNumber()), "Happy Birthday " +
-                            user.getFirstName() + " stay blessed !!");
-            creator.create(); // sends the message
+            SmsRequest smsRequest = new SmsRequest(user.getPhone(),
+                    "Happy birthday" + user.getFirstName() + "!\nMay you live your dreams.\n" +
+                            "Your friends at Orb Vpn team, NDB Inc.");
+            smsService.sendRequest(smsRequest);
         }
     }
 
-    @Scheduled(cron = "0 8 * * * *") // runs every 8:00 am every day and sends birthday Email to user if they have.
+    @Scheduled(cron = EVERY_DAY_8AM)
     public void sendBirthdayWishEmail() {
-        List<UserProfile> users = loadUsers(); // gives users whose birthday is today
+        log.info("sending birthday email...");
+        List<UserProfile> users = userProfileRepository.findUsersBornToday();
         for (UserProfile user : users) {
-            emailService.sendMail(mailProperties.getUsername(), user.getUser().getEmail(), "Happy Birth Day",
-                    "Happy your birth day "+ user.getFirstName() +", We at NDB wish you all the best in life.");
+            String emailHtml =
+                    "<!DOCTYPE html>\n" +
+                            "<html lang=\"en\">\n" +
+                            "<head>\n" +
+                            "    <meta charset=\"UTF-8\">\n" +
+                            "    <title>ORB Net - Happy Birthday</title>\n" +
+                            "</head>\n" +
+                            "<body>\n" +
+                            "<h2>Happy birthday, " + user.getFirstName() + "!</h2>\\n" +
+                            "From your friends at <b>NDB</b>,\\n" +
+                            "We wish you a fabulous birthday celebration.\\n" +
+                            "May the days ahead of you be filled with prosperity, great health and above all joy in its " +
+                            "truest and purest form. \\n" +
+                            "Orb Vpn Team | NDB Inc." +
+                            "<img src=\"public/OrbNET.fld/happyBirthday.jpg\">\n" +
+                            "</body>\n" +
+                            "</html>";
+            emailService.sendMail(mailProperties.getUsername(), user.getUser().getEmail(), "Happy Birthday",
+                    emailHtml);
         }
     }
 }

@@ -85,5 +85,5 @@ oauth:
 
 twilio:
   account_sid: AC983acf66eda74bccfd6fb88a9a91dcf5
-  auth_token: SK51cd06fbd4b25a96c2edd5da7ca3260d
-  number: SK8622e7fc9d9a66c6a011a1e16c7796c6
+  auth_token: 4c3bd931d2ce56b61dcc17997b0020c6
+  phone-number: +14233434448

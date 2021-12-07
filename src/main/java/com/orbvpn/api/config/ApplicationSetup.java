@@ -61,9 +61,10 @@ public class ApplicationSetup {
         /**
          * Step2: reloading nginx server
          */
-        String command = "sudo systemctl reload nginx";
+        log.debug("reloading nginx...");
+        String[] commands = {"sudo", "systemctl", "reload", "nginx"};
         try {
-            ShellCodeUtil.ShellCodeExecutionResult result = ShellCodeUtil.runShellCode(new String[]{command});
+            ShellCodeUtil.ShellCodeExecutionResult result = ShellCodeUtil.runShellCode(commands);
             log.debug("nginx reload executed with result of: " + result);
         } catch (IOException | InterruptedException e) {
             log.error("error in reloading nginx", e);
