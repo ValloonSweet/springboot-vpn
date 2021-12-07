@@ -85,5 +85,5 @@ oauth:
 
 twilio:
   account_sid: AC983acf66eda74bccfd6fb88a9a91dcf5
-  auth_token: 4c3bd931d2ce56b61dcc17997b0020c6
+  auth_token: 627f3c4af6d904c1d7f4810a38767c57
   phone-number: +14233434448
