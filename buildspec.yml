@@ -9,11 +9,8 @@ phases:
     commands:
       - echo Build started on `date`
       - ./gradlew build
-  post_build:
-    commands:
-      # move the jar (by wildcard, agnostic to its name) to top level app.jar
-      - mv build/libs/*.jar app.jar
 artifacts:
+  type: zip
   files:
-    - app.jar
+    - build/libs/*.war
   discard-paths: yes
