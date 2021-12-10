@@ -10,6 +10,6 @@ phases:
      - echo Build started on `date`
      - ./gradlew build
 artifacts:
-  type: zip
   files:
-    - 'build/libs/*.war'
+    - target/orbnet.jar
+  discard-paths: yes
