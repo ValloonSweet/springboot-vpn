@@ -12,5 +12,5 @@ phases:
 artifacts:
   type: zip
   files:
-    - 'build/libs/*.war'
+    - 'build/libs/orbnet-1.0.0.jar'
   discard-paths: yes
