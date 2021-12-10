@@ -29,6 +29,11 @@ group = 'com.orbvpn'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
+jar {
+    archiveBaseName = 'orbnet'
+    archiveVersion =  '1.0.0'
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
