@@ -5,7 +5,7 @@ phases:
     commands:
       - echo Entering install phase...
       - echo Nothing to do now
-  build:
+  build: 
     commands:
       - echo Build started on `date`
       - ./gradlew build
