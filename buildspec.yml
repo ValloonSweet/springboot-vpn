@@ -12,5 +12,5 @@ phases:
 artifacts:
   type: zip
   files:
-    - 'build/libs/*.war'
+    - 'build/libs/*.jar'
   discard-paths: yes

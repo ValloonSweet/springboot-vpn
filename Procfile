@@ -1,1 +1,1 @@
-web:java -jar build/libs/*.war
+web:java -jar build/libs/orbnet-1.0.0.war
