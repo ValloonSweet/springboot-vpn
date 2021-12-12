@@ -14,7 +14,3 @@ artifacts:
   files:
     - build/libs/*.jar
   discard-paths: yes
-  secondary-artifacts:
-    artifact1:
-      files:
-        - build/libs/*.jar
