@@ -13,4 +13,3 @@ artifacts:
   type: zip
   files:
     - build/libs/*.jar
-  discard-paths: yes
