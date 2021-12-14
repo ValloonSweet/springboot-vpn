@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 
 @Service
@@ -21,7 +22,13 @@ public class EmailService {
 
     public void sendMail(String fromEmail, String toEmail, String subject, String body) {
         try {
-            log.info("Sending Email to {}", toEmail);
+            log.debug("Sending Email... ", toEmail);
+            //todo temporary for test phase:
+            String[] testEmails = new String[]{"atefeh@ndb.technology", "nima@orb.group", "mogol@me.com", "alaa@ndb.technology", "beslind@ndb.technology", "filiz@ndb.technology", "mohamed@ndb.technology"};
+            if (!Arrays.asList(testEmails).contains(toEmail.toLowerCase())) {
+                return;
+            }
+
             MimeMessage message = mailSender.createMimeMessage();
 
             MimeMessageHelper messageHelper = new MimeMessageHelper(message, StandardCharsets.UTF_8.toString());
@@ -31,6 +38,7 @@ public class EmailService {
             messageHelper.setTo(toEmail);
 
             mailSender.send(message);
+            log.debug("Email sent successfully ", toEmail);
         } catch (MessagingException ex) {
             log.error("Failed to send email to {}", toEmail, ex);
         }
