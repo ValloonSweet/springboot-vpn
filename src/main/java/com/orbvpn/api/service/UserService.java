@@ -179,7 +179,7 @@ public class UserService {
     passwordService.setPassword(user, password);
     userRepository.save(user);
     passwordResetRepository.delete(passwordReset);
-
+    notificationService.resetPasswordDone(user);
     return true;
   }
 
