@@ -75,5 +75,10 @@ public class UserSubscriptionService {
         LocalDate localDate = LocalDate.now().plusDays(dayCount);
         return getUsersExpireAt(localDate);
     }
+
+    List<UserProfile> getUsersExpireInPreviousDays(Integer dayCount) {
+        LocalDate localDate = LocalDate.now().minusDays(dayCount);
+        return getUsersExpireAt(localDate);
+    }
 }
 

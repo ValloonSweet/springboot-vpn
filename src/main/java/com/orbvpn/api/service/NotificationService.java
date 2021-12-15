@@ -19,7 +19,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NotificationService {
     private static final String EVERY_DAY_8AM = "0 0 8 * * ?";
-    private static final Integer[] DAY_COUNTS_FOR_EXPIRATION_NOTIFICATION = new Integer[]{1, 5, 10};
+    private static final Integer[] DAYS_BEFORE_EXPIRATION = new Integer[]{1, 5, 10};
+    private static final Integer[] DAYS_AFTER_EXPIRATION = new Integer[]{1, 5, 10};
 
     private final UserProfileRepository userProfileRepository;
     private final UserSubscriptionService userSubscriptionService;
@@ -53,10 +54,12 @@ public class NotificationService {
     @Scheduled(cron = EVERY_DAY_8AM)
     public void subscriptionExpirationReminder() {
         log.info("sending subscription expiration reminders (1, 5 and 10 day(s) before expiration)...");
-        for (Integer dayCount : DAY_COUNTS_FOR_EXPIRATION_NOTIFICATION) {
+        for (Integer dayCount : DAYS_BEFORE_EXPIRATION) {
             List<UserProfile> users = userSubscriptionService.getUsersExpireInNextDays(dayCount);
             for (UserProfile user : users) {
-                String smsMessage = "There is just " + dayCount + " day left until your ORB-Vpn subscription expiration.\n";
+                String smsMessage = "There is just " + dayCount + " " +
+                        (dayCount == 1 ? "day" : "days") +
+                        " left until your ORB-Vpn subscription expiration.\n";
                 String emailTitle = "ORB Net - Subscription Expiration Reminder";
                 String emailMessage = "There is just " + dayCount + " day left until your ORB-Vpn subscription expiration.";
                 sendSms(user, smsMessage);
@@ -64,6 +67,26 @@ public class NotificationService {
             }
         }
         log.info("sent subscription expiration reminders successfully");
+    }
+
+    @Scheduled(cron = EVERY_DAY_8AM)
+    public void afterSubscriptionExpiredNotification() {
+        log.info("sending notification after subscription expiration after expiration...");
+        for (Integer dayCount : DAYS_AFTER_EXPIRATION) {
+            List<UserProfile> users = userSubscriptionService.getUsersExpireInPreviousDays(dayCount);
+            for (UserProfile user : users) {
+                String smsMessage = "Your subscription is finished " + dayCount + " " +
+                        (dayCount == 1 ? "day" : "days") +
+                        " ago. Please don't hesitate to contact us if there is any problem for your service.";
+                String emailTitle = "ORB Net - Subscription Expired";
+                String emailMessage = "Your subscription is finished " + dayCount + " " +
+                        (dayCount == 1 ? "day" : "days") +
+                        " ago. Please don't hesitate to contact us if there is any problem for your service.";
+                sendSms(user, smsMessage);
+                sendEmail(user, emailTitle, emailMessage);
+            }
+        }
+        log.info("sent notification after subscription expiration successfully");
     }
 
     /**
