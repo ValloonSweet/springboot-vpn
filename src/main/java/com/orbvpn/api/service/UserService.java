@@ -67,6 +67,8 @@ public class UserService {
   private final PasswordService passwordService;
   private final PaymentService paymentService;
 
+  private final NotificationService notificationService;
+
   @PostConstruct
   public void init() {
     paymentService.setUserService(this);
@@ -93,7 +95,7 @@ public class UserService {
 
     UserView userView = userViewMapper.toView(user);
     log.info("Created user {}", userView);
-
+    notificationService.welcomingNewUsers(user);
     return login(user);
   }
 

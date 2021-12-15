@@ -1,6 +1,7 @@
 package com.orbvpn.api.service;
 
 import com.orbvpn.api.domain.entity.SmsRequest;
+import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.entity.UserProfile;
 import com.orbvpn.api.reposiitory.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
@@ -104,10 +105,55 @@ public class NotificationService {
                 emailService.sendMail(
                         mailProperties.getUsername(),
                         user.getUser().getEmail(),
-                        " Subscription Expiration Reminder",
+                        "Subscription Expiration Reminder",
                         emailHtml);
             }
         }
         log.info("sent subscription expiration reminders successfully");
+    }
+
+    /**
+     * Welcome new customers for joining ORB-VPN via SMS and Email
+     * @param user new created user
+     */
+    public void welcomingNewUsers(User user){
+        String name = "friend";
+        try{
+            name = user.getProfile().getFirstName();
+        } catch (Exception e){
+            //Keep calm! user did not define her or his name yet
+        }
+
+        /**
+         * SMS
+         */
+        if(user.getProfile() != null && user.getProfile().getPhone() != null) {
+            SmsRequest smsRequest = new SmsRequest(user.getProfile().getPhone(),
+                    "Dear " + name + ",\n" +
+                            "Welcome to Orb Vpn service. We provide 24/7 support for you to enjoy our service.\n");
+            smsService.sendRequest(smsRequest);
+        }
+
+        /**
+         * Email
+         */
+        String emailHtml =
+                "<!DOCTYPE html>\n" +
+                        "<html lang=\"en\">\n" +
+                        "<head>\n" +
+                        "    <meta charset=\"UTF-8\">\n" +
+                        "    <title>ORB Net - Welcome to Orb Vpn!</title>\n" +
+                        "</head>\n" +
+                        "<body>\n" +
+                        "<h2>Dear " + name + "! \n" +
+                        "Welcome to Orb Vpn service. We provide 24/7 support for you to enjoy our service." + "</h2>\n" +
+                        "Orb Vpn Team | NDB Inc." +
+                        "</body>\n" +
+                        "</html>";
+        emailService.sendMail(
+                mailProperties.getUsername(),
+                user.getEmail(),
+                "Welcome to Orb Vpn!",
+                emailHtml);
     }
 }
