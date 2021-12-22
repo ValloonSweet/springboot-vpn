@@ -30,8 +30,6 @@ public class ResellerLevelService {
   private static final BigDecimal BIG_DECIMAL_100 = BigDecimal.valueOf(100);
   private static final BigDecimal BIG_DECIMAL_HALF = new BigDecimal("0.5");
 
-  private final ResellerService resellerService;
-
   private final UserSubscriptionRepository userSubscriptionRepository;
   private final ResellerRepository resellerRepository;
   private final ResellerLevelRepository resellerLevelRepository;
