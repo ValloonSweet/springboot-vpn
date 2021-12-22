@@ -13,4 +13,6 @@ artifacts:
   type: zip
   files:
     - build/libs/*.jar
+    - .platform/**/*
+    - .ebextension/*
   discard-paths: yes
