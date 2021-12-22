@@ -40,7 +40,7 @@ application:
   default-timezone: Europe/London
   nginx:
     file-name: nginx.conf
-    destination-path: etc/nginx/
+    destination-path: .platform/nginx/
 
 jwt:
   secret: secret
