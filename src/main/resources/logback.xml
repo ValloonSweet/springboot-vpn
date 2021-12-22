@@ -19,9 +19,9 @@
 
     <appender name="ROLLING"
               class="com.orbvpn.api.config.logging.OrbRollingFileAppender">
-        <file>${ORB_LOG_PATH}/ORB-LOG/orb.log</file>
+        <file>${ORB_LOG_PATH}/orb.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${ORB_LOG_PATH}/ORB-LOG/%d{yyyy-MM-dd}/orb-%d{yyyy-MM-dd}.%i.log.zip
+            <fileNamePattern>${ORB_LOG_PATH}/%d{yyyy-MM-dd}/orb-%d{yyyy-MM-dd}.%i.log.zip
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <MaxFileSize>${MAX_FILE_SIZE}</MaxFileSize>
@@ -33,9 +33,9 @@
     </appender>
 
     <appender name="SQL_APPENDER" class="com.orbvpn.api.config.logging.OrbRollingFileAppender">
-        <file>${ORB_LOG_PATH}/ORB-SQL-LOG/sql.log</file>
+        <file>${ORB_LOG_PATH}/sql.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${ORB_LOG_PATH}/ORB-SQL-LOG/%d{yyyy-MM-dd}/sql-%d{yyyy-MM-dd}.%i.log.zip
+            <fileNamePattern>${ORB_LOG_PATH}/%d{yyyy-MM-dd}/sql-%d{yyyy-MM-dd}.%i.log.zip
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <MaxFileSize>${MAX_FILE_SIZE}</MaxFileSize>
