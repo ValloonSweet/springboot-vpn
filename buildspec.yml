@@ -13,7 +13,8 @@ artifacts:
   type: zip
   files:
     - build/libs/*.jar
-    - .platform/nginx/nginx.conf
+    - .platform/**/*
+  discard-paths: yes
 
 
   
