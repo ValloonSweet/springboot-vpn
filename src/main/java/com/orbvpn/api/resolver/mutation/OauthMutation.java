@@ -5,9 +5,7 @@ import com.orbvpn.api.domain.dto.AuthenticatedUser;
 import com.orbvpn.api.domain.enums.SocialMedia;
 import com.orbvpn.api.service.OauthService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 

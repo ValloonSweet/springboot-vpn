@@ -3,9 +3,12 @@ server:
 
 spring:
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: jdbc:mysql://orbnetdev.cyg6ao0nnff3.ap-south-1.rds.amazonaws.com:3306/radius
+    username: root
+    password: bf{Y!{,q32n*JTL2
+    # url: ${SPRING_DATASOURCE_URL}
+    # username: ${SPRING_DATASOURCE_USERNAME}
+    # password: ${SPRING_DATASOURCE_PASSWORD}
 
   jpa:
     hibernate:
@@ -16,8 +19,10 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${SPRING_MAIL_USERNAME}
-    password: ${SPRING_MAIL_PASSWORD}
+    # username: ${SPRING_MAIL_USERNAME}
+    # password: ${SPRING_MAIL_PASSWORD}
+    username: no-reply@orbvpn.com
+    password: arzlyjzzrpqstwhl
     properties:
       mail:
         smtp:
@@ -33,6 +38,7 @@ spring:
     properties:
       org.quartz.threadPool:
         threadCount: 5
+      org.quartz.jobStore.driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
 
 application:
   website-url: http://orbnet.xyz
@@ -59,32 +65,47 @@ graphql:
 
 stripe:
   api:
-    secret-key: ${STRIPE_API_SECRET_KEY}
+    secret-key: sk_test_51IuGKuKHM8iu6lnJ0fEKCdca9sA2DF8K4dOMcHSBoHk4ljCbbH5aEYSRuCPkCpdZNUeWSq4Cut5T19Yyl1vVpFuE00IKjpvPvU
     public-key: pk_test_51IuGKuKHM8iu6lnJeXPVpGSNucHcJKMvMWYGartWgEFAj67M3DkgFZVVUORjiRHoQ5nao2EyB7EOk2gTUYTi5YtK00Yrmkfkzk
-    webhook-secret: ${STRIPE_API_WEBHOOK_SECRET}
+    webhook-secret: whsec_8GpHy7eDtKlMgThkDWPfSm7dougQspxb
+    # secret-key: ${STRIPE_API_SECRET_KEY}
+    # public-key: pk_test_51IuGKuKHM8iu6lnJeXPVpGSNucHcJKMvMWYGartWgEFAj67M3DkgFZVVUORjiRHoQ5nao2EyB7EOk2gTUYTi5YtK00Yrmkfkzk
+    # webhook-secret: ${STRIPE_API_WEBHOOK_SECRET}
 
 paypal:
-  client-id: ${PAYPAL_CLIEN_ID}
-  secret: ${PAYPAL_SECRET}
+  client-id: AQLq6ju_TV-1obwarCVgpoOFkEYuZzG0f4fWMvZ3W9OlO1Pzv1yviba1DWWkFaqMUQ_YUdoguIfxkj-f
+  secret: EDS3YYiH3P7u7Rnwq5tdjH0_JAfR4RDSPVAtydY3cCbUtnnNC9FFQyRW2FkZ0yuLR5-e7nkTwbp-KfOp
+  # client-id: ${PAYPAL_CLIEN_ID}
+  # secret: ${PAYPAL_SECRET}
   mode: sandbox
 
 parspal:
   url: https://sandbox.api.parspal.com/v1/
-  api-key: ${PARSPAL_API_KEY}
+  api-key: unknown
+  # api-key: ${PARSPAL_API_KEY}
   return-url: unknown
 
 app-store:
   url: https://sandbox.itunes.apple.com
-  secret: ${APP_STORE_SECRET}
+  secret: 2b117fe8579946e68445aa2ac3fe5ecc
+  # secret: ${APP_STORE_SECRET}
 
 oauth:
   google:
-    client-ids: ${OAUTH_GOOGLE_CLIENT_IDS}
+    client-ids: 903170896228-gkomrh8dvrk95ch62ere4i3a01jdlbgr.apps.googleusercontent.com
   facebook:
-    app-id: ${OAUTH_FACEBOO_APP_ID}
-    app-secret: ${OAUTH_FACEBOOK_APP_SECRET}
+    app-id: 2998455443765493
+    app-secret: 57630025fb7dd1f42ca7e9c423d1b744
+  # google:
+  #   client-ids: ${OAUTH_GOOGLE_CLIENT_IDS}
+  # facebook:
+  #   app-id: ${OAUTH_FACEBOO_APP_ID}
+  #   app-secret: ${OAUTH_FACEBOOK_APP_SECRET}
 
 twilio:
-  account-sid: ${TWILIO_ACCOUNT_SID}
-  auth-token: ${TWILIO_AUTH_TOKEN}
-  phone-number: ${TWILIO_PHONE_NUMBER}
+  account-sid: AC996a22872406d85f2434fc5f8104f501
+  auth-token: 3e77bdcb0e60507546e5bdbd5410f110
+  phone-number: +14154944408
+  # account-sid: ${TWILIO_ACCOUNT_SID}
+  # auth-token: ${TWILIO_AUTH_TOKEN}
+  # phone-number: ${TWILIO_PHONE_NUMBER}
