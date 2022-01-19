@@ -2,18 +2,20 @@ version: 0.2
 
 phases:
   install:
-    commands:
-      - echo Entering install phase...
-      - echo Nothing to do now
+    runtime-versions:
+         java: corretto11
   build: 
     commands:
       - echo Build started on `date`
-      - ./maven build
+      - mvn package
+      - mv target/orbnet.jar orbnet.jar
 artifacts:
   type: zip
   files:
-    - build/libs/*.jar
+    - orbnet.jar
+    - .ebextensions/**/*
     - .platform/**/*
+    - Procfile
   discard-paths: yes
 
 
