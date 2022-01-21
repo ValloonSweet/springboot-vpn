@@ -6,8 +6,10 @@
     <property name="ROOT_LEVEL" value="ERROR"/>
     <property name="APPLICATION_LEVEL" value="INFO"/>
     <property name="THIRDPARTY_LEVEL" value="ERROR"/>
-    <property name="HIBERNATE_LEVEL" value="ERROR"/><!--should be on debug level to log queries-->
-    <property name="QUERY_PARAMETERS_LEVEL" value="ERROR"/> <!--should be on trace level to log query parameters-->
+    <property name="HIBERNATE_LEVEL" value="ERROR"/>
+    <!--should be on debug level to log queries-->
+    <property name="QUERY_PARAMETERS_LEVEL" value="ERROR"/>
+    <!--should be on trace level to log query parameters-->
     <property name="EXCEPTION_DEPTH" value="100"/>
     <property name="MAX_FILE_SIZE" value="10MB"/>
     <property name="ORB_LOG_PATH" value="/var/log"/>
@@ -17,8 +19,7 @@
 
     <!-- ___________________________________ Appender ___________________________________ -->
 
-    <appender name="ROLLING"
-              class="com.orbvpn.api.config.logging.OrbRollingFileAppender">
+    <appender name="ROLLING" class="com.orbvpn.api.config.logging.OrbRollingFileAppender">
         <file>${ORB_LOG_PATH}/orb.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${ORB_LOG_PATH}/%d{yyyy-MM-dd}/orb-%d{yyyy-MM-dd}.%i.log.zip
@@ -46,11 +47,17 @@
         </encoder>
     </appender>
 
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
     <!-- ___________________________________ Application Loggers ___________________________________ -->
 
     <logger name="com.orbvpn">
-         <level value="${APPLICATION_LEVEL}"/>
-     </logger>
+        <level value="${APPLICATION_LEVEL}"/>
+    </logger>
 
     <!-- ___________________________________ SQL Loggers ___________________________________ -->
 
@@ -98,6 +105,7 @@
     <!-- ___________________________________ Root ___________________________________ -->
 
     <Root level="${ROOT_LEVEL}">
-        <appender-ref ref="ROLLING"/>
+        <!-- <appender-ref ref="ROLLING"/> -->
+        <appender-ref ref="STDOUT"/>
     </Root>
 </configuration>
