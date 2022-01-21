@@ -5,18 +5,20 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author Atefeh Zareh
  */
 public abstract class InternalRollingFileAppender extends RollingFileAppender {
-    //private static ResourceBundle bundle = ResourceBundle.getBundle("config.ApplicationProperties");
+    // private static ResourceBundle bundle =
+    // ResourceBundle.getBundle("config.ApplicationProperties");
     private final String appVersion;
     private final String appBuildDate;
 
     public InternalRollingFileAppender() {
-        appBuildDate = ""; //bundle.getString("timestamp");
-        appVersion = ""; //bundle.getString("version");
+        appBuildDate = ""; // bundle.getString("timestamp");
+        appVersion = ""; // bundle.getString("version");
     }
 
     public abstract String getAppName();
@@ -30,7 +32,7 @@ public abstract class InternalRollingFileAppender extends RollingFileAppender {
             stringBuilder.append(getAppName() + " version: " + appVersion +
                     "\n" + "Build date: " + appBuildDate + "\n");
             stringBuilder.append("-------------------------------------\n");
-            FileUtils.writeStringToFile(activeFile, stringBuilder.toString());
+            FileUtils.writeStringToFile(activeFile, stringBuilder.toString(), StandardCharsets.UTF_8);
         }
     }
 }
