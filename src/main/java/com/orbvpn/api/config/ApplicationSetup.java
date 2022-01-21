@@ -1,19 +1,25 @@
 package com.orbvpn.api.config;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.TimeZone;
+
+import javax.annotation.PostConstruct;
+
 import com.orbvpn.api.service.common.ShellCodeUtil;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
+import org.apache.commons.lang3.SystemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
-import javax.annotation.PostConstruct;
-import java.io.File;
-import java.io.IOException;
-import java.util.TimeZone;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
@@ -61,14 +67,16 @@ public class ApplicationSetup {
         /**
          * Step2: reloading nginx server
          */
-        log.debug("reloading nginx...");
-        String[] commands = {"sudo", "systemctl", "reload", "nginx"};
-        try {
-            ShellCodeUtil.ShellCodeExecutionResult result = ShellCodeUtil.runShellCode(commands);
-            log.debug("nginx reload executed with result of: " + result);
-        } catch (IOException | InterruptedException e) {
-            log.error("error in reloading nginx", e);
-            return;
+        if (SystemUtils.IS_OS_LINUX) {
+            log.debug("reloading nginx...");
+            String[] commands = { "sudo", "systemctl", "reload", "nginx" };
+            try {
+                ShellCodeUtil.ShellCodeExecutionResult result = ShellCodeUtil.runShellCode(commands);
+                log.debug("nginx reload executed with result of: " + result);
+            } catch (IOException | InterruptedException e) {
+                log.error("error in reloading nginx", e);
+                return;
+            }
         }
     }
 
@@ -77,4 +85,10 @@ public class ApplicationSetup {
         TimeZone.setDefault(TimeZone.getTimeZone(defaultTimeZone));
         log.info("Default time zone is set to " + TimeZone.getDefault().getDisplayName());
     }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void startup() {
+        log.info("App startup.");
+    }
+
 }

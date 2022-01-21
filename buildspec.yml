@@ -15,7 +15,6 @@ artifacts:
     - orbnet.jar
     - .ebextensions/**/*
     - .platform/**/*
-    - Procfile
   discard-paths: yes
 
 
