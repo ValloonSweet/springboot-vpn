@@ -116,7 +116,7 @@ public class NotificationService {
         String emailTitle = "OrbVPN: Welcome!";
         String emailMessage = " Welcome to your new OrbVPN Account. <br><br>" +
                 "Sing in to your OrbVPN account to access the service.<br><br>" +
-//                "the OrbVPN services that you have subscribed for.<br><br>" +
+        //      "the OrbVPN services that you have subscribed for.<br><br>" +
                 "<strong>Your username:</strong> " + user.getUsername();
         //"Your subscription is valid for $multi-login devices during next $days/month/years and will be expired on $expirationdate.<br><br>"+
 
