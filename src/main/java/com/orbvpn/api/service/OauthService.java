@@ -29,7 +29,6 @@ import io.jsonwebtoken.Jwts;
 import java.security.interfaces.RSAPublicKey;
 import java.text.MessageFormat;
 import java.util.List;
-import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -77,6 +76,12 @@ public class OauthService {
         return getFacebookTokenData(token);
       case APPLE:
         return getAppleTokenData(token);
+      case TWITTER:
+        return getTwitterTokenData(token);
+      case LINKEDIN:
+        return getLinkedinTokenData(token);
+      case AMAZON:
+        return getAmazonTokenData(token);
       default:
         throw new OauthLoginException();
     }
@@ -177,8 +182,30 @@ public class OauthService {
     } catch (Exception ex) {
       throw new OauthLoginException(ex.getMessage());
     }
+  }
 
+  private TokenData getTwitterTokenData(String encryptedToken) {
+    try {
+      return null;
+    } catch (Exception ex) {
+      throw new OauthLoginException(ex.getMessage());
+    }
+  }
 
+  private TokenData getLinkedinTokenData(String encryptedToken) {
+    try {
+      return null;
+    } catch (Exception ex) {
+      throw new OauthLoginException(ex.getMessage());
+    }
+  }
+
+  private TokenData getAmazonTokenData(String encryptedToken) {
+    try {
+      return null;
+    } catch (Exception ex) {
+      throw new OauthLoginException(ex.getMessage());
+    }
   }
 
 }

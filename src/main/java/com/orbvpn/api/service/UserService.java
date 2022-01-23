@@ -88,6 +88,9 @@ public class UserService {
     Role role = roleService.getByName(RoleName.USER);
     user.setRole(role);
     user.setReseller(resellerService.getOwnerReseller());
+    UserProfile profile = new UserProfile();
+    profile.setUser(user);
+    user.setProfile(profile);
 
     userRepository.save(user);
 

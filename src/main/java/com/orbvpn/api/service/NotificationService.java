@@ -111,11 +111,11 @@ public class NotificationService {
                 "We provide 24/7 support for you to enjoy our service.\n" +
                 "WhatsApp: https://wa.me/message/3NYJBB6MNCQPM1 \n" +
                 "Telegram: https://t.me/OrbVPN\n" +
-                "Instagram: @OrbVPN\n";
+                "Instagram: https://www.instagram.com/orbvpn\n";
 
         String emailTitle = "OrbVPN: Welcome!";
-        String emailMessage = " Welcome to your new OrbVPN Account. <br>" +
-                "Sing in to your OrbVPN account to access the " + user.getSubscription().getGroup() + " service.<br>" +
+        String emailMessage = " Welcome to your new OrbVPN Account. <br><br>" +
+                "Sing in to your OrbVPN account to access the service.<br><br>" +
 //                "the OrbVPN services that you have subscribed for.<br><br>" +
                 "<strong>Your username:</strong> " + user.getUsername();
         //"Your subscription is valid for $multi-login devices during next $days/month/years and will be expired on $expirationdate.<br><br>"+
@@ -190,9 +190,9 @@ public class NotificationService {
             return;
         String starting = null;
         if (userProfile.getFirstName() != null) {
-            starting = "Dear " + userProfile.getFirstName() + ",<br>";
+            starting = "Dear " + userProfile.getFirstName() + ",<br><br>";
         } else {
-            starting = "Hello,<br>";
+            starting = "Hello,<br><br>";
         }
 
         String emailHtml =
@@ -203,24 +203,20 @@ public class NotificationService {
                         "    <title>" + title + "</title>\n" +
                         "</head>\n" +
                         "<body>\n" +
-                        "<h3>" +
-                        starting + message + "\n" +
-                        "</h3>" +
-                        "<br>" +
-                        "<p>" +
-                        "<h4>" +
-                        "Our support team is at your disposal 24/7 to enjoy our service, please do not hesitate to contact us<br> " +
-                        "WhatsApp: https://wa.me/message/3NYJBB6MNCQPM1 <br>" +
-                        "Telegram: https://t.me/OrbVPN<br>" +
-                        "Instagram: @OrbVPN" +
-                        "</p>" +
-                        "<p>" +
-                        "Kind regards,<br>" +
-                        "OrbVPN" +
-                        "</h4>" +
-                        "</p>" +
+                            starting + message + "\n" +
+                            "<br>" +
+                            "<p>" +
+                            "Our support team is at your disposal 24/7 to enjoy our service, please do not hesitate to contact us<br> " +
+                            "WhatsApp: https://wa.me/message/3NYJBB6MNCQPM1 <br>" +
+                            "Telegram: https://t.me/OrbVPN<br>" +
+                            "Instagram: https://www.instagram.com/orbvpn/" +
+                            "</p>" +
+                            "<p>" +
+                            "Kind regards,<br>" +
+                            "OrbVPN" +
+                            "</p>" +
                         "</body>\n" +
-                        "</html>";
+                "</html>";
         emailService.sendMail(
                 mailProperties.getUsername(),
                 userProfile.getUser().getEmail(),
