@@ -35,7 +35,7 @@ spring:
         threadCount: 5
 
 application:
-  website-url: http://orbnet.xyz
+  website-url: https://orbnet.xyz
   secure-key: Gu4yDjzHYxqMc+q9uz5soZEsG0AtPDZi39bLPbLO4r0=
   default-timezone: Europe/London
   nginx:
