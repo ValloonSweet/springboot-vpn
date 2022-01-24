@@ -124,25 +124,19 @@ public class NotificationService {
         sendEmail(user.getProfile(), emailTitle, emailMessage);
     }
 
-    /**
-     * not used yet
-     */
-    public void resetPassword(User user) {
-        String smsMessage = "Your password is reset successfully.";
+    public void resetPassword(User user, String token) {
+        String smsMessage = "Your OrbVPN password reset code is : " + token;
         String emailTitle = "OrbVPN: Password Reset Code";
-        String emailMessage = "We got a request to reset your password.<br>" +
+        String emailMessage = "We got a request to reset your password.<br><br>" +
                 "You can open the following link in your browser to change the password:<br><br>" +
                 "<herf>$Link<herf><br><br>" +
                 "or you can use the following token code:<br><br>" +
-                "<strong>Code:</strong> $passwordresetcode<br><br>" +
+                "<strong>Code:</strong> " + token + "<br><br>" +
                 "If you ignore this message your password won't be changed.<br>" +
                 "If you didn't request a password reset, please " +
                 letUsKnow("wrong reset password request",
-                        "this reset password reset request is not from me.") + ".<br><br>" +
-                "--<br>" +
-                "Disclaimer: This message is intended only for the individual(s) named and may contain confidential information. " +
-                "If you have received this e-mail in error you should not read, print, copy or forward it. " +
-                "Please notify the sender about the error immediately by e-mail and delete this message from your system.";
+                        "this reset password reset request is not from me.") + ".";
+
         sendSms(user.getProfile(), smsMessage);
         sendEmail(user.getProfile(), emailTitle, emailMessage);
     }
@@ -150,10 +144,10 @@ public class NotificationService {
     public void resetPasswordDone(User user) {
         String smsMessage = "Your password is reset successfully.";
         String emailTitle = "OrbVPN: Successful Password Reset";
-        String emailMessage = "Your password has been changed successfully<br>" +
+        String emailMessage = "Your password has been changed successfully<br><br>" +
                 "If you didn't request a password reset, please " +
-                letUsKnow("wrong successful reset password",
-                        "this reset password that has been done is not from me.") + ".";
+                letUsKnow("Wrong Successful Reset Password",
+                        "This reset password that has been done is not from me.") + ".";
         sendSms(user.getProfile(), smsMessage);
         sendEmail(user.getProfile(), emailTitle, emailMessage);
     }
@@ -206,7 +200,7 @@ public class NotificationService {
                             starting + message + "\n" +
                             "<br>" +
                             "<p>" +
-                            "Our support team is at your disposal 24/7 to enjoy our service, please do not hesitate to contact us<br> " +
+                            "We provide 24/7 support for you to enjoy our services.<br> " +
                             "WhatsApp: https://wa.me/message/3NYJBB6MNCQPM1 <br>" +
                             "Telegram: https://t.me/OrbVPN<br>" +
                             "Instagram: https://www.instagram.com/orbvpn/" +
@@ -214,7 +208,9 @@ public class NotificationService {
                             "<p>" +
                             "Kind regards,<br>" +
                             "OrbVPN" +
-                            "</p>" +
+                            "</p><br><br>" +
+                            "<div style=\"text-align:center\"><small>©NIMA OÜ 2022.&nbsp; All rights reserved.</small></div>" +
+                            "<div style=\"text-align:center\"><small>OrbVPN.com &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href = \"mailto:info@orbvpn.com\">info@orbvpn.com</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+372 880 4441</small></div>" +
                         "</body>\n" +
                 "</html>";
         emailService.sendMail(
@@ -228,7 +224,6 @@ public class NotificationService {
         title = title.replace(" ", "%20");
         message = message.replace(" ", "%20");
         return "<a href = \"mailto:info@orbvpn.com?subject=" + title + "&body=" + message + "\">\n" +
-                "let us know\n" +
-                "</a>";
+                "let us know</a>";
     }
 }

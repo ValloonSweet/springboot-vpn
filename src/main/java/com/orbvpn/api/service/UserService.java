@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,7 +29,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -161,14 +159,7 @@ public class UserService {
     passwordReset.setToken(token);
     passwordResetRepository.save(passwordReset);
 
-    SimpleMailMessage msg = new SimpleMailMessage();
-    msg.setTo(email);
-
-    msg.setSubject("Reset your password");
-    msg.setText(MessageFormat.format("Please use code: {0} to update your password", token));
-
-    javaMailSender.send(msg);
-
+    notificationService.resetPassword(user, token);
     passwordResetRepository.deleteByUserAndTokenNot(user, token);
     return true;
   }
