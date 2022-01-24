@@ -3,8 +3,8 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-         java: corretto11
-  build: 
+      java: corretto11
+  build:
     commands:
       - echo Build started on `date`
       - mvn package
@@ -15,7 +15,5 @@ artifacts:
     - orbnet.jar
     - .ebextensions/**/*
     - .platform/**/*
+    - Procfile
   discard-paths: yes
-
-
-  

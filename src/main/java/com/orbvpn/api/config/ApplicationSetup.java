@@ -31,8 +31,8 @@ public class ApplicationSetup {
     // @Value("${application.nginx.file-name}")
     // private String nginxFileName;
 
-    @Value("${application.nginx.destination-path}")
-    private String nginxDestinationPath;
+    // @Value("${application.nginx.destination-path}")
+    // private String nginxDestinationPath;
 
     // @Autowired
     // private ResourceLoader resourceLoader;
