@@ -1,22 +1,22 @@
 package com.orbvpn.api.config;
 
-import java.io.File;
-import java.io.IOException;
+// import java.io.File;
+// import java.io.IOException;
 import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
 
-import com.orbvpn.api.service.common.ShellCodeUtil;
+// import com.orbvpn.api.service.common.ShellCodeUtil;
 
-import org.apache.commons.lang3.SystemUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+// import org.apache.commons.lang3.SystemUtils;
+// import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
+// import org.springframework.core.io.Resource;
+// import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileCopyUtils;
+// import org.springframework.util.FileCopyUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,14 +28,14 @@ public class ApplicationSetup {
     @Value("${application.default-timezone}")
     private String defaultTimeZone;
 
-    @Value("${application.nginx.file-name}")
-    private String nginxFileName;
+    // @Value("${application.nginx.file-name}")
+    // private String nginxFileName;
 
     @Value("${application.nginx.destination-path}")
     private String nginxDestinationPath;
 
-    @Autowired
-    private ResourceLoader resourceLoader;
+    // @Autowired
+    // private ResourceLoader resourceLoader;
 
     // @PostConstruct
     // public void refreshNginxFile() {
