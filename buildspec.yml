@@ -16,4 +16,4 @@ artifacts:
     - .ebextensions/**/*
     - .platform/**/*
     - Procfile
-  discard-paths: yes
+  # discard-paths: yes
