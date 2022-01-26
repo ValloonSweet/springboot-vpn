@@ -94,9 +94,10 @@ public class UserService {
 
     assignTrialSubscription(user);
 
+    UserSubscription userSubscription = userSubscriptionService.getCurrentSubscription(user);
     UserView userView = userViewMapper.toView(user);
     log.info("Created user {}", userView);
-    notificationService.welcomingNewUsers(user);
+    notificationService.welcomingNewUsers(user, userSubscription);
     return login(user);
   }
 

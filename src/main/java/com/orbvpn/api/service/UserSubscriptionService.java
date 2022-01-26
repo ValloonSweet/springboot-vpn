@@ -1,8 +1,6 @@
 package com.orbvpn.api.service;
 
 import com.orbvpn.api.domain.entity.*;
-import com.orbvpn.api.reposiitory.GroupRepository;
-import com.orbvpn.api.reposiitory.StripeCustomerRepository;
 import com.orbvpn.api.reposiitory.UserSubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +19,6 @@ public class UserSubscriptionService {
 
     private final RadiusService radiusService;
     private final UserSubscriptionRepository userSubscriptionRepository;
-
-    private final StripeCustomerRepository stripeCustomerRepository;
-    private final GroupRepository groupRepository;
 
     public UserSubscription createUserSubscription(Payment payment, Group group) {
         User user = payment.getUser();

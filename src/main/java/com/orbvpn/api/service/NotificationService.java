@@ -3,6 +3,7 @@ package com.orbvpn.api.service;
 import com.orbvpn.api.domain.entity.SmsRequest;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.entity.UserProfile;
+import com.orbvpn.api.domain.entity.UserSubscription;
 import com.orbvpn.api.reposiitory.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -110,11 +111,15 @@ public class NotificationService {
     }
 
     /**
-     * Welcome new customers for joining ORB-VPN via SMS and Email
+     * Welcome new customers for joining OrbVPN via SMS and Email
      *
      * @param user New created user
      */
-    public void welcomingNewUsers(User user) {
+    public void welcomingNewUsers(User user, UserSubscription subscription) {
+
+        int duration = subscription.getDuration();
+        int deviceCount = subscription.getMultiLoginCount();
+
         String smsMessage = "Welcome to OrbVPN.\n" +
                 "Your username is [" + user.getUsername() + "]\n" +
                 "We provide 24/7 support for you to enjoy our service.\n" +
@@ -123,12 +128,16 @@ public class NotificationService {
                 "Instagram: https://www.instagram.com/orbvpn\n";
 
         String emailTitle = "OrbVPN: Welcome!";
-        String emailMessage = " Welcome to your new OrbVPN Account. <br><br>" +
+        String emailMessage = " Welcome to your new OrbVPN Account.<br><br>" +
                 "Sing in to your OrbVPN account to access the service.<br><br>" +
-        //      "the OrbVPN services that you have subscribed for.<br><br>" +
-                "<strong>Your username:</strong> " + user.getUsername();
-        //"Your subscription is valid for $multi-login devices during next $days/month/years and will be expired on $expirationdate.<br><br>"+
+                "<strong>Your username:</strong> " + user.getUsername().replace(".",".&#65279;") + "<br>" +
+                "<strong>Password:</strong> Click <a href=\"https://orbvpn.xyz/panel/signup/\"><b>Sign in</b></a> " +
+                "to set your password and sign in.<br><br>" +
+                "Your subscription is valid for " + deviceCount + (deviceCount == 1 ? " device" : " devices") +
+                " during next " + duration +  (duration == 1 ? " day" : " days") +
+                " and will be expired on " + subscription.getExpiresAt().toLocalDate() +"." ;
 
+//style="pointer-events: none; cursor: default;"
         sendSms(user.getProfile(), smsMessage);
         sendEmail(user.getProfile(), emailTitle, emailMessage);
     }
@@ -144,7 +153,7 @@ public class NotificationService {
         String emailTitle = "OrbVPN: Password Reset Code";
         String emailMessage = "We got a request to reset your password.<br><br>" +
                 "You can open the following link in your browser to change the password:<br><br>" +
-                "<herf>$Link<herf><br><br>" +
+                "<a href = \"https://orbvpn.xyz/panel/forget\">https://orbvpn.xyz/panel/forget</a><br><br>" +
                 "or you can use the following token code:<br><br>" +
                 "<strong>Code:</strong> " + token + "<br><br>" +
                 "If you ignore this message your password won't be changed.<br>" +
