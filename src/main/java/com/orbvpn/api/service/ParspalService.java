@@ -38,7 +38,6 @@ public class ParspalService {
     requestBody.setReturnUrl(returnUrl);
     requestBody.setOrderId(payment.getPaymentId());
 
-
     RestTemplate restTemplate = new RestTemplate();
     HttpHeaders headers = new HttpHeaders();
     headers.set("APIKey", apiKey);

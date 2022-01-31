@@ -44,7 +44,7 @@ public class AppleService {
     String productSku = latestReceiptInfo.getProductId();
 
     Integer groupId = groupMap.get(productSku);
-    LocalDateTime expiresAt = Instant.ofEpochMilli(Long.valueOf(latestReceiptInfo.getExpiresDateMs()))
+    LocalDateTime expiresAt = Instant.ofEpochMilli(Long.parseLong(latestReceiptInfo.getExpiresDateMs()))
       .atZone(ZoneId.systemDefault()).toLocalDateTime();
 
     AppleSubscriptionData appleSubscriptionData = new AppleSubscriptionData();
