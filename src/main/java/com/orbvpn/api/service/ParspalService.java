@@ -8,7 +8,6 @@ import com.orbvpn.api.domain.entity.Payment;
 import com.orbvpn.api.domain.enums.GatewayName;
 import com.orbvpn.api.exception.NotFoundException;
 import com.orbvpn.api.reposiitory.PaymentRepository;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
