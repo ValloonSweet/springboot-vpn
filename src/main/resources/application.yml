@@ -32,6 +32,21 @@ spring:
           writetimeout: 5000
           starttls:
             enable: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 903170896228-gkomrh8dvrk95ch62ere4i3a01jdlbgr.apps.googleusercontent.com
+            client-secret: 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
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+          facebook:
+            client-id: 2998455443765493
+            client-secret: 690acb522724caa05e0c70083c1333dc
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+
+
+
 
   quartz:
     job-store-type: jdbc
@@ -92,10 +107,14 @@ app-store:
 
 oauth:
   google:
-    client-ids: 903170896228-gkomrh8dvrk95ch62ere4i3a01jdlbgr.apps.googleusercontent.com
+    client-id: 903170896228-gkomrh8dvrk95ch62ere4i3a01jdlbgr.apps.googleusercontent.com
   facebook:
     app-id: 2998455443765493
     app-secret: 57630025fb7dd1f42ca7e9c423d1b744
+  twitter:
+    client-id: REtGX0ZUVHpYelpjWXhsUEpGaXY6MTpjaQ
+    client-secret: 7wTzmmIOQGf3zK0QBgvqy-Ap-0EqFfu2exiOGudG-0HAdUkFt
+
   # google:
   #   client-ids: ${OAUTH_GOOGLE_CLIENT_IDS}
   # facebook:

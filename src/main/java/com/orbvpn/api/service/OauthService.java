@@ -28,15 +28,24 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import java.security.interfaces.RSAPublicKey;
 import java.text.MessageFormat;
-import java.util.List;
+import java.util.Collections;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.social.oauth1.AuthorizedRequestToken;
+import org.springframework.social.oauth1.OAuth1Operations;
+import org.springframework.social.oauth1.OAuthToken;
+import org.springframework.social.twitter.api.Twitter;
+import org.springframework.social.twitter.api.TwitterProfile;
+import org.springframework.social.twitter.api.impl.TwitterTemplate;
+import org.springframework.social.twitter.connect.TwitterConnectionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class OauthService {
 
   private static final HttpTransport transport = new NetHttpTransport();
@@ -48,8 +57,8 @@ public class OauthService {
   private final ResellerService resellerService;
   private final UserRepository userRepository;
 
-  @Value("${oauth.google.client-ids}")
-  private List<String> googleClientIds;
+  @Value("${oauth.google.client-id}")
+  private String googleClientIds;
 
   @Value("${oauth.facebook.app-id}")
   private String facebookAppId;
@@ -57,13 +66,18 @@ public class OauthService {
   @Value("${oauth.facebook.app-secret}")
   private String facebookAppSecret;
 
+  @Value("${oauth.twitter.client-id}")
+  private String twitterClientId;
+
+  @Value("${oauth.twitter.client-secret}")
+  private String twitterClientSecret;
+
   public AuthenticatedUser oauthLogin(String token, SocialMedia socialMedia) {
 
     TokenData tokenData = getTokenData(token, socialMedia);
 
     User user = userRepository.findByUsername(tokenData.getEmail())
       .orElseGet(() -> createUser(tokenData));
-
 
     return userService.login(user);
   }
@@ -109,17 +123,19 @@ public class OauthService {
 
   private TokenData getGoogleTokenData(String token) {
     GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
-      .setAudience(googleClientIds)
+      .setAudience(Collections.singletonList(googleClientIds))
       .build();
 
     GoogleIdToken idTokenData;
     try {
       idTokenData = verifier.verify(token);
     } catch (Exception ex) {
+      log.error(String.format("Exception occured while verifying Google user token : %s",ex.getCause() ));
       throw new OauthLoginException();
     }
 
     if (idTokenData == null) {
+      log.error("idTokenData is null");
       throw new OauthLoginException();
     }
 
@@ -185,6 +201,31 @@ public class OauthService {
   }
 
   private TokenData getTwitterTokenData(String encryptedToken) {
+
+    TwitterConnectionFactory connectionFactory =
+            new TwitterConnectionFactory(twitterClientId, twitterClientSecret);
+    OAuth1Operations oauthOperations = connectionFactory.getOAuthOperations();
+    OAuthToken requestToken = null;
+    try{
+      requestToken = oauthOperations.fetchRequestToken("https://api.twitter.com/oauth/request_token", null);
+
+    } catch (Exception ex){
+      log.error(String.format("Twitter request token error : %s", ex.getMessage()));
+      throw new OauthLoginException(ex.getMessage());
+    }
+
+    OAuthToken accessToken = oauthOperations.exchangeForAccessToken(
+            new AuthorizedRequestToken(requestToken, ""), null);
+    System.out.println("Token Value:- accesstoken");
+    accessToken.getSecret();
+    accessToken.getValue();
+    Twitter twitter = new TwitterTemplate(twitterClientId,
+            twitterClientSecret,
+            accessToken.getValue(),
+            accessToken.getSecret());
+    TwitterProfile profile = twitter.userOperations().getUserProfile();
+    System.out.println(profile.toString());
+
     try {
       return null;
     } catch (Exception ex) {

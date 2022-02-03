@@ -1,6 +1,5 @@
 package com.orbvpn.api.config.security;
 
-
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +15,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
 
 @Configuration
 @EnableWebSecurity
@@ -42,7 +40,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
       .and()
       .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
       .csrf().disable()
-      .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+      .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+      .oauth2Login();
   }
 
   // Expose authentication manager bean
