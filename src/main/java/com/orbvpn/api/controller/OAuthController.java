@@ -17,7 +17,15 @@ public class OAuthController {
         return Collections.singletonMap("name", principal.getAttribute("name"));
     }
 
+    @GetMapping("/oauth2/callback/facebook")
+    public Map<String, Object> facebook(@AuthenticationPrincipal OAuth2User principal) {
+        return Collections.singletonMap("name", principal.getAttribute("name"));
+    }
 
+    @GetMapping("/oauth2/callback/linkedin")
+    public Map<String, Object> linkedIn(@AuthenticationPrincipal OAuth2User principal) {
+        return Collections.singletonMap("name", principal.getAttribute("name"));
+    }
 
     @RequestMapping("/user")
     public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal) {

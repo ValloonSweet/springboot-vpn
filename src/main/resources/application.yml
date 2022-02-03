@@ -44,7 +44,20 @@ spring:
             client-id: 2998455443765493
             client-secret: 690acb522724caa05e0c70083c1333dc
             redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
-
+          linkedin:
+            client-id: 786xac8z0s13fu
+            client-secret: OIL0j8K7bsc7AN0K
+            scope:  r_liteprofile, r_emailaddress
+            authorization-grant-type: authorization_code
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+            client-name: LinkedIn
+            client-authentication-method: post
+        provider:
+          linkedin:
+            authorization-uri: https://www.linkedin.com/oauth/v2/authorization
+            token-uri: https://www.linkedin.com/oauth/v2/accessToken
+            user-info-uri: https://api.linkedin.com/v1/people/~?format=json
+            user-name-attribute: id
 
 
 
