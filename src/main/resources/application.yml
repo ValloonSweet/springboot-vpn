@@ -60,7 +60,6 @@ spring:
             user-name-attribute: id
 
 
-
   quartz:
     job-store-type: jdbc
     properties:
@@ -125,8 +124,11 @@ oauth:
     app-id: 2998455443765493
     app-secret: 57630025fb7dd1f42ca7e9c423d1b744
   twitter:
-    client-id: REtGX0ZUVHpYelpjWXhsUEpGaXY6MTpjaQ
-    client-secret: 7wTzmmIOQGf3zK0QBgvqy-Ap-0EqFfu2exiOGudG-0HAdUkFt
+    client-id: mdkwQazRJCIGkbEuepby6gio1
+    client-secret: wP7RZbTU8S5VDpYurqW19JVIV7vKc5DhBKMeH8FSOMJJwYSpBV
+    callbackUrl: "{baseUrl}/oauth2/callback/twitter"
+    userInfoUrl: "https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true"
+
 
   # google:
   #   client-ids: ${OAUTH_GOOGLE_CLIENT_IDS}

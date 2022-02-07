@@ -6,6 +6,7 @@ import com.auth0.jwk.UrlJwkProvider;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
@@ -13,11 +14,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
-import com.orbvpn.api.domain.dto.AuthenticatedUser;
-import com.orbvpn.api.domain.dto.FBTokenData;
-import com.orbvpn.api.domain.dto.FBTokenMetadata;
-import com.orbvpn.api.domain.dto.FBTokenMetadataWrapper;
-import com.orbvpn.api.domain.dto.TokenData;
+import com.orbvpn.api.domain.dto.*;
 import com.orbvpn.api.domain.entity.Role;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.enums.RoleName;
@@ -35,6 +32,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.social.oauth1.AuthorizedRequestToken;
 import org.springframework.social.oauth1.OAuth1Operations;
+import org.springframework.social.oauth1.OAuth1Parameters;
 import org.springframework.social.oauth1.OAuthToken;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.social.twitter.api.TwitterProfile;
@@ -42,6 +40,9 @@ import org.springframework.social.twitter.api.impl.TwitterTemplate;
 import org.springframework.social.twitter.connect.TwitterConnectionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @RequiredArgsConstructor
 @Service
@@ -71,6 +72,12 @@ public class OauthService {
 
   @Value("${oauth.twitter.client-secret}")
   private String twitterClientSecret;
+
+  @Value("${oauth.twitter.callbackUrl}")
+  String twitterCallbackUrl;
+
+  @Value("${oauth.twitter.userInfoUrl}")
+  String twitterUserInfoUrl;
 
   public AuthenticatedUser oauthLogin(String token, SocialMedia socialMedia) {
 
@@ -248,5 +255,53 @@ public class OauthService {
       throw new OauthLoginException(ex.getMessage());
     }
   }
+
+  // Connection Factory
+  public TwitterConnectionFactory twitterConnectionFactory(){
+    return new TwitterConnectionFactory( twitterClientId,twitterClientSecret );
+  }
+
+  //Since Twitter Supports Oauth 1.0 we used "oauth1Operations"
+  public OAuth1Operations oAuth1Operations(TwitterConnectionFactory connectionFactory){
+    return connectionFactory.getOAuthOperations();
+  }
+
+  //Create Twitter Template for fetching user email etc.
+  public TwitterTemplate twitterTemplate( OAuthToken accessToken){
+    return  new TwitterTemplate( twitterClientId, twitterClientSecret, accessToken.getValue(), accessToken.getSecret() );
+  }
+
+  public String twitterOauthLogin(){
+    TwitterConnectionFactory connectionFactory = twitterConnectionFactory();
+    OAuth1Operations oauthOperations = oAuth1Operations(connectionFactory);
+    OAuthToken requestToken = oauthOperations.fetchRequestToken( twitterCallbackUrl, null );
+    log.info(requestToken.getSecret()+" -----  "+ requestToken.getValue());
+
+    return oauthOperations.buildAuthorizeUrl(requestToken.getValue(), OAuth1Parameters.NONE);
+  }
+
+
+  public TwitterUserInfo twitterUserProfile(HttpServletRequest request, HttpServletResponse response){
+
+    TwitterConnectionFactory connectionFactory = twitterConnectionFactory();
+    OAuth1Operations oauthOperations =oAuth1Operations(connectionFactory);
+    OAuthToken oAuthToken=new OAuthToken(request.getParameter("oauth_token"),request.getParameter("oauth_verifier"));
+
+    OAuthToken accessToken = oauthOperations.exchangeForAccessToken(new AuthorizedRequestToken(oAuthToken,request.getParameter("oauth_verifier")), null);
+
+    TwitterTemplate twitterTemplate =twitterTemplate(accessToken);
+
+
+    RestTemplate restTemplate = twitterTemplate.getRestTemplate();
+    ObjectNode objectNode = restTemplate.getForObject(twitterUserInfoUrl, ObjectNode.class);
+
+    String email = objectNode.get("email").asText();
+
+    return new TwitterUserInfo(objectNode.get("name").asText(),
+            objectNode.get("email").asText(),
+            objectNode.get("description").asText(),
+            objectNode.get("location").asText());
+  }
+
 
 }
