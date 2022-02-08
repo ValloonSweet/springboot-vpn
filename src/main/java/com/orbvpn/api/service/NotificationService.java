@@ -97,7 +97,7 @@ public class NotificationService {
                 String emailMessage = "Your subscription has expired " + dayCount + " " +
                         (dayCount == 1 ? "day" : "days") +
                         " ago.<br><br> Please contact us to renew your service.<br>" +
-                        "Whatsapp: https://wa.me/message/3NYJBB6MNCQPM1" +
+                        "Whatsapp: https://wa.me/message/3NYJBB6MNCQPM1<br>" +
                         "Email : " +
                         mailtoMessage("info@orbvpn.com",
                                 "Renew account order for expired subscription",
@@ -225,7 +225,7 @@ public class NotificationService {
     private void sendEmail(UserProfile userProfile, String title, String message) {
         if (userProfile == null)
             return;
-        String starting = null;
+        String starting;
         if (userProfile.getFirstName() != null) {
             starting = "Dear " + userProfile.getFirstName() + ",<br><br>";
         } else {
