@@ -28,7 +28,6 @@ import java.text.MessageFormat;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.social.oauth1.AuthorizedRequestToken;
 import org.springframework.social.oauth1.OAuth1Operations;
@@ -44,6 +43,8 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static com.orbvpn.api.domain.OAuthConstants.*;
+
 @RequiredArgsConstructor
 @Service
 @Slf4j
@@ -57,27 +58,7 @@ public class OauthService {
   private final PasswordService passwordService;
   private final ResellerService resellerService;
   private final UserRepository userRepository;
-
-  @Value("${oauth.google.client-id}")
-  private String googleClientIds;
-
-  @Value("${oauth.facebook.app-id}")
-  private String facebookAppId;
-
-  @Value("${oauth.facebook.app-secret}")
-  private String facebookAppSecret;
-
-  @Value("${oauth.twitter.client-id}")
-  private String twitterClientId;
-
-  @Value("${oauth.twitter.client-secret}")
-  private String twitterClientSecret;
-
-  @Value("${oauth.twitter.callbackUrl}")
-  String twitterCallbackUrl;
-
-  @Value("${oauth.twitter.userInfoUrl}")
-  String twitterUserInfoUrl;
+  private final TokenService tokenService;
 
   public AuthenticatedUser oauthLogin(String token, SocialMedia socialMedia) {
 
@@ -87,6 +68,36 @@ public class OauthService {
       .orElseGet(() -> createUser(tokenData));
 
     return userService.login(user);
+  }
+
+  public TokenData getToken(String code, SocialMedia socialMedia){
+
+    String token = "";
+
+    switch (socialMedia) {
+      case GOOGLE:
+        token = tokenService.getGoogleToken(code);
+        break;
+      case FACEBOOK:
+        token = tokenService.getFacebookToken(code);
+        break;
+      case APPLE:
+        token = tokenService.getAppleToken(code);
+        break;
+      case TWITTER:
+        token = tokenService.getTwitterToken(code);
+        break;
+      case LINKEDIN:
+        token = tokenService.getLinkedinToken(code);
+        break;
+      case AMAZON:
+        token = tokenService.getAmazonToken(code);
+        break;
+      default:
+        throw new OauthLoginException("Could not retrieve token from provider.");
+    }
+
+    return getTokenData(token, socialMedia);
   }
 
   public TokenData getTokenData(String token, SocialMedia socialMedia) {
@@ -130,7 +141,7 @@ public class OauthService {
 
   private TokenData getGoogleTokenData(String token) {
     GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
-      .setAudience(Collections.singletonList(googleClientIds))
+      .setAudience(Collections.singletonList(googleClientId))
       .build();
 
     GoogleIdToken idTokenData;
