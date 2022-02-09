@@ -130,7 +130,10 @@ oauth:
   linkedin:
     client-id: 786xac8z0s13fu
     client-secret: OIL0j8K7bsc7AN0K
-    redirectUri: http://localhost:5000/oauth2/callback/linkedin
+    redirectUri: http://orbnet.xyz/oauth2/callback/linkedin
+    token-url: https://www.linkedin.com/oauth/v2/accessToken
+    profile-url: https://api.linkedin.com/v2/me
+    email- url: https://api.linkedin.com/v2/emailAddress
   twitter:
     client-id: mdkwQazRJCIGkbEuepby6gio1
     client-secret: wP7RZbTU8S5VDpYurqW19JVIV7vKc5DhBKMeH8FSOMJJwYSpBV

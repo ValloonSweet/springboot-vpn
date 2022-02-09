@@ -26,21 +26,20 @@ import io.jsonwebtoken.Jwts;
 import java.security.interfaces.RSAPublicKey;
 import java.text.MessageFormat;
 import java.util.Collections;
-import java.util.Objects;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
+import org.apache.poi.util.NotImplemented;
+import org.springframework.http.*;
 import org.springframework.social.oauth1.AuthorizedRequestToken;
 import org.springframework.social.oauth1.OAuth1Operations;
 import org.springframework.social.oauth1.OAuth1Parameters;
 import org.springframework.social.oauth1.OAuthToken;
-import org.springframework.social.twitter.api.Twitter;
-import org.springframework.social.twitter.api.TwitterProfile;
+
 import org.springframework.social.twitter.api.impl.TwitterTemplate;
 import org.springframework.social.twitter.connect.TwitterConnectionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -86,9 +85,6 @@ public class OauthService {
       case APPLE:
         token = tokenService.getAppleToken(code);
         break;
-      case TWITTER:
-        token = tokenService.getTwitterToken(code);
-        break;
       case LINKEDIN:
         token = tokenService.getLinkedinToken(code);
         break;
@@ -110,8 +106,6 @@ public class OauthService {
         return getFacebookTokenData(token);
       case APPLE:
         return getAppleTokenData(token);
-      case TWITTER:
-        return getTwitterTokenData(token);
       case LINKEDIN:
         return getLinkedinTokenData(token);
       case AMAZON:
@@ -150,7 +144,7 @@ public class OauthService {
     try {
       idTokenData = verifier.verify(token);
     } catch (Exception ex) {
-      log.error(String.format("Exception occured while verifying Google user token : %s",ex.getCause() ));
+      log.error(String.format("Exception occurred while verifying Google user token : %s",ex.getCause() ));
       throw new OauthLoginException();
     }
 
@@ -220,48 +214,39 @@ public class OauthService {
     }
   }
 
-  private TokenData getTwitterTokenData(String encryptedToken) {
-
-    TwitterConnectionFactory connectionFactory =
-            new TwitterConnectionFactory(twitterClientId, twitterClientSecret);
-    OAuth1Operations oauthOperations = connectionFactory.getOAuthOperations();
-
-    OAuthToken requestToken;
-    try{
-      requestToken = oauthOperations.fetchRequestToken("https://api.twitter.com/oauth/request_token", null);
-
-    } catch (Exception ex){
-      log.error(String.format("Twitter request token error : %s", ex.getMessage()));
-      throw new OauthLoginException(ex.getMessage());
-    }
-
-    OAuthToken accessToken = oauthOperations.exchangeForAccessToken(
-            new AuthorizedRequestToken(requestToken, ""), null);
-    System.out.println("Token Value:- accesstoken");
-    accessToken.getSecret();
-    accessToken.getValue();
-    Twitter twitter = new TwitterTemplate(twitterClientId,
-            twitterClientSecret,
-            accessToken.getValue(),
-            accessToken.getSecret());
-    TwitterProfile profile = twitter.userOperations().getUserProfile();
-    System.out.println(profile.toString());
-
-    try {
-      return null;
-    } catch (Exception ex) {
-      throw new OauthLoginException(ex.getMessage());
-    }
-  }
 
   private TokenData getLinkedinTokenData(String encryptedToken) {
-    try {
-      return null;
+
+    RestTemplate restTemplate = new RestTemplate();
+    HttpHeaders headers = new HttpHeaders();
+
+    UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(linkedinProfileURL)
+            .queryParam("oauth2_access_token",encryptedToken);
+
+    HttpEntity<?> entity = new HttpEntity<>(headers);
+
+    try{
+
+    HttpEntity<LinkedinProfile> response = restTemplate.exchange(
+            builder.toUriString(),
+            HttpMethod.GET,
+            entity,
+            LinkedinProfile.class);
+
+    String firstName = response.getBody().getLocalizedFirstName();
+    String lastName = response.getBody().getLocalizedLastName();
+    String id = response.getBody().getId();
+
     } catch (Exception ex) {
+
       throw new OauthLoginException(ex.getMessage());
     }
+
+      return null;
+
   }
 
+  @NotImplemented
   private TokenData getAmazonTokenData(String encryptedToken) {
     try {
       return null;
@@ -270,40 +255,23 @@ public class OauthService {
     }
   }
 
-  // Connection Factory
-  public TwitterConnectionFactory twitterConnectionFactory(){
-    return new TwitterConnectionFactory( twitterClientId,twitterClientSecret );
-  }
-
-  //Since Twitter Supports Oauth 1.0 we used "oauth1Operations"
-  public OAuth1Operations oAuth1Operations(TwitterConnectionFactory connectionFactory){
-    return connectionFactory.getOAuthOperations();
-  }
-
-  //Create Twitter Template for fetching user email etc.
-  public TwitterTemplate twitterTemplate( OAuthToken accessToken){
-    return  new TwitterTemplate( twitterClientId, twitterClientSecret, accessToken.getValue(), accessToken.getSecret() );
-  }
-
   public String twitterOauthLogin(){
-    TwitterConnectionFactory connectionFactory = twitterConnectionFactory();
-    OAuth1Operations oauthOperations = oAuth1Operations(connectionFactory);
+    TwitterConnectionFactory connectionFactory = new TwitterConnectionFactory( twitterClientId,twitterClientSecret );
+    OAuth1Operations oauthOperations = connectionFactory.getOAuthOperations();
     OAuthToken requestToken = oauthOperations.fetchRequestToken( twitterCallbackUrl, null );
-    log.info(requestToken.getSecret()+" -----  "+ requestToken.getValue());
 
     return oauthOperations.buildAuthorizeUrl(requestToken.getValue(), OAuth1Parameters.NONE);
   }
 
-
   public TwitterUserInfo twitterUserProfile(HttpServletRequest request, HttpServletResponse response){
 
-    TwitterConnectionFactory connectionFactory = twitterConnectionFactory();
-    OAuth1Operations oauthOperations =oAuth1Operations(connectionFactory);
+    TwitterConnectionFactory connectionFactory = new TwitterConnectionFactory( twitterClientId,twitterClientSecret );
+    OAuth1Operations oauthOperations = connectionFactory.getOAuthOperations();
     OAuthToken oAuthToken=new OAuthToken(request.getParameter("oauth_token"),request.getParameter("oauth_verifier"));
 
     OAuthToken accessToken = oauthOperations.exchangeForAccessToken(new AuthorizedRequestToken(oAuthToken,request.getParameter("oauth_verifier")), null);
 
-    TwitterTemplate twitterTemplate = twitterTemplate(accessToken);
+    TwitterTemplate twitterTemplate = new TwitterTemplate( twitterClientId, twitterClientSecret, accessToken.getValue(), accessToken.getSecret() );
 
     RestTemplate restTemplate = twitterTemplate.getRestTemplate();
     ObjectNode objectNode = restTemplate.getForObject(twitterUserInfoUrl, ObjectNode.class);

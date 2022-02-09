@@ -30,8 +30,8 @@ public class OAuthController {
     }
 
     @GetMapping("/oauth2/callback/linkedin")
-    public void linkedIn(@RequestParam("code") String code) {
-        this.oauthService.getToken(code, SocialMedia.LINKEDIN);
+    public TokenData linkedIn(@RequestParam("code") String code) {
+        return this.oauthService.getToken(code, SocialMedia.LINKEDIN);
     }
 
     @GetMapping("/oauth2/authorization/manual/twitter")
