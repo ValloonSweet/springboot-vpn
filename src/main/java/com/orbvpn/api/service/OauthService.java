@@ -26,6 +26,8 @@ import io.jsonwebtoken.Jwts;
 import java.security.interfaces.RSAPublicKey;
 import java.text.MessageFormat;
 import java.util.Collections;
+import java.util.Objects;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -72,7 +74,7 @@ public class OauthService {
 
   public TokenData getToken(String code, SocialMedia socialMedia){
 
-    String token = "";
+    String token;
 
     switch (socialMedia) {
       case GOOGLE:
@@ -223,7 +225,8 @@ public class OauthService {
     TwitterConnectionFactory connectionFactory =
             new TwitterConnectionFactory(twitterClientId, twitterClientSecret);
     OAuth1Operations oauthOperations = connectionFactory.getOAuthOperations();
-    OAuthToken requestToken = null;
+
+    OAuthToken requestToken;
     try{
       requestToken = oauthOperations.fetchRequestToken("https://api.twitter.com/oauth/request_token", null);
 
@@ -300,18 +303,27 @@ public class OauthService {
 
     OAuthToken accessToken = oauthOperations.exchangeForAccessToken(new AuthorizedRequestToken(oAuthToken,request.getParameter("oauth_verifier")), null);
 
-    TwitterTemplate twitterTemplate =twitterTemplate(accessToken);
-
+    TwitterTemplate twitterTemplate = twitterTemplate(accessToken);
 
     RestTemplate restTemplate = twitterTemplate.getRestTemplate();
     ObjectNode objectNode = restTemplate.getForObject(twitterUserInfoUrl, ObjectNode.class);
 
-    String email = objectNode.get("email").asText();
+    String email;
+    try{
+      email = objectNode.get("email").asText();
+    } catch (NullPointerException exception){
+      email = "";
+      log.error("Could not retrieve user email.");
+    }
 
-    return new TwitterUserInfo(objectNode.get("name").asText(),
-            objectNode.get("email").asText(),
-            objectNode.get("description").asText(),
-            objectNode.get("location").asText());
+    String name = objectNode.get("name").asText();
+    String screen_name = objectNode.get("screen_name").asText();
+    String location = objectNode.get("location").asText();
+
+    return new TwitterUserInfo(name,
+            email,
+            screen_name,
+            location);
   }
 
 

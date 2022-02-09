@@ -11,6 +11,6 @@ public class TwitterUserInfo {
 
     private String name;
     private String email;
-    private String description;
+    private String screen_name;
     private String location;
 }

@@ -1,5 +1,6 @@
 package com.orbvpn.api.controller;
 
+import com.orbvpn.api.domain.dto.TokenData;
 import com.orbvpn.api.domain.dto.TwitterUserInfo;
 import com.orbvpn.api.domain.enums.SocialMedia;
 import com.orbvpn.api.service.OauthService;
@@ -19,9 +20,8 @@ public class OAuthController {
     private OauthService oauthService;
 
     @GetMapping("/oauth2/callback/google")
-    public void google(@RequestParam("code") String code) {
-
-        this.oauthService.getToken(code, SocialMedia.GOOGLE);
+    public TokenData google(@RequestParam("code") String code) {
+        return this.oauthService.getToken(code, SocialMedia.GOOGLE);
     }
 
     @GetMapping("/oauth2/callback/facebook")

@@ -127,6 +127,10 @@ oauth:
     app-id: 2998455443765493
     app-secret: 57630025fb7dd1f42ca7e9c423d1b744
     redirectUri: http://orbnet.xyz/oauth2/callback/facebook
+  linkedin:
+    client-id: 786xac8z0s13fu
+    client-secret: OIL0j8K7bsc7AN0K
+    redirectUri: http://localhost:5000/oauth2/callback/linkedin
   twitter:
     client-id: mdkwQazRJCIGkbEuepby6gio1
     client-secret: wP7RZbTU8S5VDpYurqW19JVIV7vKc5DhBKMeH8FSOMJJwYSpBV
