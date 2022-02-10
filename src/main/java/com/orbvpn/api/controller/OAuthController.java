@@ -1,9 +1,8 @@
 package com.orbvpn.api.controller;
 
-import com.orbvpn.api.domain.dto.TokenData;
-import com.orbvpn.api.domain.dto.TwitterUserInfo;
+import com.orbvpn.api.domain.dto.AuthenticatedUser;
 import com.orbvpn.api.domain.enums.SocialMedia;
-import com.orbvpn.api.service.OauthService;
+import com.orbvpn.api.service.social_login.OauthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,18 +19,18 @@ public class OAuthController {
     private OauthService oauthService;
 
     @GetMapping("/oauth2/callback/google")
-    public TokenData google(@RequestParam("code") String code) {
-        return this.oauthService.getToken(code, SocialMedia.GOOGLE);
+    public AuthenticatedUser google(@RequestParam("code") String code) {
+        return this.oauthService.getTokenAndLogin(code, SocialMedia.GOOGLE);
     }
 
     @GetMapping("/oauth2/callback/facebook")
     public void facebook(@RequestParam("code") String code) {
-        this.oauthService.getToken(code, SocialMedia.FACEBOOK);
+        this.oauthService.getTokenAndLogin(code, SocialMedia.FACEBOOK);
     }
 
     @GetMapping("/oauth2/callback/linkedin")
-    public TokenData linkedIn(@RequestParam("code") String code) {
-        return this.oauthService.getToken(code, SocialMedia.LINKEDIN);
+    public AuthenticatedUser linkedIn(@RequestParam("code") String code) {
+        return this.oauthService.getTokenAndLogin(code, SocialMedia.LINKEDIN);
     }
 
     @GetMapping("/oauth2/authorization/manual/twitter")
@@ -41,7 +40,7 @@ public class OAuthController {
     }
 
     @GetMapping("/oauth2/callback/twitter")
-    public TwitterUserInfo getTwitter(HttpServletRequest request, HttpServletResponse response) {
+    public AuthenticatedUser getTwitter(HttpServletRequest request, HttpServletResponse response) {
         return oauthService.twitterUserProfile(request, response);
     }
 

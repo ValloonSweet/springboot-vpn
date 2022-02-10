@@ -1,4 +1,4 @@
-package com.orbvpn.api.service;
+package com.orbvpn.api.service.social_login;
 
 import com.auth0.jwk.Jwk;
 import com.auth0.jwk.JwkProvider;
@@ -21,20 +21,23 @@ import com.orbvpn.api.domain.enums.RoleName;
 import com.orbvpn.api.domain.enums.SocialMedia;
 import com.orbvpn.api.exception.OauthLoginException;
 import com.orbvpn.api.reposiitory.UserRepository;
+import com.orbvpn.api.service.PasswordService;
+import com.orbvpn.api.service.ResellerService;
+import com.orbvpn.api.service.RoleService;
+import com.orbvpn.api.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import java.security.interfaces.RSAPublicKey;
-import java.text.MessageFormat;
-import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.util.NotImplemented;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.social.oauth1.AuthorizedRequestToken;
 import org.springframework.social.oauth1.OAuth1Operations;
 import org.springframework.social.oauth1.OAuth1Parameters;
 import org.springframework.social.oauth1.OAuthToken;
-
 import org.springframework.social.twitter.api.impl.TwitterTemplate;
 import org.springframework.social.twitter.connect.TwitterConnectionFactory;
 import org.springframework.stereotype.Service;
@@ -43,6 +46,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.security.interfaces.RSAPublicKey;
+import java.text.MessageFormat;
+import java.util.Collections;
 
 import static com.orbvpn.api.domain.OAuthConstants.*;
 
@@ -71,7 +77,7 @@ public class OauthService {
     return userService.login(user);
   }
 
-  public TokenData getToken(String code, SocialMedia socialMedia){
+  public AuthenticatedUser getTokenAndLogin(String code, SocialMedia socialMedia){
 
     String token;
 
@@ -92,10 +98,10 @@ public class OauthService {
         token = tokenService.getAmazonToken(code);
         break;
       default:
-        throw new OauthLoginException("Could not retrieve token from provider.");
+        throw new OauthLoginException("Unknown Token provider.");
     }
 
-    return getTokenData(token, socialMedia);
+    return oauthLogin(token, socialMedia);
   }
 
   public TokenData getTokenData(String token, SocialMedia socialMedia) {
@@ -162,7 +168,9 @@ public class OauthService {
     return TokenData.builder()
       .email(email)
       .exp(exp)
-      .iat(iat).build();
+      .iat(iat)
+      .oauthId("GOOGLE")
+      .build();
   }
 
   private TokenData getFacebookTokenData(String token) {
@@ -214,36 +222,38 @@ public class OauthService {
     }
   }
 
-
   private TokenData getLinkedinTokenData(String encryptedToken) {
+
+    String email;
 
     RestTemplate restTemplate = new RestTemplate();
     HttpHeaders headers = new HttpHeaders();
 
-    UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(linkedinProfileURL)
-            .queryParam("oauth2_access_token",encryptedToken);
+    UriComponentsBuilder     builder = UriComponentsBuilder.fromHttpUrl(linkedinEmailURL)
+            .queryParam("oauth2_access_token",encryptedToken)
+            .queryParam("q","members")
+            .queryParam("projection","(elements*(primary,type,handle~))");
 
     HttpEntity<?> entity = new HttpEntity<>(headers);
 
     try{
 
-    HttpEntity<LinkedinProfile> response = restTemplate.exchange(
-            builder.toUriString(),
-            HttpMethod.GET,
-            entity,
-            LinkedinProfile.class);
+      HttpEntity<ObjectNode> response = restTemplate.exchange(
+              builder.toUriString(),
+              HttpMethod.GET,
+              entity,
+              ObjectNode.class);
 
-    String firstName = response.getBody().getLocalizedFirstName();
-    String lastName = response.getBody().getLocalizedLastName();
-    String id = response.getBody().getId();
-
+      email = response.getBody().get("elements").get(0).get("handle~").get("emailAddress").asText();
     } catch (Exception ex) {
 
       throw new OauthLoginException(ex.getMessage());
     }
 
-      return null;
-
+    return TokenData.builder()
+            .email(email)
+            .oauthId("LINKEDIN")
+            .build();
   }
 
   @NotImplemented
@@ -256,6 +266,7 @@ public class OauthService {
   }
 
   public String twitterOauthLogin(){
+
     TwitterConnectionFactory connectionFactory = new TwitterConnectionFactory( twitterClientId,twitterClientSecret );
     OAuth1Operations oauthOperations = connectionFactory.getOAuthOperations();
     OAuthToken requestToken = oauthOperations.fetchRequestToken( twitterCallbackUrl, null );
@@ -263,7 +274,7 @@ public class OauthService {
     return oauthOperations.buildAuthorizeUrl(requestToken.getValue(), OAuth1Parameters.NONE);
   }
 
-  public TwitterUserInfo twitterUserProfile(HttpServletRequest request, HttpServletResponse response){
+  public AuthenticatedUser twitterUserProfile(HttpServletRequest request, HttpServletResponse response){
 
     TwitterConnectionFactory connectionFactory = new TwitterConnectionFactory( twitterClientId,twitterClientSecret );
     OAuth1Operations oauthOperations = connectionFactory.getOAuthOperations();
@@ -280,18 +291,20 @@ public class OauthService {
     try{
       email = objectNode.get("email").asText();
     } catch (NullPointerException exception){
-      email = "";
+      email = objectNode.get("screen_name").asText();
       log.error("Could not retrieve user email.");
     }
 
-    String name = objectNode.get("name").asText();
-    String screen_name = objectNode.get("screen_name").asText();
-    String location = objectNode.get("location").asText();
+    TokenData tokenData = TokenData.builder()
+            .email(email)
+            .oauthId("TWITTER")
+            .build();
 
-    return new TwitterUserInfo(name,
-            email,
-            screen_name,
-            location);
+    User user = userRepository.findByUsername(email)
+            .orElseGet(() -> createUser(tokenData));
+
+    return userService.login(user);
+
   }
 
 

@@ -1,4 +1,4 @@
-package com.orbvpn.api.service;
+package com.orbvpn.api.service.notification;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ public class EmailService {
 
     public void sendMail(String fromEmail, String toEmail, String subject, String body) {
         try {
-            log.debug("Sending Email... ", toEmail);
+            log.debug("Sending Email to {}...", toEmail);
 
             body = "<img src=\"cid:logo\"><br><br>" + body;
             MimeMessage message = mailSender.createMimeMessage();
@@ -33,7 +33,7 @@ public class EmailService {
             messageHelper.setTo(toEmail);
 
             mailSender.send(message);
-            log.debug("Email sent successfully ", toEmail);
+            log.debug("Email sent successfully to {}", toEmail);
         } catch (MessagingException ex) {
             log.error("Failed to send email to {}", toEmail, ex);
         }

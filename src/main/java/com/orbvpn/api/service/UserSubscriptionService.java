@@ -56,22 +56,22 @@ public class UserSubscriptionService {
         return userSubscriptionRepository.findFirstByUserOrderByCreatedAtDesc(user);
     }
 
-    List<UserProfile> getUsersExpireBetween(LocalDateTime startTime, LocalDateTime endTime) {
+    public List<UserProfile> getUsersExpireBetween(LocalDateTime startTime, LocalDateTime endTime) {
         return userSubscriptionRepository.getUsersExpireBetween(startTime, endTime);
     }
 
-    List<UserProfile> getUsersExpireAt(LocalDate localDate) {
+    public List<UserProfile> getUsersExpireAt(LocalDate localDate) {
         LocalDateTime startTime = localDate.atStartOfDay();
         LocalDateTime endTime = localDate.plusDays(1).atStartOfDay();
         return getUsersExpireBetween(startTime, endTime);
     }
 
-    List<UserProfile> getUsersExpireInNextDays(Integer dayCount) {
+    public List<UserProfile> getUsersExpireInNextDays(Integer dayCount) {
         LocalDate localDate = LocalDate.now().plusDays(dayCount);
         return getUsersExpireAt(localDate);
     }
 
-    List<UserProfile> getUsersExpireInPreviousDays(Integer dayCount) {
+    public List<UserProfile> getUsersExpireInPreviousDays(Integer dayCount) {
         LocalDate localDate = LocalDate.now().minusDays(dayCount);
         return getUsersExpireAt(localDate);
     }

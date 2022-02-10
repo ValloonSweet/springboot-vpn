@@ -1,22 +1,10 @@
 package com.orbvpn.api.service;
 
-import static com.orbvpn.api.config.AppConstants.DEFAULT_SORT;
-
 import com.orbvpn.api.domain.dto.ResellerUserCreate;
 import com.orbvpn.api.domain.dto.ResellerUserEdit;
 import com.orbvpn.api.domain.dto.UserView;
-import com.orbvpn.api.domain.entity.Group;
-import com.orbvpn.api.domain.entity.Payment;
-import com.orbvpn.api.domain.entity.Reseller;
-import com.orbvpn.api.domain.entity.ResellerLevel;
-import com.orbvpn.api.domain.entity.Role;
-import com.orbvpn.api.domain.entity.User;
-import com.orbvpn.api.domain.entity.UserProfile;
-import com.orbvpn.api.domain.enums.GatewayName;
-import com.orbvpn.api.domain.enums.PaymentCategory;
-import com.orbvpn.api.domain.enums.PaymentStatus;
-import com.orbvpn.api.domain.enums.ResellerLevelName;
-import com.orbvpn.api.domain.enums.RoleName;
+import com.orbvpn.api.domain.entity.*;
+import com.orbvpn.api.domain.enums.*;
 import com.orbvpn.api.exception.BadRequestException;
 import com.orbvpn.api.exception.InsufficientFundsException;
 import com.orbvpn.api.mapper.ResellerUserCreateMapper;
@@ -25,10 +13,7 @@ import com.orbvpn.api.mapper.UserViewMapper;
 import com.orbvpn.api.reposiitory.PaymentRepository;
 import com.orbvpn.api.reposiitory.ResellerRepository;
 import com.orbvpn.api.reposiitory.UserRepository;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
+import com.orbvpn.api.service.payment.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -39,6 +24,13 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
+
+import static com.orbvpn.api.config.AppConstants.DEFAULT_SORT;
 
 @Service
 @RequiredArgsConstructor

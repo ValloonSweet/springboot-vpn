@@ -15,6 +15,8 @@ import com.orbvpn.api.reposiitory.PasswordResetRepository;
 import com.orbvpn.api.reposiitory.PaymentRepository;
 import com.orbvpn.api.reposiitory.UserProfileRepository;
 import com.orbvpn.api.reposiitory.UserRepository;
+import com.orbvpn.api.service.notification.NotificationService;
+import com.orbvpn.api.service.payment.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;

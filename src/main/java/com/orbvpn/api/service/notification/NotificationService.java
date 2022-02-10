@@ -1,10 +1,11 @@
-package com.orbvpn.api.service;
+package com.orbvpn.api.service.notification;
 
 import com.orbvpn.api.domain.entity.SmsRequest;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.entity.UserProfile;
 import com.orbvpn.api.domain.entity.UserSubscription;
 import com.orbvpn.api.reposiitory.UserProfileRepository;
+import com.orbvpn.api.service.UserSubscriptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.mail.MailProperties;

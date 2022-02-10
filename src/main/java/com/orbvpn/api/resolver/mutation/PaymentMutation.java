@@ -4,7 +4,7 @@ import com.orbvpn.api.domain.dto.ParspalCreatePaymentResponse;
 import com.orbvpn.api.domain.dto.PaypalCreatePaymentResponse;
 import com.orbvpn.api.domain.dto.StripeCreatePaymentIntentResponse;
 import com.orbvpn.api.domain.enums.PaymentCategory;
-import com.orbvpn.api.service.PaymentService;
+import com.orbvpn.api.service.payment.PaymentService;
 import com.stripe.exception.StripeException;
 import graphql.kickstart.tools.GraphQLMutationResolver;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +38,7 @@ public class PaymentMutation implements GraphQLMutationResolver {
 
 
   public ParspalCreatePaymentResponse parspalCreatePayment(PaymentCategory category, int groupId,
-    int moreLoginCount)
-    throws Exception {
+    int moreLoginCount) {
     return paymentService.parspalCreatePayment(category, groupId, moreLoginCount);
   }
 

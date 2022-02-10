@@ -1,13 +1,9 @@
-package com.orbvpn.api.service;
+package com.orbvpn.api.service.payment;
 
 import com.orbvpn.api.domain.dto.StripeCreatePaymentIntentResponse;
-import com.orbvpn.api.domain.entity.Group;
 import com.orbvpn.api.domain.entity.Payment;
 import com.orbvpn.api.domain.entity.StripeCustomer;
 import com.orbvpn.api.domain.entity.User;
-import com.orbvpn.api.domain.enums.GatewayName;
-import com.orbvpn.api.domain.enums.PaymentCategory;
-import com.orbvpn.api.domain.enums.PaymentStatus;
 import com.orbvpn.api.reposiitory.PaymentRepository;
 import com.orbvpn.api.reposiitory.StripeCustomerRepository;
 import com.stripe.Stripe;
@@ -20,12 +16,13 @@ import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.PaymentIntentCreateParams;
 import com.stripe.param.PaymentIntentCreateParams.Builder;
 import com.stripe.param.PaymentMethodListParams;
-import java.math.BigDecimal;
-import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor

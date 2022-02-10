@@ -1,4 +1,4 @@
-package com.orbvpn.api.service;
+package com.orbvpn.api.service.notification;
 
 import com.orbvpn.api.config.sms.TwilioConfig;
 import com.orbvpn.api.domain.entity.SmsRequest;

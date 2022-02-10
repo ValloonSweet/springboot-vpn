@@ -4,12 +4,14 @@ import com.orbvpn.api.domain.entity.Payment;
 import com.orbvpn.api.reposiitory.PaymentRepository;
 import com.orbvpn.api.reposiitory.StripeCustomerRepository;
 import com.orbvpn.api.reposiitory.UserSubscriptionRepository;
-import java.time.LocalDateTime;
-import java.util.List;
-import javax.transaction.Transactional;
+import com.orbvpn.api.service.payment.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +42,7 @@ public class RenewUserSubscriptionService {
     try {
       paymentService.renewPayment(payment);
     } catch (Exception ex) {
-      log.error("Couldn't renew user subscription", ex.getMessage());
+      log.error("Couldn't renew user subscription. {}", ex.getMessage());
     }
 
   }

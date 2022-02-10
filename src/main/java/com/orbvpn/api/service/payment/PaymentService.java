@@ -1,17 +1,10 @@
-package com.orbvpn.api.service;
-
-import static java.time.temporal.ChronoUnit.DAYS;
+package com.orbvpn.api.service.payment;
 
 import com.orbvpn.api.domain.dto.AppleSubscriptionData;
 import com.orbvpn.api.domain.dto.ParspalCreatePaymentResponse;
 import com.orbvpn.api.domain.dto.PaypalCreatePaymentResponse;
 import com.orbvpn.api.domain.dto.StripeCreatePaymentIntentResponse;
-import com.orbvpn.api.domain.entity.Group;
-import com.orbvpn.api.domain.entity.MoreLoginCount;
-import com.orbvpn.api.domain.entity.Payment;
-import com.orbvpn.api.domain.entity.ServiceGroup;
-import com.orbvpn.api.domain.entity.User;
-import com.orbvpn.api.domain.entity.UserSubscription;
+import com.orbvpn.api.domain.entity.*;
 import com.orbvpn.api.domain.enums.GatewayName;
 import com.orbvpn.api.domain.enums.PaymentCategory;
 import com.orbvpn.api.domain.enums.PaymentStatus;
@@ -20,15 +13,19 @@ import com.orbvpn.api.reposiitory.GroupRepository;
 import com.orbvpn.api.reposiitory.MoreLoginCountRepository;
 import com.orbvpn.api.reposiitory.PaymentRepository;
 import com.orbvpn.api.reposiitory.UserSubscriptionRepository;
+import com.orbvpn.api.service.*;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 @RequiredArgsConstructor
@@ -155,7 +152,7 @@ public class PaymentService {
     fullFillPayment(payment);
 
 
-    log.info("Created payment for apple receipt", payment);
+    log.info("Created payment for apple receipt : {}", payment);
 
     return true;
   }

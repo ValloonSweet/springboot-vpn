@@ -9,31 +9,27 @@ import com.orbvpn.api.domain.enums.GatewayName;
 import com.orbvpn.api.exception.BadRequestException;
 import com.orbvpn.api.reposiitory.OauthDeletedUserRepository;
 import com.orbvpn.api.reposiitory.PaymentRepository;
-import com.orbvpn.api.service.PaymentService;
 import com.orbvpn.api.service.UserService;
+import com.orbvpn.api.service.payment.PaymentService;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
 import com.stripe.model.EventDataObjectDeserializer;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.StripeObject;
 import com.stripe.net.Webhook;
-import java.text.MessageFormat;
-import java.util.Optional;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpServletRequest;
+import java.text.MessageFormat;
+import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -65,9 +61,7 @@ public class MainRestController {
     SecretKeySpec secret_key = new SecretKeySpec(key.getBytes(), "HmacSHA256");
     sha256_HMAC.init(secret_key);
 
-    String hash = Base64.encodeBase64URLSafeString(sha256_HMAC.doFinal(data.getBytes()));
-
-    return hash;
+    return Base64.encodeBase64URLSafeString(sha256_HMAC.doFinal(data.getBytes()));
   }
 
   @PostMapping("/stripe/events")
@@ -87,7 +81,7 @@ public class MainRestController {
     }
 
     EventDataObjectDeserializer dataObjectDeserializer = event.getDataObjectDeserializer();
-    StripeObject stripeObject = null;
+    StripeObject stripeObject;
     if (dataObjectDeserializer.getObject().isPresent()) {
       stripeObject = dataObjectDeserializer.getObject().get();
     } else {

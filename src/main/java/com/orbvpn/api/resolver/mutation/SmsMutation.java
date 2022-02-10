@@ -1,7 +1,7 @@
 package com.orbvpn.api.resolver.mutation;
 
 import com.orbvpn.api.domain.entity.SmsRequest;
-import com.orbvpn.api.service.SmsService;
+import com.orbvpn.api.service.notification.SmsService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

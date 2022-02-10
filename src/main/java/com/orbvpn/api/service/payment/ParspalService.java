@@ -1,4 +1,4 @@
-package com.orbvpn.api.service;
+package com.orbvpn.api.service.payment;
 
 import com.orbvpn.api.domain.dto.ParspalApprovePaymentRequest;
 import com.orbvpn.api.domain.dto.ParspalApprovePaymentResponse;

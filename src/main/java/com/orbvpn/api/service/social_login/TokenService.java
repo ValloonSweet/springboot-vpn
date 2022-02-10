@@ -1,4 +1,4 @@
-package com.orbvpn.api.service;
+package com.orbvpn.api.service.social_login;
 
 import com.orbvpn.api.domain.dto.OAuthToken;
 import org.apache.poi.util.NotImplemented;
