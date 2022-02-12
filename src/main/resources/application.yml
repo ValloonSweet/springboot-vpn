@@ -6,9 +6,14 @@ spring:
     # url: jdbc:mysql://orbnetdev.cyg6ao0nnff3.ap-south-1.rds.amazonaws.com:3306/radius
     # username: root
     # password: bf{Y!{,q32n*JTL2
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    
+    url: mysql://orbnet.cyg6ao0nnff3.ap-south-1.rds.amazonaws.com:3306/radius
+    username: root
+    password: rYP3ZxDBBzFwC66T
+    
+    # url: ${SPRING_DATASOURCE_URL}
+    # username: ${SPRING_DATASOURCE_USERNAME}
+    # password: ${SPRING_DATASOURCE_PASSWORD}
 
   jpa:
     hibernate:
@@ -21,8 +26,8 @@ spring:
     port: 587
     # username: ${SPRING_MAIL_USERNAME}
     # password: ${SPRING_MAIL_PASSWORD}
-    # username: no-reply@orbvpn.com
-    # password: arzlyjzzrpqstwhl
+    username: no-reply@orbvpn.com
+    password: arzlyjzzrpqstwhl
     properties:
       mail:
         smtp:
