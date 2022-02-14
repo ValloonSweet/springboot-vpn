@@ -36,7 +36,7 @@ public class OAuthController {
     @GetMapping("/oauth2/authorization/manual/twitter")
     public void twitterOauthLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String authorizeUrl = oauthService.twitterOauthLogin();
-        response.sendRedirect( authorizeUrl );
+        response.sendRedirect(authorizeUrl);
     }
 
     @GetMapping("/oauth2/callback/twitter")

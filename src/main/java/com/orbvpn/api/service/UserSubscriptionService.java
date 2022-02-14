@@ -1,6 +1,8 @@
 package com.orbvpn.api.service;
 
+import com.orbvpn.api.domain.dto.UserSubscriptionView;
 import com.orbvpn.api.domain.entity.*;
+import com.orbvpn.api.mapper.UserSubscriptionViewMapper;
 import com.orbvpn.api.reposiitory.UserSubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,8 @@ public class UserSubscriptionService {
 
     private final RadiusService radiusService;
     private final UserSubscriptionRepository userSubscriptionRepository;
+
+    private final UserSubscriptionViewMapper userSubscriptionViewMapper;
 
     public UserSubscription createUserSubscription(Payment payment, Group group) {
         User user = payment.getUser();
@@ -50,6 +54,16 @@ public class UserSubscriptionService {
         subscription.setMultiLoginCount(multiLoginCount);
         userSubscriptionRepository.save(subscription);
         radiusService.editUserMoreLoginCount(user, multiLoginCount);
+    }
+
+    public UserSubscriptionView renewWithDayCount(User user, Integer days) {
+
+        UserSubscription subscription = getCurrentSubscription(user);
+        subscription.extendDuration(days);
+        userSubscriptionRepository.save(subscription);
+
+        log.info("The subscription period of User {} has increased by {} days.", user.getId(), days);
+        return userSubscriptionViewMapper.toView(subscription);
     }
 
     public UserSubscription getCurrentSubscription(User user) {

@@ -3,7 +3,6 @@ package com.orbvpn.api.service;
 import com.orbvpn.api.domain.entity.Payment;
 import com.orbvpn.api.reposiitory.PaymentRepository;
 import com.orbvpn.api.reposiitory.StripeCustomerRepository;
-import com.orbvpn.api.reposiitory.UserSubscriptionRepository;
 import com.orbvpn.api.service.payment.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +21,6 @@ public class RenewUserSubscriptionService {
   private final PaymentService paymentService;
 
   private final StripeCustomerRepository stripeCustomerRepository;
-  private final UserSubscriptionRepository userSubscriptionRepository;
   private final UserSubscriptionService userSubscriptionService;
   private final PaymentRepository paymentRepository;
 

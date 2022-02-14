@@ -1,14 +1,6 @@
 package com.orbvpn.api.domain.entity;
 
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.LocalDateTime;
-import javax.persistence.*;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
-
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.NotFound;
@@ -16,6 +8,13 @@ import org.hibernate.annotations.NotFoundAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.PositiveOrZero;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -58,7 +57,6 @@ public class UserSubscription {
   @Column
   private LocalDateTime expiresAt;
 
-
   @Column
   @CreatedDate
   private LocalDateTime createdAt;
@@ -66,4 +64,11 @@ public class UserSubscription {
   @Column
   @LastModifiedDate
   private LocalDateTime updatedAt;
+
+  public void extendDuration(int days) {
+
+    this.duration += days;
+    this.expiresAt = this.expiresAt.plusDays(days);
+    this.updatedAt = LocalDateTime.now();
+  }
 }
