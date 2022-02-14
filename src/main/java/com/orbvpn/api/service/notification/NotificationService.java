@@ -132,7 +132,7 @@ public class NotificationService {
         String emailMessage = " Welcome to your new OrbVPN Account.<br><br>" +
                 "Sing in to your OrbVPN account to access the service.<br><br>" +
                 "<strong>Your username:</strong> " + user.getUsername().replace(".",".&#65279;") + "<br>" +
-                "<strong>Password:</strong> Click <a href=\"https://orbvpn.xyz/panel/signup/\"><b>Sign in</b></a> " +
+                "<strong>Password:</strong> Click <a href=\"https://orbvpn.xyz/panel/login/\"><b>Sign in</b></a> " +
                 "to set your password and sign in.<br><br>" +
                 "Your subscription is valid for " + deviceCount + (deviceCount == 1 ? " device" : " devices") +
                 " during next " + duration +  (duration == 1 ? " day" : " days") +
