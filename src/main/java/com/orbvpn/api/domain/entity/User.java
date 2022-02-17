@@ -64,6 +64,8 @@ public class User implements UserDetails {
   @Column
   private boolean enabled = true;
 
+  @Column(columnDefinition="BOOLEAN DEFAULT false")
+  private boolean autoRenew = false;
 
   private transient UserSubscription subscription;
 
