@@ -70,4 +70,7 @@ type Mutation {
 
     #subscription
     renewWithoutGroup(username: String!, days: Int!) : UserSubscriptionView
+    resetUserSubscriptionWithCurrentGroup(username: String!) : UserSubscriptionView
+    resetUserSubscriptionWithNewGroup(username: String!, groupId: Int!) : UserSubscriptionView
+
 }

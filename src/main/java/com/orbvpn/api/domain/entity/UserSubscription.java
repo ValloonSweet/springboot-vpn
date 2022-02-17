@@ -69,6 +69,6 @@ public class UserSubscription {
 
     this.duration += days;
     this.expiresAt = this.expiresAt.plusDays(days);
-    this.updatedAt = LocalDateTime.now();
   }
+
 }

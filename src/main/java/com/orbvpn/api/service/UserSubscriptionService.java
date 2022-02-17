@@ -1,8 +1,6 @@
 package com.orbvpn.api.service;
 
-import com.orbvpn.api.domain.dto.UserSubscriptionView;
 import com.orbvpn.api.domain.entity.*;
-import com.orbvpn.api.mapper.UserSubscriptionViewMapper;
 import com.orbvpn.api.reposiitory.UserSubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,23 +19,25 @@ public class UserSubscriptionService {
 
     private final RadiusService radiusService;
     private final UserSubscriptionRepository userSubscriptionRepository;
+    private final GroupService groupService;
 
-    private final UserSubscriptionViewMapper userSubscriptionViewMapper;
+    public UserSubscription createUserSubscription(Payment payment) {
 
-    public UserSubscription createUserSubscription(Payment payment, Group group) {
         User user = payment.getUser();
+        Group group = groupService.getById(payment.getGroupId());
 
         log.info("Creating subscription for user with id {} for group {}", user.getId(), group.getId());
         UserSubscription userSubscription = new UserSubscription();
+        int duration = group.getDuration();
 
         userSubscription.setUser(user);
         userSubscription.setGroup(group);
         userSubscription.setPayment(payment);
-        userSubscription.setDuration(group.getDuration());
+        userSubscription.setDuration(duration);
         userSubscription.setDailyBandwidth(group.getDailyBandwidth());
         userSubscription.setDownloadUpload(group.getDownloadUpload());
         userSubscription.setMultiLoginCount(group.getMultiLoginCount());
-        userSubscription.setExpiresAt(payment.getExpiresAt());
+        userSubscription.setExpiresAt(LocalDateTime.now().plusDays(duration));
 
         userSubscriptionRepository.save(userSubscription);
         radiusService.deleteUserRadChecks(user);
@@ -49,21 +49,15 @@ public class UserSubscriptionService {
         userSubscriptionRepository.deleteByUser(user);
     }
 
+    public void saveUserSubscription(UserSubscription subscription) {
+        userSubscriptionRepository.save(subscription);
+    }
+
     public void updateSubscriptionMultiLoginCount(User user, int multiLoginCount) {
         UserSubscription subscription = getCurrentSubscription(user);
         subscription.setMultiLoginCount(multiLoginCount);
         userSubscriptionRepository.save(subscription);
         radiusService.editUserMoreLoginCount(user, multiLoginCount);
-    }
-
-    public UserSubscriptionView renewWithDayCount(User user, Integer days) {
-
-        UserSubscription subscription = getCurrentSubscription(user);
-        subscription.extendDuration(days);
-        userSubscriptionRepository.save(subscription);
-
-        log.info("The subscription period of User {} has increased by {} days.", user.getId(), days);
-        return userSubscriptionViewMapper.toView(subscription);
     }
 
     public UserSubscription getCurrentSubscription(User user) {
@@ -89,5 +83,6 @@ public class UserSubscriptionService {
         LocalDate localDate = LocalDate.now().minusDays(dayCount);
         return getUsersExpireAt(localDate);
     }
+
 }
 

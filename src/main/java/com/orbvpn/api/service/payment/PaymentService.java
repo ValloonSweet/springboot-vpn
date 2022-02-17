@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -72,8 +73,8 @@ public class PaymentService {
       if(payment.getExpiresAt() == null) {
         payment.setExpiresAt(LocalDateTime.now().plusDays(group.getDuration()));
       }
-
-      userSubscriptionService.createUserSubscription(payment, group);
+      // TODO check creating subscription here
+      //userSubscriptionService.createUserSubscription(payment, group);
     } else if (payment.getCategory() == PaymentCategory.MORE_LOGIN) {
       User user = payment.getUser();
       UserSubscription userSubscription = userSubscriptionService.getCurrentSubscription(user);
@@ -96,6 +97,7 @@ public class PaymentService {
     paymentRepository.save(payment);
   }
 
+    // TODO Fix payment issue
   public Payment renewPayment(Payment payment) throws Exception {
     Payment newPayment = Payment.builder()
       .user(payment.getUser())
@@ -121,7 +123,6 @@ public class PaymentService {
 
     paymentRepository.save(newPayment);
     fullFillPayment(newPayment);
-
     return newPayment;
   }
 
@@ -249,5 +250,9 @@ public class PaymentService {
     return multiLoginPrice;
   }
 
+  public List<Payment> findAllSubscriptionPaymentsToRenew() {
+
+    return paymentRepository.findAllSubscriptionPaymentsToRenew(LocalDateTime.now());
+  }
 
 }
