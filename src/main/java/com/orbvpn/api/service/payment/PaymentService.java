@@ -73,8 +73,8 @@ public class PaymentService {
       if(payment.getExpiresAt() == null) {
         payment.setExpiresAt(LocalDateTime.now().plusDays(group.getDuration()));
       }
-      // TODO check creating subscription here
-      //userSubscriptionService.createUserSubscription(payment, group);
+
+      userSubscriptionService.createUserSubscription(payment);
     } else if (payment.getCategory() == PaymentCategory.MORE_LOGIN) {
       User user = payment.getUser();
       UserSubscription userSubscription = userSubscriptionService.getCurrentSubscription(user);
