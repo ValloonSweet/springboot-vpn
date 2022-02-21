@@ -20,7 +20,7 @@ import java.util.List;
 @Transactional
 public class RenewUserSubscriptionService {
 
-  private final UserSubscriptionViewMapper userSubscriptionViewMapper;
+  private final UserSubscriptionViewMapper subscriptionViewMapper;
   private final UserSubscriptionService subscriptionService;
   private final PaymentService paymentService;
   private final RadiusService radiusService;
@@ -52,7 +52,7 @@ public class RenewUserSubscriptionService {
     radiusService.createUserRadChecks(subscription);
 
     log.info("The subscription period of User {} has increased by {} days.", user.getId(), days);
-    return userSubscriptionViewMapper.toView(subscription);
+    return subscriptionViewMapper.toView(subscription);
   }
 
   public UserSubscriptionView resetUserSubscription(User user) {
@@ -74,10 +74,9 @@ public class RenewUserSubscriptionService {
     currentPayment.setGroupId(groupId);
     subscription.setPayment(currentPayment);
 
-    Payment renewPayment = renewPayment(subscription.getPayment());
+    renewPayment(subscription.getPayment());
+    UserSubscription newSubscription = subscriptionService.getCurrentSubscription(user);
 
-    UserSubscription newSubscription = subscriptionService.createUserSubscription(renewPayment);
-
-    return userSubscriptionViewMapper.toView(newSubscription);
+    return subscriptionViewMapper.toView(newSubscription);
   }
 }
