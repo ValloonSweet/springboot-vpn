@@ -3,19 +3,20 @@ package com.orbvpn.api.reposiitory;
 import com.orbvpn.api.domain.entity.Payment;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.enums.GatewayName;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 public interface PaymentRepository extends JpaRepository<Payment, Integer> {
   void deleteByUser(User user);
 
   Optional<Payment> findByGatewayAndPaymentId(GatewayName gateway, String paymentId);
 
-  @Query("select payment from Payment payment where payment.renew = true and payment.expiresAt < :dateTime and payment.category = 'GROUP'")
+  @Query("select payment from Payment payment, User user where user.id = payment.user and user.autoRenew = true and payment.expiresAt < :dateTime and payment.category = 'GROUP'")
   List<Payment> findAllSubscriptionPaymentsToRenew(LocalDateTime dateTime);
 
   @Query("select count(payment.id) from Payment payment where payment.createdAt > :createdAt and payment.renewed = true and payment.category = 'GROUP'")
