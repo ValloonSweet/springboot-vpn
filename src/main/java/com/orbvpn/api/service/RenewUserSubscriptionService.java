@@ -5,6 +5,7 @@ import com.orbvpn.api.domain.entity.Group;
 import com.orbvpn.api.domain.entity.Payment;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.entity.UserSubscription;
+import com.orbvpn.api.exception.NotFoundException;
 import com.orbvpn.api.mapper.UserSubscriptionViewMapper;
 import com.orbvpn.api.service.payment.PaymentService;
 import lombok.RequiredArgsConstructor;
@@ -70,6 +71,9 @@ public class RenewUserSubscriptionService {
 
     UserSubscription subscription = subscriptionService.getCurrentSubscription(user);
     Payment currentPayment = subscription.getPayment();
+    if (currentPayment == null) {
+      throw new NotFoundException("Subscription of this user does not have a Payment!");
+    }
 
     currentPayment.setGroupId(groupId);
     subscription.setPayment(currentPayment);
