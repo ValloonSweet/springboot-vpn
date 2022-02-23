@@ -22,6 +22,7 @@ import java.util.List;
 public class RenewUserSubscriptionService {
 
   private final UserSubscriptionViewMapper subscriptionViewMapper;
+  private final ResellerUserService resellerUserService;
   private final UserSubscriptionService subscriptionService;
   private final PaymentService paymentService;
   private final RadiusService radiusService;
@@ -79,6 +80,30 @@ public class RenewUserSubscriptionService {
     subscription.setPayment(currentPayment);
 
     renewPayment(subscription.getPayment());
+    UserSubscription newSubscription = subscriptionService.getCurrentSubscription(user);
+
+    return subscriptionViewMapper.toView(newSubscription);
+  }
+
+  public UserSubscriptionView resellerRenewUserSubscription(User user) {
+
+    log.info("Reseller will renew User {}'s subscription with the current group.", user.getId());
+
+    Group currentGroup = subscriptionService.getCurrentSubscription(user).getGroup();
+
+    resellerUserService.createResellerUserSubscription(user, currentGroup);
+
+    UserSubscription newSubscription = subscriptionService.getCurrentSubscription(user);
+
+    return subscriptionViewMapper.toView(newSubscription);
+  }
+
+  public UserSubscriptionView resellerRenewUserSubscription(User user, Group group) {
+
+    log.info("Reseller will renew User {}'s subscription with group id {}", user.getId(), group.getId());
+
+    resellerUserService.createResellerUserSubscription(user, group);
+
     UserSubscription newSubscription = subscriptionService.getCurrentSubscription(user);
 
     return subscriptionViewMapper.toView(newSubscription);
