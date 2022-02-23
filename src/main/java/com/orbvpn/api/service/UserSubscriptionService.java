@@ -84,5 +84,9 @@ public class UserSubscriptionService {
         return getUsersExpireAt(localDate);
     }
 
+    public void save( UserSubscription userSubscription) {
+        userSubscriptionRepository.save(userSubscription);
+    }
+
 }
 

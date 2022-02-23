@@ -3,11 +3,12 @@ package com.orbvpn.api.service;
 import com.orbvpn.api.domain.entity.MoreLoginCount;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.reposiitory.MoreLoginCountRepository;
-import java.time.LocalDateTime;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -36,8 +37,10 @@ public class MoreLoginCountService {
         log.error("Couldn't remove more login {}", ex.getMessage());
       }
     }
+  }
 
+  public void save(MoreLoginCount moreLoginCount) {
 
-
+    moreLoginCountRepository.save(moreLoginCount);
   }
 }

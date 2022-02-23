@@ -8,11 +8,12 @@ import com.orbvpn.api.exception.NotFoundException;
 import com.orbvpn.api.mapper.GroupEditMapper;
 import com.orbvpn.api.mapper.GroupViewMapper;
 import com.orbvpn.api.reposiitory.GroupRepository;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -83,4 +84,7 @@ public class GroupService {
       .orElseThrow(()->new NotFoundException("Group not found"));
   }
 
+  public Group getGroupIgnoreDelete(int id) {
+    return groupRepository.getGroupIgnoreDelete(id);
+  }
 }

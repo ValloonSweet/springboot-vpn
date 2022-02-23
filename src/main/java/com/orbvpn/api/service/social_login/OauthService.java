@@ -128,7 +128,6 @@ public class OauthService {
     user.setUsername(tokenData.getEmail());
     user.setEmail(tokenData.getEmail());
     passwordService.setPassword(user, password);
-    user.setRadAccessClear(password);
     Role role = roleService.getByName(RoleName.USER);
     user.setRole(role);
     user.setReseller(resellerService.getOwnerReseller());

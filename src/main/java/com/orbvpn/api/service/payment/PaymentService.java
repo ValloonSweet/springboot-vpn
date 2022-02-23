@@ -9,10 +9,7 @@ import com.orbvpn.api.domain.enums.GatewayName;
 import com.orbvpn.api.domain.enums.PaymentCategory;
 import com.orbvpn.api.domain.enums.PaymentStatus;
 import com.orbvpn.api.exception.PaymentException;
-import com.orbvpn.api.reposiitory.GroupRepository;
-import com.orbvpn.api.reposiitory.MoreLoginCountRepository;
 import com.orbvpn.api.reposiitory.PaymentRepository;
-import com.orbvpn.api.reposiitory.UserSubscriptionRepository;
 import com.orbvpn.api.service.*;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
@@ -34,20 +31,18 @@ import static java.time.temporal.ChronoUnit.DAYS;
 @Slf4j
 public class PaymentService {
 
+  private final UserSubscriptionService userSubscriptionService;
+  private final MoreLoginCountService moreLoginCountService;
   private final StripeService stripeService;
   private final PaypalService paypalService;
   private final AppleService appleService;
-  private final UserSubscriptionService userSubscriptionService;
   private final RadiusService radiusService;
   private final GroupService groupService;
   private final ParspalService parspalService;
   @Setter
   private UserService userService;
 
-  private final GroupRepository groupRepository;
   private final PaymentRepository paymentRepository;
-  private final UserSubscriptionRepository userSubscriptionRepository;
-  private final MoreLoginCountRepository moreLoginCountRepository;
 
   public void deleteUserPayments(User user) {
     paymentRepository.deleteByUser(user);
@@ -67,7 +62,7 @@ public class PaymentService {
     }
 
     if (payment.getCategory() == PaymentCategory.GROUP) {
-      Group group = groupRepository.getGroupIgnoreDelete(payment.getGroupId());
+      Group group = groupService.getGroupIgnoreDelete(payment.getGroupId());
 
       // For apple we are using expiresAt from api
       if(payment.getExpiresAt() == null) {
@@ -82,7 +77,7 @@ public class PaymentService {
 
       int multiLoginCount = userSubscription.getMultiLoginCount() + payment.getMoreLoginCount();
       userSubscription.setMultiLoginCount(multiLoginCount);
-      userSubscriptionRepository.save(userSubscription);
+      userSubscriptionService.save(userSubscription);
       radiusService.addUserMoreLoginCount(user, multiLoginCount);
       payment.setExpiresAt(expiresAt);
 
@@ -90,7 +85,7 @@ public class PaymentService {
       moreLoginCountEntity.setUser(user);
       moreLoginCountEntity.setExpiresAt(expiresAt);
       moreLoginCountEntity.setNumber(payment.getMoreLoginCount());
-      moreLoginCountRepository.save(moreLoginCountEntity);
+      moreLoginCountService.save(moreLoginCountEntity);
     }
 
     payment.setStatus(PaymentStatus.SUCCEEDED);
