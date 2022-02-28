@@ -103,7 +103,7 @@ public class NotificationService {
                         mailtoMessage("info@orbvpn.com",
                                 "Renew account order for expired subscription",
                                 "Please renew my account. My subscription has expired " + dayCount + " " +
-                                        (dayCount == 1 ? "day" : "days") + " ago.") + " if you would like to renew your service.";
+                                        (dayCount == 1 ? "day" : "days") + " ago.");
                 sendSms(userProfile, smsMessage);
                 sendEmail(userProfile, emailTitle, emailMessage);
             }
