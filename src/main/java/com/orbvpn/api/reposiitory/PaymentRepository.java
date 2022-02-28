@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PaymentRepository extends JpaRepository<Payment, Integer> {
+
   void deleteByUser(User user);
 
   Optional<Payment> findByGatewayAndPaymentId(GatewayName gateway, String paymentId);
