@@ -17,8 +17,8 @@ import java.util.List;
 @Transactional
 public class UserSubscriptionService {
 
-    private final RadiusService radiusService;
     private final UserSubscriptionRepository userSubscriptionRepository;
+    private final RadiusService radiusService;
     private final GroupService groupService;
 
     public UserSubscription createUserSubscription(Payment payment) {

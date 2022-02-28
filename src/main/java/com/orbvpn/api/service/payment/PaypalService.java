@@ -4,7 +4,6 @@ import com.orbvpn.api.config.PayPalClient;
 import com.orbvpn.api.domain.dto.PaypalCreatePaymentResponse;
 import com.orbvpn.api.domain.entity.Payment;
 import com.orbvpn.api.exception.PaymentException;
-import com.orbvpn.api.reposiitory.PaymentRepository;
 import com.paypal.http.HttpResponse;
 import com.paypal.orders.*;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,6 @@ import java.util.List;
 public class PaypalService {
 
   private final PayPalClient paypalClient;
-  private final PaymentRepository paymentRepository;
 
   public PaypalCreatePaymentResponse createPayment(Payment payment) throws IOException {
 
@@ -35,7 +33,6 @@ public class PaypalService {
     } else {
       throw new PaymentException("Can not create paypal order");
     }
-
 
     return paypalResponse;
   }

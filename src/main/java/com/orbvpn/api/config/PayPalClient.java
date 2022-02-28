@@ -2,9 +2,10 @@ package com.orbvpn.api.config;
 
 import com.paypal.core.PayPalEnvironment;
 import com.paypal.core.PayPalHttpClient;
-import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class PayPalClient {
@@ -16,7 +17,7 @@ public class PayPalClient {
   @Value("${paypal.client-id}")
   private String clientId;
   @Value("${paypal.secret}")
-  private String secret;
+  private String clientSecret;
   @Value("${paypal.mode}")
   private String mode;
 
@@ -29,9 +30,9 @@ public class PayPalClient {
     PayPalEnvironment environment;
 
     if (mode.equals("sandbox")) {
-      environment = new PayPalEnvironment.Sandbox(clientId, secret);
+      environment = new PayPalEnvironment.Sandbox(clientId, clientSecret);
     } else {
-      environment = new PayPalEnvironment.Live(clientId, secret);
+      environment = new PayPalEnvironment.Live(clientId, clientSecret);
     }
 
     /**
