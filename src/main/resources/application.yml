@@ -109,7 +109,7 @@ paypal:
   secret: EDS3YYiH3P7u7Rnwq5tdjH0_JAfR4RDSPVAtydY3cCbUtnnNC9FFQyRW2FkZ0yuLR5-e7nkTwbp-KfOp
   # client-id: ${PAYPAL_CLIEN_ID}
   # secret: ${PAYPAL_SECRET}
-  mode: sandbox
+  mode: live
 
 parspal:
   url: https://sandbox.api.parspal.com/v1/
