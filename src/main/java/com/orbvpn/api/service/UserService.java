@@ -310,4 +310,12 @@ public class UserService {
     userView.setUserDevicesInfo(getUserDeviceInfo());
     return userView;
   }
+
+  public Boolean editAutoRenew(Boolean isActive) {
+    User user = getUser();
+    user.setAutoRenew(isActive);
+    userRepository.save(user);
+
+    return true;
+  }
 }

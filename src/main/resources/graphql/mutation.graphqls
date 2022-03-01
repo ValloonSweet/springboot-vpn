@@ -3,6 +3,7 @@ type Mutation {
 
     register(userCreate: UserCreate!): AuthenticatedUser!
     editProfile(userProfile: UserProfileEdit): UserProfileView
+    editAutoRenew(isActive: Boolean!): Boolean
     login(email: String!, password: String!): AuthenticatedUser!
     requestResetPassword(email: String!): Boolean!
     resetPassword(token: String!, password: String!): Boolean!
