@@ -4,6 +4,7 @@ import com.orbvpn.api.domain.dto.StripeCreatePaymentIntentResponse;
 import com.orbvpn.api.domain.entity.Payment;
 import com.orbvpn.api.domain.entity.StripeCustomer;
 import com.orbvpn.api.domain.entity.User;
+import com.orbvpn.api.reposiitory.PaymentRepository;
 import com.orbvpn.api.reposiitory.StripeCustomerRepository;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
@@ -38,7 +39,7 @@ public class StripeService {
   }
 
   private final StripeCustomerRepository stripeCustomerRepository;
-  private final PaymentService paymentService;
+  private final PaymentRepository paymentRepository;
 
   public StripeCreatePaymentIntentResponse createStripePayment(Payment payment, User user) throws StripeException {
 
@@ -72,7 +73,7 @@ public class StripeService {
     PaymentIntent intent = PaymentIntent.create(createParams);
 
     payment.setPaymentId(intent.getId());
-    paymentService.save(payment);
+    paymentRepository.save(payment);
 
     StripeCreatePaymentIntentResponse stripeCreatePaymentIntentResponse = new StripeCreatePaymentIntentResponse();
     stripeCreatePaymentIntentResponse.setClientSecret(intent.getClientSecret());

@@ -250,8 +250,4 @@ public class PaymentService {
     return paymentRepository.findAllSubscriptionPaymentsToRenew(LocalDateTime.now());
   }
 
-  public void save(Payment payment) {
-    paymentRepository.save(payment);
-  }
-
 }
