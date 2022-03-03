@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Iterator;
 import java.util.List;
 
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -247,7 +248,18 @@ public class PaymentService {
 
   public List<Payment> findAllSubscriptionPaymentsToRenew() {
 
-    return paymentRepository.findAllSubscriptionPaymentsToRenew(LocalDateTime.now());
+    List<Payment> paymentsToRenew = paymentRepository.findAllSubscriptionPaymentsToRenew(LocalDateTime.now());
+    Iterator<Payment> paymentIterator = paymentsToRenew.iterator();
+
+    while (paymentIterator.hasNext()) {
+      Payment payment = paymentIterator.next();
+
+      UserSubscription currentSubscription = userSubscriptionService.getCurrentSubscription(payment.getUser());
+      if (currentSubscription.getPayment() != payment)
+        paymentIterator.remove();
+    }
+
+     return paymentsToRenew;
   }
 
 }
