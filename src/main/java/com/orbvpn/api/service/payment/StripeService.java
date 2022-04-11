@@ -1,6 +1,6 @@
 package com.orbvpn.api.service.payment;
 
-import com.orbvpn.api.domain.dto.StripeCreatePaymentIntentResponse;
+import com.orbvpn.api.domain.dto.StripePaymentResponse;
 import com.orbvpn.api.domain.entity.Payment;
 import com.orbvpn.api.domain.entity.StripeCustomer;
 import com.orbvpn.api.domain.entity.User;
@@ -28,6 +28,9 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 @Slf4j
 public class StripeService {
+
+  private final double STRIPE_FEE = 2.9;
+
   @Value("${stripe.api.public-key}")
   private String STRIPE_PUBLIC_KEY;
   @Value("${stripe.api.secret-key}")
@@ -41,7 +44,7 @@ public class StripeService {
   private final StripeCustomerRepository stripeCustomerRepository;
   private final PaymentRepository paymentRepository;
 
-  public StripeCreatePaymentIntentResponse createStripePayment(Payment payment, User user) throws StripeException {
+  public StripePaymentResponse createStripePayment(Payment payment, User user, String stripeMethodId) throws StripeException {
 
     StripeCustomer stripeCustomer = stripeCustomerRepository.findByUser(user);
 
@@ -57,27 +60,25 @@ public class StripeService {
       stripeCustomerRepository.save(stripeCustomer);
     }
 
-    BigDecimal price = payment.getPrice().multiply(new BigDecimal(100));
-
-    Builder builder = new Builder()
-      .setCurrency("usd")
-      .setAmount(price.longValue());
+    BigDecimal amount = payment.getPrice().multiply(new BigDecimal(100));
+    Builder createParams = new Builder()
+      .setCurrency("USD")
+      .setAmount(amount.longValue())
+      .setPaymentMethod(stripeMethodId)
+      .setConfirm(true)
+      .setConfirmationMethod(PaymentIntentCreateParams.ConfirmationMethod.MANUAL);
 
     if (payment.isRenew()) {
-      builder.setCustomer(stripeCustomer.getStripeId());
-      builder.setSetupFutureUsage(PaymentIntentCreateParams.SetupFutureUsage.OFF_SESSION);
+      createParams.setCustomer(stripeCustomer.getStripeId());
+      createParams.setSetupFutureUsage(PaymentIntentCreateParams.SetupFutureUsage.OFF_SESSION);
     }
 
-    PaymentIntentCreateParams createParams = builder.build();
-    // Create a PaymentIntent with the order amount and currency
-    PaymentIntent intent = PaymentIntent.create(createParams);
+    PaymentIntent intent = PaymentIntent.create(createParams.build());
 
     payment.setPaymentId(intent.getId());
     paymentRepository.save(payment);
 
-    StripeCreatePaymentIntentResponse stripeCreatePaymentIntentResponse = new StripeCreatePaymentIntentResponse();
-    stripeCreatePaymentIntentResponse.setClientSecret(intent.getClientSecret());
-    return stripeCreatePaymentIntentResponse;
+    return generateResponse(intent);
   }
 
   public PaymentIntent renewStripePayment(Payment payment) throws Exception {
@@ -109,5 +110,56 @@ public class StripeService {
         .build();
 
     return PaymentIntent.create(params);
+  }
+
+  public double getStripeFee(int userId, double amount) {
+    return  (amount * STRIPE_FEE / 100) + 30;
+  }
+
+  public double getTotalAmount(int userId, double amount) {
+    double fee = getStripeFee(userId, amount);
+    return amount + fee;
+  }
+
+  protected StripePaymentResponse generateResponse(PaymentIntent intent) {
+
+    StripePaymentResponse response = new StripePaymentResponse();
+    if(intent == null) {
+      response.setError("Unrecognized status");
+      return response;
+    }
+    switch (intent.getStatus()) {
+      case "requires_action":
+        response.setClientSecret(intent.getClientSecret());
+        response.setRequiresAction(true);
+        break;
+      case "requires_source_action":
+        // Card requires authentication
+        response.setClientSecret(intent.getClientSecret());
+        response.setPaymentIntentId(intent.getId());
+        response.setRequiresAction(true);
+        break;
+      case "requires_payment_method":
+        response.setError("requires_payment_method");
+        break;
+      case "requires_capture":
+        response.setRequiresAction(false);
+        response.setClientSecret(intent.getClientSecret());
+        break;
+      case "requires_source":
+        // Card was not properly authenticated, suggest a new payment method
+        response.setError("Your card was denied, please provide a new payment method");
+        break;
+      case "succeeded":
+        log.info("💰 Payment received!");
+        // Payment is complete, authentication not required
+        // To cancel the payment after capture you will need to issue a Refund
+        // (https://stripe.com/docs/api/refunds)
+        response.setClientSecret(intent.getClientSecret());
+        break;
+      default:
+        response.setError("Unrecognized status");
+    }
+    return response;
   }
 }

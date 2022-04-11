@@ -2,7 +2,7 @@ package com.orbvpn.api.resolver.mutation;
 
 import com.orbvpn.api.domain.dto.ParspalCreatePaymentResponse;
 import com.orbvpn.api.domain.dto.PaypalCreatePaymentResponse;
-import com.orbvpn.api.domain.dto.StripeCreatePaymentIntentResponse;
+import com.orbvpn.api.domain.dto.StripePaymentResponse;
 import com.orbvpn.api.domain.enums.PaymentCategory;
 import com.orbvpn.api.service.payment.PaymentService;
 import com.stripe.exception.StripeException;
@@ -18,12 +18,10 @@ public class PaymentMutation implements GraphQLMutationResolver {
 
   private final PaymentService paymentService;
 
-
-  public StripeCreatePaymentIntentResponse stripeCreatePayment(PaymentCategory category,
-    int groupId,
-    int moreLoginCount, boolean renew)
+  public StripePaymentResponse stripeCreatePayment(PaymentCategory category, int groupId,
+                                                   int moreLoginCount, boolean renew, String paymentMethodId)
     throws StripeException {
-    return paymentService.stripeCreatePayment(category, groupId, moreLoginCount, renew);
+    return paymentService.stripeCreatePayment(category, groupId, moreLoginCount, renew, paymentMethodId);
   }
 
   public PaypalCreatePaymentResponse paypalCreatePayment(PaymentCategory category, int groupId,

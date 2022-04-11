@@ -11,6 +11,13 @@ type StripeCreatePaymentIntentResponse {
     clientSecret: String
 }
 
+type StripePaymentResponse {
+    clientSecret: String
+    paymentIntentId: String
+    requiresAction : Boolean
+    error : String
+}
+
 type PaypalCreatePaymentResponse {
     orderId: String
 }

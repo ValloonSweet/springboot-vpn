@@ -3,7 +3,7 @@ package com.orbvpn.api.service.payment;
 import com.orbvpn.api.domain.dto.AppleSubscriptionData;
 import com.orbvpn.api.domain.dto.ParspalCreatePaymentResponse;
 import com.orbvpn.api.domain.dto.PaypalCreatePaymentResponse;
-import com.orbvpn.api.domain.dto.StripeCreatePaymentIntentResponse;
+import com.orbvpn.api.domain.dto.StripePaymentResponse;
 import com.orbvpn.api.domain.entity.*;
 import com.orbvpn.api.domain.enums.GatewayName;
 import com.orbvpn.api.domain.enums.PaymentCategory;
@@ -122,15 +122,13 @@ public class PaymentService {
     return newPayment;
   }
 
-
-  public StripeCreatePaymentIntentResponse stripeCreatePayment(PaymentCategory category,
-    int groupId,
-    int moreLoginCount, boolean renew)
+  public StripePaymentResponse stripeCreatePayment(PaymentCategory category, int groupId,
+                                                   int moreLoginCount, boolean renew, String paymentMethodId)
     throws StripeException {
 
     Payment payment = createPayment(GatewayName.STRIPE, category, groupId, moreLoginCount, renew);
     User user = userService.getUser();
-    return stripeService.createStripePayment(payment, user);
+    return stripeService.createStripePayment(payment, user, paymentMethodId);
   }
 
   public PaypalCreatePaymentResponse paypalCreatePayment(PaymentCategory category, int groupId, int moreLoginCount) throws Exception {

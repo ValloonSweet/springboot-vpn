@@ -48,7 +48,7 @@ type Mutation {
     replyToTicket(ticketId: Int!, reply: TicketReplyCreate): TicketReplyView
 
     # payment
-    stripeCreatePayment(category: PaymentCategory!, groupId: Int, moreLoginCount: Int, renew: Boolean): StripeCreatePaymentIntentResponse
+    stripeCreatePayment(category: PaymentCategory!, groupId: Int, moreLoginCount: Int, renew: Boolean, stripeMethodId: String): StripePaymentResponse
     paypalCreatePayment(category: PaymentCategory!, groupId: Int, moreLoginCount: Int): PaypalCreatePaymentResponse
     paypalApprovePayment(orderId: String): Boolean
     appleCreatePayment(receipt: String): Boolean

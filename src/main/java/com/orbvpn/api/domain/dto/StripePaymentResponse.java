@@ -5,6 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class StripeCreatePaymentIntentResponse {
+public class StripePaymentResponse {
   private String clientSecret;
+  private String paymentIntentId;
+  private Boolean requiresAction;
+  private String error;
 }
