@@ -1,25 +1,21 @@
 package com.orbvpn.api.service;
 
 
-import com.orbvpn.api.domain.entity.Nas;
-import com.orbvpn.api.domain.entity.RadCheck;
-import com.orbvpn.api.domain.entity.Server;
-import com.orbvpn.api.domain.entity.User;
-import com.orbvpn.api.domain.entity.UserSubscription;
+import com.orbvpn.api.domain.entity.*;
 import com.orbvpn.api.exception.NotFoundException;
 import com.orbvpn.api.reposiitory.NasRepository;
 import com.orbvpn.api.reposiitory.RadAcctRepository;
 import com.orbvpn.api.reposiitory.RadCheckRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -54,6 +50,17 @@ public class RadiusService {
     nas.setShortName(server.getHostName());
     nas.setType(server.getType());
     nas.setSecret(server.getSecret());
+  }
+
+  public void updateUserExpirationRadCheck(UserSubscription userSubscription) {
+    User user = userSubscription.getUser();
+    String username = user.getUsername();
+    String updatedExpireDate = convertToExpirationString(userSubscription.getExpiresAt());
+
+    RadCheck radCheck = radCheckRepository.findByAttributeAndUsername("Expiration",username).get(0);
+    radCheck.setValue(updatedExpireDate);
+
+    radCheckRepository.save(radCheck);
   }
 
   @Transactional

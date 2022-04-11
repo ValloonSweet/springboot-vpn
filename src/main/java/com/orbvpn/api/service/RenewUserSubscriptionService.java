@@ -51,7 +51,7 @@ public class RenewUserSubscriptionService {
     UserSubscription subscription = subscriptionService.getCurrentSubscription(user);
     subscription.extendDuration(days);
     subscriptionService.saveUserSubscription(subscription);
-    radiusService.createUserRadChecks(subscription);
+    radiusService.updateUserExpirationRadCheck(subscription);
 
     log.info("The subscription period of User {} has increased by {} days.", user.getId(), days);
     return subscriptionViewMapper.toView(subscription);
