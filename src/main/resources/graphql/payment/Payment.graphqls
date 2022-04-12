@@ -22,6 +22,11 @@ type PaypalCreatePaymentResponse {
     orderId: String
 }
 
+type PaypalApprovePaymentResponse {
+    success: Boolean
+    errorMessage: String
+}
+
 type ParspalCreatePaymentResponse {
     payment_id: String,
     link: String,

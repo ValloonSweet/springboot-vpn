@@ -1,9 +1,6 @@
 package com.orbvpn.api.service.payment;
 
-import com.orbvpn.api.domain.dto.AppleSubscriptionData;
-import com.orbvpn.api.domain.dto.ParspalCreatePaymentResponse;
-import com.orbvpn.api.domain.dto.PaypalCreatePaymentResponse;
-import com.orbvpn.api.domain.dto.StripePaymentResponse;
+import com.orbvpn.api.domain.dto.*;
 import com.orbvpn.api.domain.entity.*;
 import com.orbvpn.api.domain.enums.GatewayName;
 import com.orbvpn.api.domain.enums.PaymentCategory;
@@ -152,13 +149,13 @@ public class PaymentService {
     return true;
   }
 
-  public boolean paypalApprovePayment(String orderId) throws Exception {
-    boolean approved = paypalService.approvePayment(orderId);
-    if (approved) {
+  public PaypalApprovePaymentResponse paypalApprovePayment(String orderId) throws Exception {
+    PaypalApprovePaymentResponse approveResponse = paypalService.approvePayment(orderId);
+    if (approveResponse.isSuccess()) {
       fullFillPayment(GatewayName.PAYPAL, orderId);
     }
 
-    return approved;
+    return approveResponse;
   }
 
   public ParspalCreatePaymentResponse parspalCreatePayment(PaymentCategory category, int groupId,

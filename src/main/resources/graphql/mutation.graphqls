@@ -50,7 +50,7 @@ type Mutation {
     # payment
     stripeCreatePayment(category: PaymentCategory!, groupId: Int, moreLoginCount: Int, renew: Boolean, stripeMethodId: String): StripePaymentResponse
     paypalCreatePayment(category: PaymentCategory!, groupId: Int, moreLoginCount: Int): PaypalCreatePaymentResponse
-    paypalApprovePayment(orderId: String): Boolean
+    paypalApprovePayment(orderId: String): PaypalApprovePaymentResponse
     appleCreatePayment(receipt: String): Boolean
     parspalCreatePayment(category: PaymentCategory!, groupId: Int, moreLoginCount: Int) : ParspalCreatePaymentResponse
     parspalApprovePayment(payment_id: String, receipt_number: String): Boolean

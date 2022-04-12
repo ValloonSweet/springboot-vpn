@@ -1,12 +1,14 @@
 package com.orbvpn.api.service.payment;
 
 import com.orbvpn.api.config.PayPalClient;
+import com.orbvpn.api.domain.dto.PaypalApprovePaymentResponse;
 import com.orbvpn.api.domain.dto.PaypalCreatePaymentResponse;
 import com.orbvpn.api.domain.entity.Payment;
 import com.orbvpn.api.exception.PaymentException;
 import com.paypal.http.HttpResponse;
 import com.paypal.orders.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PaypalService {
@@ -37,14 +40,21 @@ public class PaypalService {
     return paypalResponse;
   }
 
-  public boolean approvePayment(String orderId) throws IOException {
+  public PaypalApprovePaymentResponse approvePayment(String orderId) {
     OrdersCaptureRequest request = new OrdersCaptureRequest(orderId);
     request.requestBody(new OrderRequest());
+    PaypalApprovePaymentResponse response = new PaypalApprovePaymentResponse();
     //3. Call PayPal to capture an order
-    HttpResponse<Order> response = paypalClient.client().execute(request);
+    try {
+      HttpResponse<Order> paypalResponse = paypalClient.client().execute(request);
+      response.setSuccess(paypalResponse.statusCode() == HttpStatus.SC_OK);
+    } catch (Exception ex) {
+      log.error(ex.getMessage());
+      response.setSuccess(false);
+      response.setErrorMessage(ex.getMessage());
+    }
     //4. Save the capture ID to your database. Implement logic to save capture to your database for future reference.
-
-    return response.statusCode() == HttpStatus.SC_OK;
+    return response;
   }
 
   private OrderRequest buildRequestBody(String amount) {

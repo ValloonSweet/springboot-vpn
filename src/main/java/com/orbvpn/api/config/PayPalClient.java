@@ -35,7 +35,7 @@ public class PayPalClient {
       environment = new PayPalEnvironment.Live(clientId, clientSecret);
     }
 
-    /**
+    /*
      *PayPal HTTP client instance with environment that has access
      *credentials context. Use to invoke PayPal APIs.
      */
