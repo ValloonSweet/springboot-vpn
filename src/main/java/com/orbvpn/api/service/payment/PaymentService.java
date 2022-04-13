@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
@@ -149,7 +150,7 @@ public class PaymentService {
     return true;
   }
 
-  public PaypalApprovePaymentResponse paypalApprovePayment(String orderId) throws Exception {
+  public PaypalApprovePaymentResponse paypalApprovePayment(String orderId) {
     PaypalApprovePaymentResponse approveResponse = paypalService.approvePayment(orderId);
     if (approveResponse.isSuccess()) {
       fullFillPayment(GatewayName.PAYPAL, orderId);
@@ -194,6 +195,7 @@ public class PaymentService {
       .status(PaymentStatus.PENDING)
       .gateway(gateway)
       .category(PaymentCategory.GROUP)
+      .moreLoginCount(group.getMultiLoginCount())
       .price(group.getPrice())
       .groupId(groupId)
       .renew(renew)
@@ -229,16 +231,16 @@ public class PaymentService {
     BigDecimal groupPrice = group.getPrice();
 
     BigDecimal serviceGroupDiscountMultiplier = BigDecimal.ONE
-      .subtract(serviceGroup.getDiscount().divide(new BigDecimal(100)));
+      .subtract(serviceGroup.getDiscount().divide(new BigDecimal(100),RoundingMode.HALF_UP));
 
     LocalDateTime expiresAt = subscription.getExpiresAt();
     BigDecimal expirationDays  = new BigDecimal(DAYS.between(now, expiresAt));
 
     BigDecimal accountDays = new BigDecimal(DAYS.between(user.getCreatedAt(), now));
 
-   BigDecimal multiLoginPrice = new BigDecimal(number).multiply(groupPrice).multiply(serviceGroupDiscountMultiplier).multiply(expirationDays).divide(accountDays);
-
-    return multiLoginPrice;
+   return new BigDecimal(number).multiply(groupPrice)
+           .multiply(serviceGroupDiscountMultiplier).multiply(expirationDays)
+           .divide(accountDays, RoundingMode.UP);
   }
 
   public List<Payment> findAllSubscriptionPaymentsToRenew() {

@@ -15,6 +15,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 
   void deleteByUser(User user);
 
+  @Query("select payment from Payment payment where payment.gateway = :gateway and payment.paymentId = :paymentId")
   Optional<Payment> findByGatewayAndPaymentId(GatewayName gateway, String paymentId);
 
   @Query("select payment from Payment payment, User user where user.id = payment.user and user.autoRenew = true and payment.expiresAt < :dateTime and payment.category = 'GROUP'")
