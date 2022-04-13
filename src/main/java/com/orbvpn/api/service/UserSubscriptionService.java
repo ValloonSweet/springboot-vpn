@@ -61,11 +61,7 @@ public class UserSubscriptionService {
     }
 
     public UserSubscription getCurrentSubscription(User user) {
-        UserSubscription subscription = userSubscriptionRepository.findFirstByUserOrderByCreatedAtDesc(user);
-        if(subscription.getExpiresAt().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("User subscription is already expired.");
-        }
-        return subscription;
+        return userSubscriptionRepository.findFirstByUserOrderByCreatedAtDesc(user);
     }
 
     public List<UserProfile> getUsersExpireBetween(LocalDateTime startTime, LocalDateTime endTime) {
