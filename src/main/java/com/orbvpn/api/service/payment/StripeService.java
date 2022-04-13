@@ -4,6 +4,7 @@ import com.orbvpn.api.domain.dto.StripePaymentResponse;
 import com.orbvpn.api.domain.entity.Payment;
 import com.orbvpn.api.domain.entity.StripeCustomer;
 import com.orbvpn.api.domain.entity.User;
+import com.orbvpn.api.domain.enums.PaymentStatus;
 import com.orbvpn.api.reposiitory.PaymentRepository;
 import com.orbvpn.api.reposiitory.StripeCustomerRepository;
 import com.stripe.Stripe;
@@ -74,11 +75,9 @@ public class StripeService {
     }
 
     PaymentIntent intent = PaymentIntent.create(createParams.build());
-
     payment.setPaymentId(intent.getId());
-    paymentRepository.save(payment);
 
-    return generateResponse(intent);
+    return generateResponse(intent, payment);
   }
 
   public PaymentIntent renewStripePayment(Payment payment) throws Exception {
@@ -121,11 +120,12 @@ public class StripeService {
     return amount + fee;
   }
 
-  protected StripePaymentResponse generateResponse(PaymentIntent intent) {
+  protected StripePaymentResponse generateResponse(PaymentIntent intent,Payment payment) {
 
     StripePaymentResponse response = new StripePaymentResponse();
     if(intent == null) {
       response.setError("Unrecognized status");
+      payment.setStatus(PaymentStatus.FAILED);
       return response;
     }
     switch (intent.getStatus()) {
@@ -141,6 +141,7 @@ public class StripeService {
         break;
       case "requires_payment_method":
         response.setError("requires_payment_method");
+        payment.setStatus(PaymentStatus.FAILED);
         break;
       case "requires_capture":
         response.setRequiresAction(false);
@@ -149,6 +150,7 @@ public class StripeService {
       case "requires_source":
         // Card was not properly authenticated, suggest a new payment method
         response.setError("Your card was denied, please provide a new payment method");
+        payment.setStatus(PaymentStatus.FAILED);
         break;
       case "succeeded":
         log.info("💰 Payment received!");
@@ -156,10 +158,14 @@ public class StripeService {
         // To cancel the payment after capture you will need to issue a Refund
         // (https://stripe.com/docs/api/refunds)
         response.setClientSecret(intent.getClientSecret());
+        response.setPaymentIntentId(intent.getId());
+        payment.setStatus(PaymentStatus.SUCCEEDED);
         break;
       default:
         response.setError("Unrecognized status");
+        payment.setStatus(PaymentStatus.FAILED);
     }
+    paymentRepository.save(payment);
     return response;
   }
 }
