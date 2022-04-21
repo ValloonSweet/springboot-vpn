@@ -13,6 +13,7 @@ public class JobService {
 
   private static final int HOUR_RATE = 60 * 60 * 1000;
   private static final int TEN_MINUTES_RATE = 10 * 60 * 1000;
+  private static final int FIVE_MINUTES_RATE = 5 * 60 * 1000;
   private static final String EVERY_1AM_LONDON_TIME = "0 0 1 * * ?";
 
   private final HelpCenterService helpCenterService;
@@ -50,7 +51,7 @@ public class JobService {
     log.info("Finished removing expired more login count");
   }
 
-  @Scheduled(cron = EVERY_1AM_LONDON_TIME)
+  @Scheduled(fixedRate = FIVE_MINUTES_RATE)
   public void removeAllRadacctTemporarily() {
     //https://freeradius-users.freeradius.narkive.com/5ULrgWHb/user-freezing
     log.info("Started removing all radacct records");
