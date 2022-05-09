@@ -5,9 +5,11 @@ import com.orbvpn.api.domain.entity.*;
 import com.orbvpn.api.domain.enums.GatewayName;
 import com.orbvpn.api.domain.enums.PaymentCategory;
 import com.orbvpn.api.domain.enums.PaymentStatus;
+import com.orbvpn.api.domain.payload.CoinPayment.CoinPaymentResponse;
 import com.orbvpn.api.exception.PaymentException;
 import com.orbvpn.api.reposiitory.PaymentRepository;
 import com.orbvpn.api.service.*;
+import com.orbvpn.api.service.payment.coinpayment.CoinPaymentService;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,7 @@ public class PaymentService {
   private final MoreLoginCountService moreLoginCountService;
   private final StripeService stripeService;
   private final PaypalService paypalService;
+  private final CoinPaymentService coinpaymentService;
   private final AppleService appleService;
   private final RadiusService radiusService;
   private final GroupService groupService;
@@ -132,6 +135,19 @@ public class PaymentService {
   public PaypalCreatePaymentResponse paypalCreatePayment(PaymentCategory category, int groupId, int moreLoginCount) throws Exception {
     Payment payment = createPayment(GatewayName.PAYPAL, category, groupId, moreLoginCount, false);
     return paypalService.createPayment(payment);
+  }
+
+
+  public CoinPaymentResponse coinpaymentCreatePayment(PaymentCategory category, int groupId, int moreLoginCount,
+                                                      String coin) throws Exception {
+    Payment payment = createPayment(GatewayName.COIN_PAYMENT, category, groupId, moreLoginCount, false);
+    User user = userService.getUser();
+    CoinPayment coinPayment = CoinPayment.builder()
+      .user(user)
+      .payment(payment)
+      .coin(coin)
+      .build();
+    return coinpaymentService.createPayment(coinPayment);
   }
 
   public boolean appleCreatePayment(String receipt) {

@@ -18,6 +18,19 @@ type StripePaymentResponse {
     error : String
 }
 
+type CoinPaymentResponse{
+    id : Int
+    error : String
+    address: String
+    amount: String
+    txn_id: String
+    confirms_needed: String
+    timeout: Int
+    checkout_url: String
+    status_url: String
+    qrcode_url: String
+}
+
 type PaypalCreatePaymentResponse {
     orderId: String
 }

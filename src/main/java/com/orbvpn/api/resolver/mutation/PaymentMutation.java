@@ -5,6 +5,7 @@ import com.orbvpn.api.domain.dto.PaypalApprovePaymentResponse;
 import com.orbvpn.api.domain.dto.PaypalCreatePaymentResponse;
 import com.orbvpn.api.domain.dto.StripePaymentResponse;
 import com.orbvpn.api.domain.enums.PaymentCategory;
+import com.orbvpn.api.domain.payload.CoinPayment.CoinPaymentResponse;
 import com.orbvpn.api.service.payment.PaymentService;
 import com.stripe.exception.StripeException;
 import graphql.kickstart.tools.GraphQLMutationResolver;
@@ -24,6 +25,11 @@ public class PaymentMutation implements GraphQLMutationResolver {
     throws StripeException {
     return paymentService.stripeCreatePayment(category, groupId, moreLoginCount, renew, paymentMethodId);
   }
+  public CoinPaymentResponse coinpaymentCreatePayment(PaymentCategory category, int groupId, int moreLoginCount,
+                                                      String coin) throws Exception {
+
+    return paymentService.coinpaymentCreatePayment(category, groupId, moreLoginCount,coin);
+  }
 
   public PaypalCreatePaymentResponse paypalCreatePayment(PaymentCategory category, int groupId,
     int moreLoginCount)
@@ -31,7 +37,7 @@ public class PaymentMutation implements GraphQLMutationResolver {
     return paymentService.paypalCreatePayment(category, groupId, moreLoginCount);
   }
 
-  public PaypalApprovePaymentResponse paypalApprovePayment(String orderId) throws Exception {
+  public PaypalApprovePaymentResponse paypalApprovePayment(String orderId) {
     return paymentService.paypalApprovePayment(orderId);
   }
 

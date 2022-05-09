@@ -104,6 +104,16 @@ stripe:
     # public-key: pk_test_51IuGKuKHM8iu6lnJeXPVpGSNucHcJKMvMWYGartWgEFAj67M3DkgFZVVUORjiRHoQ5nao2EyB7EOk2gTUYTi5YtK00Yrmkfkzk
     # webhook-secret: ${STRIPE_API_WEBHOOK_SECRET}
 
+coinpayment:
+  merchant-id: 9fddb06e84bf319ec513a874924de7bc--test
+  ipn:
+    url: http://localhost:5000/ipn--test
+    secret: s^oQGj&6$*eC--test
+  key:
+    public: 510bdc1045030c9183b864aedeb791ece616da81983c65d6995b31f426ad317a--test
+    private: 02960e6c9263bc0D0Bc6283FBF688e7AA35A51D2a7ed95206E9de8E8f82C2602--test
+
+
 paypal:
   client-id: AQLq6ju_TV-1obwarCVgpoOFkEYuZzG0f4fWMvZ3W9OlO1Pzv1yviba1DWWkFaqMUQ_YUdoguIfxkj-f
   secret: EDS3YYiH3P7u7Rnwq5tdjH0_JAfR4RDSPVAtydY3cCbUtnnNC9FFQyRW2FkZ0yuLR5-e7nkTwbp-KfOp
