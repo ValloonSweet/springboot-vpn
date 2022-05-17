@@ -5,8 +5,6 @@ import static com.orbvpn.api.domain.enums.RoleName.Constants.ADMIN;
 import com.orbvpn.api.domain.dto.ResellerLevelCoefficientsView;
 import com.orbvpn.api.domain.dto.ResellerLevelView;
 import com.orbvpn.api.domain.dto.ResellerView;
-import com.orbvpn.api.domain.entity.ResellerLevel;
-import com.orbvpn.api.domain.entity.ResellerLevelCoefficients;
 import com.orbvpn.api.service.ResellerService;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import java.math.BigDecimal;

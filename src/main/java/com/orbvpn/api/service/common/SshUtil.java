@@ -1,11 +1,9 @@
 package com.orbvpn.api.service.common;
 
 import com.jcraft.jsch.*;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayOutputStream;
 
-@Slf4j
 public class SshUtil {
     public static String executeCommandUsingPss(String username, String sshPassword, String host, int port,
                                                 String command) throws JSchException, InterruptedException {

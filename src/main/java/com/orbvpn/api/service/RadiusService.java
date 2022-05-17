@@ -7,7 +7,6 @@ import com.orbvpn.api.reposiitory.NasRepository;
 import com.orbvpn.api.reposiitory.RadAcctRepository;
 import com.orbvpn.api.reposiitory.RadCheckRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +18,6 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class RadiusService {
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMMM dd yyyy HH:mm:ss");
 

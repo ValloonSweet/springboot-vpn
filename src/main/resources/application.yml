@@ -105,13 +105,13 @@ stripe:
     # webhook-secret: ${STRIPE_API_WEBHOOK_SECRET}
 
 coinpayment:
-  merchant-id: 9fddb06e84bf319ec513a874924de7bc--test
+  merchant-id: 9fddb06e84bf319ec513a874924de7bc
   ipn:
-    url: http://localhost:5000/ipn--test
-    secret: s^oQGj&6$*eC--test
+    url: https://orbnet.xyz/ipn
+    secret: s^oQGj&6$*eC
   key:
-    public: 510bdc1045030c9183b864aedeb791ece616da81983c65d6995b31f426ad317a--test
-    private: 02960e6c9263bc0D0Bc6283FBF688e7AA35A51D2a7ed95206E9de8E8f82C2602--test
+    public: 510bdc1045030c9183b864aedeb791ece616da81983c65d6995b31f426ad317a
+    private: 02960e6c9263bc0D0Bc6283FBF688e7AA35A51D2a7ed95206E9de8E8f82C2602
 
 
 paypal:

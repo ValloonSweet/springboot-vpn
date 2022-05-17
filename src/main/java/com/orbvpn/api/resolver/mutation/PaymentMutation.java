@@ -1,10 +1,13 @@
 package com.orbvpn.api.resolver.mutation;
 
+import java.io.IOException;
+
 import com.orbvpn.api.domain.dto.ParspalCreatePaymentResponse;
 import com.orbvpn.api.domain.dto.PaypalApprovePaymentResponse;
 import com.orbvpn.api.domain.dto.PaypalCreatePaymentResponse;
 import com.orbvpn.api.domain.dto.StripePaymentResponse;
 import com.orbvpn.api.domain.enums.PaymentCategory;
+import com.orbvpn.api.domain.payload.CoinPayment.AddressResponse;
 import com.orbvpn.api.domain.payload.CoinPayment.CoinPaymentResponse;
 import com.orbvpn.api.service.payment.PaymentService;
 import com.stripe.exception.StripeException;
@@ -25,10 +28,23 @@ public class PaymentMutation implements GraphQLMutationResolver {
     throws StripeException {
     return paymentService.stripeCreatePayment(category, groupId, moreLoginCount, renew, paymentMethodId);
   }
+
+  /**
+   * 
+   * @param category GROUP or More Login
+   * @param groupId ??
+   * @param moreLoginCount ??
+   * @param coin target coin => must be 'BTC.BEP20' format
+   * @return Coinpayment url will be returned including Deposit address and qrcode image??
+   * @throws Exception
+   */
   public CoinPaymentResponse coinpaymentCreatePayment(PaymentCategory category, int groupId, int moreLoginCount,
                                                       String coin) throws Exception {
-
     return paymentService.coinpaymentCreatePayment(category, groupId, moreLoginCount,coin);
+  }
+
+  public AddressResponse coinpaymentCreatePayment2(PaymentCategory category, int groupId, int moreLoginCount, String coin) throws IOException {
+    return paymentService.coinpaymentCreatePaymentV2(category, groupId, moreLoginCount, coin);
   }
 
   public PaypalCreatePaymentResponse paypalCreatePayment(PaymentCategory category, int groupId,

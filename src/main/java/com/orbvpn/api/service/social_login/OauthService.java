@@ -210,8 +210,9 @@ public class OauthService {
       Algorithm algorithm = Algorithm.RSA256((RSAPublicKey) jwk.getPublicKey(), null);
       algorithm.verify(jwt);
 
-      Claims claims = Jwts.parser().setSigningKey((RSAPublicKey)
-        jwk.getPublicKey()).parseClaimsJws(encryptedToken).getBody();
+      Claims claims = Jwts.parserBuilder().setSigningKey((RSAPublicKey)
+        jwk.getPublicKey()).build().parseClaimsJws(encryptedToken).getBody();
+
 
       return TokenData.builder()
         .email(claims.get("email", String.class))

@@ -3,8 +3,6 @@ package com.orbvpn.api.config.security;
 
 import static org.springframework.util.StringUtils.hasLength;
 
-import com.orbvpn.api.domain.entity.User;
-import com.orbvpn.api.reposiitory.UserRepository;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

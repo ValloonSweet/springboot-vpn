@@ -48,3 +48,14 @@ type ParspalCreatePaymentResponse {
     error_type: String,
     error_code: String
 }
+
+type AddressResult {
+    address: String
+    pubkey: String
+    dest_tag: Int
+}
+
+type AddressResponse {
+    error: String
+    result: AddressResult
+}

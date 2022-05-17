@@ -1,7 +1,6 @@
 package com.orbvpn.api.service;
 
 import com.orbvpn.api.domain.dto.AccountingView;
-import com.orbvpn.api.domain.enums.PaymentStatus;
 import com.orbvpn.api.reposiitory.PaymentRepository;
 import com.orbvpn.api.reposiitory.UserRepository;
 import com.orbvpn.api.reposiitory.UserSubscriptionRepository;

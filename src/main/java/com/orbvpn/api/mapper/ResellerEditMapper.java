@@ -7,7 +7,6 @@ import com.orbvpn.api.domain.entity.Reseller;
 import com.orbvpn.api.domain.entity.ResellerLevel;
 import com.orbvpn.api.domain.enums.ResellerLevelName;
 import com.orbvpn.api.reposiitory.ResellerLevelRepository;
-import com.orbvpn.api.service.ResellerService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

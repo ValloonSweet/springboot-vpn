@@ -5,11 +5,13 @@ import com.orbvpn.api.domain.entity.*;
 import com.orbvpn.api.domain.enums.GatewayName;
 import com.orbvpn.api.domain.enums.PaymentCategory;
 import com.orbvpn.api.domain.enums.PaymentStatus;
+import com.orbvpn.api.domain.payload.CoinPayment.AddressResponse;
 import com.orbvpn.api.domain.payload.CoinPayment.CoinPaymentResponse;
 import com.orbvpn.api.exception.PaymentException;
 import com.orbvpn.api.reposiitory.PaymentRepository;
 import com.orbvpn.api.service.*;
 import com.orbvpn.api.service.payment.coinpayment.CoinPaymentService;
+import com.orbvpn.api.utils.ThirdAPIUtils;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,8 @@ import java.util.List;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
+import java.io.IOException;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -41,6 +45,8 @@ public class PaymentService {
   private final RadiusService radiusService;
   private final GroupService groupService;
   private final ParspalService parspalService;
+  private final ThirdAPIUtils apiUtil;
+
   @Setter
   private UserService userService;
 
@@ -94,6 +100,7 @@ public class PaymentService {
     paymentRepository.save(payment);
   }
 
+
     // TODO Fix payment issue
   public Payment renewPayment(Payment payment) throws Exception {
     Payment newPayment = Payment.builder()
@@ -142,12 +149,36 @@ public class PaymentService {
                                                       String coin) throws Exception {
     Payment payment = createPayment(GatewayName.COIN_PAYMENT, category, groupId, moreLoginCount, false);
     User user = userService.getUser();
+    
+    // v1
     CoinPayment coinPayment = CoinPayment.builder()
       .user(user)
       .payment(payment)
       .coin(coin)
       .build();
-    return coinpaymentService.createPayment(coinPayment);
+
+      
+      return coinpaymentService.createPayment(coinPayment);
+    }
+    
+    public AddressResponse coinpaymentCreatePaymentV2(PaymentCategory category, int groupId, int moreLoginCount, String coin) throws IOException {
+      Payment payment = createPayment(GatewayName.COIN_PAYMENT, category, groupId, moreLoginCount, false);
+      var user = userService.getUser();
+      
+      // Get price
+      var usdPrice = payment.getPrice();
+      var cryptoName = coin.contains(".") ? coin.split(".")[0] : coin;
+      var cryptoPrice = apiUtil.getCryptoPriceBySymbol(cryptoName);
+      var cryptoAmount = usdPrice.doubleValue() / cryptoPrice;
+
+      // v2 using Callback Address
+      var coinPaymentCallback = CoinPaymentCallback.builder() 
+        .user(user)
+        .payment(payment)
+        .coin(coin)
+        .coinAmount(cryptoAmount)
+        .build();
+      return coinpaymentService.createPayment(coinPaymentCallback);
   }
 
   public boolean appleCreatePayment(String receipt) {

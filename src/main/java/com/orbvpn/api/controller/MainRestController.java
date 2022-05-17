@@ -4,12 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orbvpn.api.domain.dto.FacebookDeleteRequest;
 import com.orbvpn.api.domain.dto.FacebookDeleteRequestResponse;
 import com.orbvpn.api.domain.entity.OauthDeletedUser;
-import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.domain.enums.GatewayName;
 import com.orbvpn.api.exception.BadRequestException;
 import com.orbvpn.api.reposiitory.OauthDeletedUserRepository;
-import com.orbvpn.api.reposiitory.PaymentRepository;
-import com.orbvpn.api.service.UserService;
 import com.orbvpn.api.service.payment.PaymentService;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
@@ -46,9 +43,6 @@ public class MainRestController {
   private final OauthDeletedUserRepository oauthDeletedUserRepository;
 
   private final PaymentService paymentService;
-  private final PaymentRepository paymentRepository;
-  private final UserService userService;
-
 
   @PostMapping("/appstore/events")
   public ResponseEntity<?> handleAppStoreEvent(HttpServletRequest httpServletRequest) {
@@ -143,8 +137,6 @@ public class MainRestController {
     ObjectMapper objectMapper = new ObjectMapper();
     FacebookDeleteRequest facebookDeleteRequest = objectMapper
       .readValue(payloadBytes, FacebookDeleteRequest.class);
-
-    User user = userService.deleteOauthUser(facebookDeleteRequest.getUserId());
 
     OauthDeletedUser deletedUser = new OauthDeletedUser();
     deletedUser.setOauthId(facebookDeleteRequest.getUserId());

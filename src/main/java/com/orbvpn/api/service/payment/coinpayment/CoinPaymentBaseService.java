@@ -3,7 +3,6 @@ package com.orbvpn.api.service.payment.coinpayment;
 import com.google.gson.Gson;
 import com.orbvpn.api.domain.payload.CoinPayment.CoinPaymentsRateRequest;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.http.ParseException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -24,7 +23,6 @@ import java.security.NoSuchAlgorithmException;
 import static com.orbvpn.api.service.payment.coinpayment.Constants.COINS_API_URL;
 import static com.orbvpn.api.service.payment.coinpayment.Constants.HMAC_SHA_512;
 
-@Slf4j
 @Getter
 public class CoinPaymentBaseService {
 
@@ -38,7 +36,7 @@ public class CoinPaymentBaseService {
     protected String ipnSecret;
 
     @Value("${coinpayment.ipn.url}")
-    protected String ipnUrl;
+    protected String IPN_URL;
 
     @Value("${coinpayment.merchant-id}")
     protected String merchantId;
