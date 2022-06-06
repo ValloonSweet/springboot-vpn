@@ -39,6 +39,9 @@ public class Server {
   private String country;
 
   @Column
+  private String continent;
+
+  @Column
   private String secret;
 
   @Column
@@ -61,6 +64,9 @@ public class Server {
 
   @Column
   private String description;
+
+  @Column
+  private int cryptoFriendly;
 
   @Column
   @CreatedDate

@@ -5,6 +5,7 @@ input ServerEdit {
     privateIp: String
     city: String
     country: String
+    continent: String
     secret: String!
     ports: Int
     sshUsername: String
@@ -25,6 +26,7 @@ type ServerView {
     privateIp: String
     city: String
     country: String
+    continent: String
     secret: String
     ports: Int
     sshUsername: String
@@ -41,4 +43,7 @@ type ClientServerView {
     city: String
     country: String
     description: String
+    continent: String
+    connectedUserCount: Int
+    congestionLevel: String
 }

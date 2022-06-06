@@ -96,7 +96,7 @@ public class UserService {
 
     UserSubscription userSubscription = userSubscriptionService.getCurrentSubscription(user);
     UserView userView = userViewMapper.toView(user);
-    notificationService.welcomingNewUsers(user, userSubscription);
+    //notificationService.welcomingNewUsers(user, userSubscription);
     log.info("Created user {}", userView);
     return login(user);
   }

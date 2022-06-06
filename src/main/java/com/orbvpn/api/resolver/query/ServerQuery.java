@@ -25,8 +25,11 @@ public class ServerQuery implements GraphQLQueryResolver {
     return serverService.getClientServers();
   }
 
+  public List<ClientServerView> getClientSortedServers(String sortBy, String parameter) {return serverService.getClientSortedServers(sortBy, parameter);}
+
   @RolesAllowed(ADMIN)
   public ServerView server(int id) {
     return serverService.getServer(id);
   }
+
 }

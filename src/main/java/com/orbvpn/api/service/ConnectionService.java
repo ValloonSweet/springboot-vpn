@@ -2,7 +2,7 @@ package com.orbvpn.api.service;
 
 import com.jcraft.jsch.JSchException;
 import com.orbvpn.api.domain.dto.*;
-import com.orbvpn.api.domain.entity.RadAcct;
+import com.orbvpn.api.domain.entity.Radacct;
 import com.orbvpn.api.domain.entity.Server;
 import com.orbvpn.api.domain.entity.User;
 import com.orbvpn.api.mapper.ConnectionMapper;
@@ -35,10 +35,7 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -76,14 +73,14 @@ public class ConnectionService {
     }
 
     public List<ConnectionHistoryView> getConnectionHistory(Integer userId) {
-        List<RadAcct> radaccts = radAcctRepository.findConnectionHistory(userId);
+        List<Radacct> radaccts = radAcctRepository.findConnectionHistory(userId);
         return radaccts.stream()
                 .map(connectionMapper::connectionHistoryView)
                 .collect(Collectors.toList());
     }
 
     public List<OnlineSessionView> getOnlineSessions(Integer userId) {
-        List<RadAcct> radaccts = radAcctRepository.findOnlineSessions(userId);
+        List<Radacct> radaccts = radAcctRepository.findOnlineSessions(userId);
         return radaccts.stream()
                 .map(connectionMapper::onlineSessionView)
                 .collect(Collectors.toList());
@@ -97,8 +94,11 @@ public class ConnectionService {
     }
 
     public Boolean disconnect(String onlineSessionId) {
-        RadAcct radAcct = radAcctRepository.findByAcctsessionid(onlineSessionId);
-        return disconnect(radAcct);
+        List<Radacct> radAcct = radAcctRepository.findBySessionid(onlineSessionId).stream().collect(Collectors.toList());
+        if (radAcct.size() == 0)
+            throw new RuntimeException("Invalid sessionId");
+
+        return disconnect(radAcct.get(0));
     }
 
     /**
@@ -108,7 +108,7 @@ public class ConnectionService {
         String deviceId = deviceIdInput.getValue();
         if (deviceId == null || deviceId.equals(""))
             throw new RuntimeException("Disconnect by userId and device id is valid for devices with valid deviceId.");
-        RadAcct radAcct = radAcctRepository.getOnlineSessionByUseridAndDeviceId(userId,
+        Radacct radAcct = radAcctRepository.getOnlineSessionByUseridAndDeviceId(userId,
                 getDeviceIdWrappedBySeparators(deviceId));
         return disconnect(radAcct);
     }
@@ -123,7 +123,7 @@ public class ConnectionService {
     private Boolean disconnectIfExists(String userName, String deviceId) {
         if (deviceId == null || deviceId.equals(""))
             throw new RuntimeException("Disconnect by userName and device id is valid for devices with valid deviceId.");
-        RadAcct radAcct = radAcctRepository.getOnlineSessionByUsernameAndDeviceId(userName,
+        Radacct radAcct = radAcctRepository.getOnlineSessionByUsernameAndDeviceId(userName,
                 getDeviceIdWrappedBySeparators(deviceId));
         if (radAcct == null) {
             return true;
@@ -147,7 +147,7 @@ public class ConnectionService {
         }
     }
 
-    private Boolean disconnect(RadAcct radAcct) {
+    private Boolean disconnect(Radacct radAcct) {
         if (radAcct == null)
             throw new RuntimeException("Invalid sessionId");
         else if (!radAcct.isOnlineSession())

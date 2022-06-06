@@ -19,4 +19,5 @@ public class ServerView {
   private String killCommand;
   private String rootCommand;
   private String description;
+  private String continent;
 }

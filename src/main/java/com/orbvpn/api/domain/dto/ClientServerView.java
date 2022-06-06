@@ -12,4 +12,7 @@ public class ClientServerView {
   private String city;
   private String country;
   private String description;
+  private String continent;
+  private int connectedUserCount;
+  private String congestionLevel;
 }

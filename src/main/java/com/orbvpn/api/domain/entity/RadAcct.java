@@ -2,16 +2,16 @@ package com.orbvpn.api.domain.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Table(name = "radacct")
 @Entity
 @Getter
 @Setter
-public class RadAcct {
-
+@EntityListeners(AuditingEntityListener.class)
+public class Radacct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int radacctid;

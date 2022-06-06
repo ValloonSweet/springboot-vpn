@@ -2,7 +2,8 @@ package com.orbvpn.api.mapper;
 
 import com.orbvpn.api.domain.dto.ConnectionHistoryView;
 import com.orbvpn.api.domain.dto.OnlineSessionView;
-import com.orbvpn.api.domain.entity.RadAcct;
+import com.orbvpn.api.domain.entity.Radacct;
+import com.orbvpn.api.domain.entity.Radacct;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -19,7 +20,7 @@ public interface ConnectionMapper {
     @Mapping(source = "callingstationid", target = "callingStationId")
     @Mapping(source = "acctterminatecause", target = "terminateCause")
     @Mapping(source = "framedipaddress", target = "framedIpAddress")
-    ConnectionHistoryView connectionHistoryView(RadAcct radAcct);
+    ConnectionHistoryView connectionHistoryView(Radacct radAcct);
 
     @Mapping(source = "radacctid", target = "id")
     @Mapping(source = "acctsessionid", target = "sessionId")
@@ -30,5 +31,5 @@ public interface ConnectionMapper {
     @Mapping(source = "connectinfo_start", target = "connectInfoStart")
     @Mapping(source = "callingstationid", target = "callingStationId")
     @Mapping(source = "framedipaddress", target = "framedIpAddress")
-    OnlineSessionView onlineSessionView(RadAcct radAcct);
+    OnlineSessionView onlineSessionView(Radacct radAcct);
 }

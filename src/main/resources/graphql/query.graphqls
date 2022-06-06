@@ -16,6 +16,7 @@ type Query {
     server(id: Int!): ServerView
     servers: [ServerView]
     clientServers: [ClientServerView]
+    getClientSortedServers(sortBy: String!, parameter:String!): [ClientServerView]
 
     reseller(id: Int!): ResellerView
     resellers: [ResellerView]
@@ -51,4 +52,6 @@ type Query {
     getOnlineSessions(userId: Int!) : [OnlineSessionView]
     getOnlineUsers(page: Int, size: Int, serverId: Int, groupId: Int, roleId: Int, serviceGroupId: Int) : UserPage
     getDevices(userId: Int!): [DeviceView]
+
+    getBuyMoreLogins: BuyMoreLoginsView
 }
