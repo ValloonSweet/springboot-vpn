@@ -63,6 +63,12 @@ public class ResellerMutation implements GraphQLMutationResolver {
   }
 
   @RolesAllowed(ADMIN)
+  public ResellerView deductResellerCredit(int resellerId,
+                                        @DecimalMin(value = "0.0", inclusive = false)BigDecimal credit) {
+    return resellerService.deductResellerCredit(resellerId, credit);
+  }
+
+  @RolesAllowed(ADMIN)
   public ResellerLevelView updateResellerLevel(int id, ResellerLevelEdit level) {
     return resellerService.updateResellerLevel(id, level);
   }

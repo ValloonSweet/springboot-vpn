@@ -11,12 +11,14 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class JobService {
 
+  private static final int DAILY_RATE = 24 * 60 * 60 * 1000;
   private static final int HOUR_RATE = 60 * 60 * 1000;
   private static final int TEN_MINUTES_RATE = 10 * 60 * 1000;
   private static final int FIVE_MINUTES_RATE = 5 * 60 * 1000;
   private static final String EVERY_1AM_LONDON_TIME = "0 0 1 * * ?";
 
   private final HelpCenterService helpCenterService;
+  private final PromotionService promotionService;
   private final ResellerLevelService resellerLevelService;
   private final RenewUserSubscriptionService renewUserSubscriptionService;
   private final MoreLoginCountService moreLoginCountService;
@@ -65,5 +67,12 @@ public class JobService {
     log.info("Started Disconnecting Deactivated Users");
     connectionService.disconnectDeactivatedUsers();
     log.info("Finished Disconnecting Deactivated Users");
+  }
+
+  @Scheduled(fixedRate = DAILY_RATE)
+  public void promotions() {
+    log.info("Starting job for promotions");
+    promotionService.runTask();
+    log.info("promotions job is finished");
   }
 }

@@ -21,6 +21,7 @@ type Query {
     reseller(id: Int!): ResellerView
     resellers: [ResellerView]
     getResellersLevels: [ResellerLevelView]
+    getResellersCredits: [ResellerCreditView]
     getResellerLevelCoefficients: ResellerLevelCoefficientsView
     totalResellersCredit: String
     resellerGetUser (id: Int): UserView
@@ -53,5 +54,9 @@ type Query {
     getOnlineUsers(page: Int, size: Int, serverId: Int, groupId: Int, roleId: Int, serviceGroupId: Int) : UserPage
     getDevices(userId: Int!): [DeviceView]
 
+    #Buy More Logins
     getBuyMoreLogins: BuyMoreLoginsView
+
+    #ReferralCode
+    getReferralCode: ReferralCodeView
 }

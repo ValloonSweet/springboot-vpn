@@ -2,6 +2,7 @@ package com.orbvpn.api.resolver.query;
 
 import static com.orbvpn.api.domain.enums.RoleName.Constants.ADMIN;
 
+import com.orbvpn.api.domain.dto.ResellerCreditView;
 import com.orbvpn.api.domain.dto.ResellerLevelCoefficientsView;
 import com.orbvpn.api.domain.dto.ResellerLevelView;
 import com.orbvpn.api.domain.dto.ResellerView;
@@ -36,6 +37,10 @@ public class ResellerQuery implements GraphQLQueryResolver {
   @RolesAllowed(ADMIN)
   public List<ResellerLevelView> getResellersLevels() {
     return resellerService.getResellersLevels();
+  }
+
+  public List<ResellerCreditView> getResellersCredits() {
+    return resellerService.getResellersCredits();
   }
 
   @RolesAllowed(ADMIN)

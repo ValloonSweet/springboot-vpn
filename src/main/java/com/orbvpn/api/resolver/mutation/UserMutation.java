@@ -1,10 +1,7 @@
 package com.orbvpn.api.resolver.mutation;
 
 import com.orbvpn.api.config.security.Unsecured;
-import com.orbvpn.api.domain.dto.AuthenticatedUser;
-import com.orbvpn.api.domain.dto.UserCreate;
-import com.orbvpn.api.domain.dto.UserProfileEdit;
-import com.orbvpn.api.domain.dto.UserProfileView;
+import com.orbvpn.api.domain.dto.*;
 import com.orbvpn.api.service.UserService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +26,8 @@ public class UserMutation implements GraphQLMutationResolver {
   private final UserService userService;
 
   @Unsecured
-  public AuthenticatedUser register(@Valid UserCreate userCreate) {
-    return userService.register(userCreate);
+  public AuthenticatedUser register(@Valid UserRegister userRegister) {
+    return userService.register(userRegister);
   }
 
   @Unsecured

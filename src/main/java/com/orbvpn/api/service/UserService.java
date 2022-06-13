@@ -11,10 +11,7 @@ import com.orbvpn.api.exception.BadCredentialsException;
 import com.orbvpn.api.exception.BadRequestException;
 import com.orbvpn.api.exception.NotFoundException;
 import com.orbvpn.api.mapper.*;
-import com.orbvpn.api.reposiitory.PasswordResetRepository;
-import com.orbvpn.api.reposiitory.PaymentRepository;
-import com.orbvpn.api.reposiitory.UserProfileRepository;
-import com.orbvpn.api.reposiitory.UserRepository;
+import com.orbvpn.api.reposiitory.*;
 import com.orbvpn.api.service.notification.NotificationService;
 import com.orbvpn.api.service.payment.PaymentService;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +53,7 @@ public class UserService {
   private final UserProfileEditMapper userProfileEditMapper;
   private final UserProfileViewMapper userProfileViewMapper;
   private final UserSubscriptionViewMapper userSubscriptionViewMapper;
+  private final ReferralCodeRepository referralCodeRepository;
 
   private final RoleService roleService;
   private final ResellerService resellerService;
@@ -72,13 +70,17 @@ public class UserService {
     paymentService.setUserService(this);
   }
 
-  public AuthenticatedUser register(UserCreate userCreate) {
-    log.info("Creating user with data {}", userCreate);
+  public AuthenticatedUser register(UserRegister userRegister) {
+    log.info("Creating user with data {}", userRegister);
 
-    Optional<User> userEntityOptional = userRepository.findByEmail(userCreate.getEmail());
+    Optional<User> userEntityOptional = userRepository.findByEmail(userRegister.getEmail());
     if (userEntityOptional.isPresent()) {
       throw new BadRequestException("User with specified email exists");
     }
+
+    UserCreate userCreate = new UserCreate();
+    userCreate.setEmail(userRegister.getEmail());
+    userCreate.setPassword(userRegister.getPassword());
 
     User user = userCreateMapper.createEntity(userCreate);
     user.setUsername(userCreate.getEmail());
@@ -91,6 +93,12 @@ public class UserService {
     user.setProfile(profile);
 
     userRepository.save(user);
+
+    if (userRegister.getReferralCode() != ""){
+      ReferralCode referralCode = referralCodeRepository.findReferralCodeByCode(userRegister.getReferralCode());
+      if (referralCode != null)
+        referralCode.setInvitations(referralCode.getInvitations() + 1);
+    }
 
     assignTrialSubscription(user);
 

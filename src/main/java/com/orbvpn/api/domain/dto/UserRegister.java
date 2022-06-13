@@ -15,10 +15,13 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class UserCreate {
-  @Email
-  private String email;
+public class UserRegister {
+    @Email
+    private String email;
 
-  @Pattern(regexp = PASSWORD_PATTERN, message = BAD_PASSWORD_MESSAGE)
-  private String password;
+    @Pattern(regexp = PASSWORD_PATTERN, message = BAD_PASSWORD_MESSAGE)
+    private String password;
+
+    @Transient
+    private String referralCode;
 }

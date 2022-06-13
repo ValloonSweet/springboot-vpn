@@ -1,7 +1,7 @@
 type Mutation {
     oauthLogin(token: String!, socialMedia: SocialMedia!): AuthenticatedUser
 
-    register(userCreate: UserCreate!): AuthenticatedUser!
+    register(userRegister: UserRegister!): AuthenticatedUser!
     editProfile(userProfile: UserProfileEdit): UserProfileView
     editAutoRenew(isActive: Boolean!): Boolean
     login(email: String!, password: String!): AuthenticatedUser!

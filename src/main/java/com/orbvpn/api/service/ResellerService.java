@@ -38,6 +38,7 @@ public class ResellerService {
   private final ResellerEditMapper resellerEditMapper;
   private final ResellerLevelEditMapper resellerLevelEditMapper;
   private final ResellerLevelViewMapper resellerLevelViewMapper;
+  private final ResellerCreditViewMapper resellerCreditViewMapper;
   private final ResellerLevelCoefficientsMapper resellerLevelCoefficientsMapper;
 
   private final PasswordEncoder passwordEncoder;
@@ -165,6 +166,22 @@ public class ResellerService {
     return resellerViewMapper.toView(reseller);
   }
 
+  public ResellerView deductResellerCredit(int resellerId, BigDecimal credit) {
+    log.info("Deducting reseller {} credit {}", resellerId, credit);
+    Reseller reseller = getResellerById(resellerId);
+
+    BigDecimal curCredit = reseller.getCredit();
+    reseller.setCredit(curCredit.subtract(credit));
+    ResellerAddCredit resellerAddCredit = new ResellerAddCredit(reseller, credit.negate());
+    resellerRepository.save(reseller);
+    resellerAddCreditRepository.save(resellerAddCredit);
+
+    log.info("Deduct reseller {} credit {}", resellerId, credit);
+
+    return resellerViewMapper.toView(reseller);
+  }
+
+
   //Only should be called when service group is removed
   public void removeServiceGroup(ServiceGroup serviceGroup) {
     List<Reseller> resellers = resellerRepository.findAll();
@@ -213,6 +230,13 @@ public class ResellerService {
       .stream()
       .map(resellerLevelViewMapper::toView)
       .collect(Collectors.toList());
+  }
+
+  public List<ResellerCreditView> getResellersCredits() {
+    return resellerRepository.findAll()
+            .stream()
+            .map(resellerCreditViewMapper::toView)
+            .collect(Collectors.toList());
   }
 
   public ResellerLevelCoefficientsView getResellerLevelCoefficients() {

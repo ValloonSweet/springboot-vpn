@@ -105,4 +105,7 @@ public class User implements UserDetails {
   public boolean isEnabled() {
     return enabled;
   }
+
+  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  private ReferralCode referralCode;
 }

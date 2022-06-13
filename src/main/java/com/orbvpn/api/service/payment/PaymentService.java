@@ -14,6 +14,7 @@ import com.orbvpn.api.service.payment.coinpayment.CoinPaymentService;
 import com.orbvpn.api.utils.ThirdAPIUtils;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
+import com.twilio.twiml.voice.Pay;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -230,6 +231,10 @@ public class PaymentService {
       return createBuyMoreLoginPayment(moreLoginCount, gateway);
     }
 
+    if (category == PaymentCategory.BUY_CREDIT) {
+      return createBuyCreditPayment(moreLoginCount, gateway);
+    }
+
     throw new PaymentException("Not supported category");
   }
 
@@ -266,6 +271,26 @@ public class PaymentService {
 
     paymentRepository.save(payment);
     return payment;
+  }
+
+  public Payment createBuyCreditPayment(int number, GatewayName gateway){
+    User user = userService.getUser();
+
+    Payment payment = Payment.builder()
+            .user(user)
+            .status(PaymentStatus.PENDING)
+            .gateway(gateway)
+            .category(PaymentCategory.BUY_CREDIT)
+            .price(getCreditPrice(number))
+            .moreLoginCount(number)
+            .build();
+
+    paymentRepository.save(payment);
+    return payment;
+  }
+
+  public BigDecimal getCreditPrice(int number) {
+    return new BigDecimal(number);
   }
 
   public BigDecimal getBuyMoreLoginPrice(int number) {
