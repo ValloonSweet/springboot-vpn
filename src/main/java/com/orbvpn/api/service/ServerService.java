@@ -161,8 +161,8 @@ public class ServerService {
                 .stream()
                 .map(serverViewMapper::toClientView)
                 .collect(Collectors.toList());
-      case "crypto_friendly":
-        return serverRepository.findAll(Sort.by(Sort.Direction.ASC, "cryptoFriendly"))
+      case "crypto-friendly":
+        return serverRepository.findAll(Sort.by(Sort.Direction.ASC, "hostName"))
                 .stream().filter(s -> s.getCryptoFriendly() == 1)
                 .map(serverViewMapper::toClientView)
                 .collect(Collectors.toList());
