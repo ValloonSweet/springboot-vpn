@@ -7,8 +7,10 @@ import com.orbvpn.api.domain.dto.ServerView;
 import com.orbvpn.api.service.ServerService;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
