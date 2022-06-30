@@ -17,7 +17,6 @@ public class PromotionService {
     private final UserRepository userRepository;
     private final PromotionTypeRepository promotionTypeRepository;
 
-
     public void runTask(){
 
     }
