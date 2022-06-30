@@ -1,13 +1,14 @@
 type Mutation {
     oauthLogin(token: String!, socialMedia: SocialMedia!): AuthenticatedUser
 
-    register(userRegister: UserRegister!): AuthenticatedUser!
+    register(userCreate: UserCreate!): AuthenticatedUser!
+    signup(email: String!, password: String!, referral: String): AuthenticatedUser!
     editProfile(userProfile: UserProfileEdit): UserProfileView
     editAutoRenew(isActive: Boolean!): Boolean
     login(email: String!, password: String!): AuthenticatedUser!
     requestResetPassword(email: String!): Boolean!
     resetPassword(token: String!, password: String!): Boolean!
-    changePassword(id: Int!, oldPassword: String!, password: String!): Boolean!
+    changePassword(oldPassword: String!, password: String!): Boolean!
     createServiceGroup(serviceGroup: ServiceGroupEdit!): ServiceGroupView
     editServiceGroup(id: Int!, serviceGroup: ServiceGroupEdit!): ServiceGroupView
     deleteServiceGroup(id: Int!): ServiceGroupView

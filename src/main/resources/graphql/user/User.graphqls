@@ -2,11 +2,6 @@ input UserCreate {
     email: String!
     password: String!
 }
-input UserRegister {
-    email: String!
-    password: String!
-    referralCode: String!
-}
 
 type UserView {
     id: Int!

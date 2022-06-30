@@ -1,5 +1,6 @@
 package com.orbvpn.api.service;
 
+import com.orbvpn.api.config.Messages;
 import com.orbvpn.api.config.security.JwtTokenUtil;
 import com.orbvpn.api.domain.dto.*;
 import com.orbvpn.api.domain.entity.*;
@@ -38,290 +39,294 @@ import java.util.stream.Collectors;
 @Transactional
 public class UserService {
 
-  private final UserRepository userRepository;
-  private final UserCreateMapper userCreateMapper;
-  private final UserViewMapper userViewMapper;
+    private final UserRepository userRepository;
+    private final UserCreateMapper userCreateMapper;
+    private final UserViewMapper userViewMapper;
 
-  private final PasswordEncoder passwordEncoder;
-  private final AuthenticationManager authenticationManager;
-  private final JwtTokenUtil jwtTokenUtil;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenUtil jwtTokenUtil;
 
-  private final PasswordResetRepository passwordResetRepository;
-  private final PaymentRepository paymentRepository;
+    private final PasswordResetRepository passwordResetRepository;
+    private final PaymentRepository paymentRepository;
 
-  private final UserProfileRepository userProfileRepository;
-  private final UserProfileEditMapper userProfileEditMapper;
-  private final UserProfileViewMapper userProfileViewMapper;
-  private final UserSubscriptionViewMapper userSubscriptionViewMapper;
-  private final ReferralCodeRepository referralCodeRepository;
+    private final UserProfileRepository userProfileRepository;
+    private final UserProfileEditMapper userProfileEditMapper;
+    private final UserProfileViewMapper userProfileViewMapper;
+    private final UserSubscriptionViewMapper userSubscriptionViewMapper;
+    private final ReferralCodeRepository referralCodeRepository;
 
-  private final RoleService roleService;
-  private final ResellerService resellerService;
-  private final GroupService groupService;
-  private final UserSubscriptionService userSubscriptionService;
-  private final RadiusService radiusService;
-  private final PasswordService passwordService;
-  private final PaymentService paymentService;
+    private final RoleService roleService;
+    private final ResellerService resellerService;
+    private final GroupService groupService;
+    private final UserSubscriptionService userSubscriptionService;
+    private final RadiusService radiusService;
+    private final PasswordService passwordService;
+    private final PaymentService paymentService;
 
-  private final NotificationService notificationService;
+    private final NotificationService notificationService;
 
-  @PostConstruct
-  public void init() {
-    paymentService.setUserService(this);
-  }
-
-  public AuthenticatedUser register(UserRegister userRegister) {
-    log.info("Creating user with data {}", userRegister);
-
-    Optional<User> userEntityOptional = userRepository.findByEmail(userRegister.getEmail());
-    if (userEntityOptional.isPresent()) {
-      throw new BadRequestException("User with specified email exists");
+    @PostConstruct
+    public void init() {
+        paymentService.setUserService(this);
     }
 
-    UserCreate userCreate = new UserCreate();
-    userCreate.setEmail(userRegister.getEmail());
-    userCreate.setPassword(userRegister.getPassword());
-
-    User user = userCreateMapper.createEntity(userCreate);
-    user.setUsername(userCreate.getEmail());
-    passwordService.setPassword(user, userCreate.getPassword());
-    Role role = roleService.getByName(RoleName.USER);
-    user.setRole(role);
-    user.setReseller(resellerService.getOwnerReseller());
-    UserProfile profile = new UserProfile();
-    profile.setUser(user);
-    user.setProfile(profile);
-
-    userRepository.save(user);
-
-    if (userRegister.getReferralCode() != ""){
-      ReferralCode referralCode = referralCodeRepository.findReferralCodeByCode(userRegister.getReferralCode());
-      if (referralCode != null)
-        referralCode.setInvitations(referralCode.getInvitations() + 1);
+    public AuthenticatedUser register(UserCreate userCreate) {
+        return register(userCreate.getEmail(), userCreate.getPassword(), null);
     }
 
-    assignTrialSubscription(user);
+    public AuthenticatedUser register(String email, String password, String referral) {
+        log.info("Creating user with data {}", email);
 
-    UserSubscription userSubscription = userSubscriptionService.getCurrentSubscription(user);
-    UserView userView = userViewMapper.toView(user);
-    //notificationService.welcomingNewUsers(user, userSubscription);
-    log.info("Created user {}", userView);
-    return login(user);
-  }
+        Optional<User> userEntityOptional = userRepository.findByEmail(email);
+        if (userEntityOptional.isPresent()) {
+            throw new BadRequestException(Messages.getMessage("email_exists"));
+        }
 
-  public void assignTrialSubscription(User user) {
-    // Assign trial group
-    Group group = groupService.getById(1);
-    String paymentId = UUID.randomUUID().toString();
-    Payment payment = Payment.builder()
-      .user(user)
-      .status(PaymentStatus.PENDING)
-      .gateway(GatewayName.FREE)
-      .category(PaymentCategory.GROUP)
-      .price(group.getPrice())
-      .groupId(group.getId())
-      .paymentId(paymentId)
-      .build();
-    paymentRepository.save(payment);
+        UserCreate userCreate = new UserCreate();
+        userCreate.setEmail(email);
+        userCreate.setPassword(password);
 
-    paymentService.fullFillPayment(payment);
-  }
+        User user = userCreateMapper.createEntity(userCreate);
+        user.setUsername(userCreate.getEmail());
+        passwordService.setPassword(user, userCreate.getPassword());
+        Role role = roleService.getByName(RoleName.USER);
+        user.setRole(role);
+        user.setReseller(resellerService.getOwnerReseller());
+        UserProfile profile = new UserProfile();
+        profile.setUser(user);
+        user.setProfile(profile);
 
-  public String generateRandomString() {
-    int length = 10;
-    return RandomStringUtils.random(length, true, true);
-  }
+        userRepository.save(user);
 
-  public AuthenticatedUser login(String email, String password) {
-    log.info("Authentication user with email {}", email);
+        if (referral != null && !referral.isEmpty()) {
+            ReferralCode referralCode = referralCodeRepository.findReferralCodeByCode(referral);
+            if (referralCode != null)
+                referralCode.setInvitations(referralCode.getInvitations() + 1);
+        }
 
-    Authentication authentication;
-    try {
-      authentication = authenticationManager
-        .authenticate(new UsernamePasswordAuthenticationToken(email, password));
-    } catch (Exception ex) {
-      throw new BadCredentialsException(ex);
+        assignTrialSubscription(user);
+
+        UserSubscription userSubscription = userSubscriptionService.getCurrentSubscription(user);
+        UserView userView = userViewMapper.toView(user);
+        //notificationService.welcomingNewUsers(user, userSubscription);
+        log.info("Created user {}", userView);
+        return login(user);
     }
 
+    public void assignTrialSubscription(User user) {
+        // Assign trial group
+        Group group = groupService.getById(1);
+        String paymentId = UUID.randomUUID().toString();
+        Payment payment = Payment.builder()
+                .user(user)
+                .status(PaymentStatus.PENDING)
+                .gateway(GatewayName.FREE)
+                .category(PaymentCategory.GROUP)
+                .price(group.getPrice())
+                .groupId(group.getId())
+                .paymentId(paymentId)
+                .build();
+        paymentRepository.save(payment);
 
-    User user = (User) authentication.getPrincipal();
-    return login(user);
-  }
-
-  public AuthenticatedUser login(User user) {
-    UserView userView = userViewMapper.toView(user);
-    String token = jwtTokenUtil.generateAccessToken(user);
-
-    return new AuthenticatedUser(token, userView);
-  }
-
-  public boolean requestResetPassword(String email) {
-    log.info("Resetting password for user: {}", email);
-
-    User user = userRepository.findByEmail(email)
-      .orElseThrow(() -> new NotFoundException("User with specified email not exists"));
-
-    String token = generateRandomString();
-
-    PasswordReset passwordReset = new PasswordReset();
-    passwordReset.setUser(user);
-    passwordReset.setToken(token);
-    passwordResetRepository.save(passwordReset);
-
-    notificationService.resetPassword(user, token);
-    passwordResetRepository.deleteByUserAndTokenNot(user, token);
-    return true;
-  }
-
-  public boolean resetPassword(String token, String password) {
-
-    PasswordReset passwordReset = passwordResetRepository.findById(token).orElseThrow(() ->
-      new NotFoundException("Token was not found"));
-
-    User user = passwordReset.getUser();
-    passwordService.setPassword(user, password);
-    userRepository.save(user);
-    passwordResetRepository.delete(passwordReset);
-    notificationService.resetPasswordDone(user);
-    return true;
-  }
-
-  public boolean changePassword(int id, String oldPassword, String password) {
-    log.info("Changing password for user with id {}", id);
-
-    User user = userRepository.findById(id)
-      .orElseThrow(() -> new NotFoundException("User not found"));
-
-    String oldPasswordEncoded = user.getPassword();
-    if (!passwordEncoder.matches(oldPassword, oldPasswordEncoded)) {
-      throw new BadRequestException("Wrong password");
+        paymentService.fullFillPayment(payment);
     }
 
-    passwordService.setPassword(user, password);
-    userRepository.save(user);
+    public String generateRandomString() {
+        int length = 10;
+        return RandomStringUtils.random(length, true, true);
+    }
 
-    return true;
-  }
+    public AuthenticatedUser login(String email, String password) {
+        log.info("Authentication user with email {}", email);
 
-  /**
-   * Delete user and the whole dependant entities including:
-   * 	userProfile, reseller, resellerAddCredit, userSubscription, PasswordReset, Payment, radaacct, radcheck
-   *
-   * these not finalized entities are not checked yet : StripeCustomer, Ticket, MoreLoginCount, OathToken, TicketReply
-   * @param user: user for deletion
-   */
-  public void deleteUser(User user) {
-    radiusService.deleteUserRadChecks(user);
-    radiusService.deleteUserRadAcct(user);
-    resellerService.deleteAllByUser(user);
-    userRepository.delete(user);
-  }
+        Authentication authentication;
+        try {
+            authentication = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(email, password));
+        } catch (Exception ex) {
+            throw new BadCredentialsException(ex);
+        }
 
-  public User deleteOauthUser(String oauthId) {
-    User user = userRepository.findByOauthId(oauthId)
-      .orElseThrow(()->new NotFoundException("User not found"));
+        User user = (User) authentication.getPrincipal();
+        return login(user);
+    }
 
-    deleteUser(user);
+    public AuthenticatedUser login(User user) {
+        UserView userView = userViewMapper.toView(user);
+        String token = jwtTokenUtil.generateAccessToken(user);
 
-    return user;
-  }
+        return new AuthenticatedUser(token, userView);
+    }
 
-  public UserProfileView editProfile(UserProfileEdit userProfileEdit) {
-    User user = getUser();
+    public boolean requestResetPassword(String email) {
+        log.info("Resetting password for user: {}", email);
 
-    log.info("Editing user{} profile{}", user.getId(), userProfileEdit);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User with specified email not exists"));
 
-    UserProfile userProfile = userProfileRepository.findByUser(user).orElse(new UserProfile());
+        String token = generateRandomString();
 
-    UserProfile edited = userProfileEditMapper.edit(userProfile, userProfileEdit);
-    edited.setUser(user);
+        PasswordReset passwordReset = new PasswordReset();
+        passwordReset.setUser(user);
+        passwordReset.setToken(token);
+        passwordResetRepository.save(passwordReset);
 
-    userProfileRepository.save(edited);
+        notificationService.resetPassword(user, token);
+        passwordResetRepository.deleteByUserAndTokenNot(user, token);
+        return true;
+    }
 
-    return userProfileViewMapper.toView(edited);
-  }
+    public boolean resetPassword(String token, String password) {
 
-  public UserProfileView getProfile() {
-    User user = getUser();
+        PasswordReset passwordReset = passwordResetRepository.findById(token).orElseThrow(() ->
+                new NotFoundException("Token was not found"));
 
-    UserProfile userProfile = userProfileRepository.findByUser(user).orElse(new UserProfile());
+        User user = passwordReset.getUser();
+        passwordService.setPassword(user, password);
+        userRepository.save(user);
+        passwordResetRepository.delete(passwordReset);
+        notificationService.resetPasswordDone(user);
+        return true;
+    }
 
-    return userProfileViewMapper.toView(userProfile);
-  }
+    public boolean changePassword(int id, String oldPassword, String password) {
+        log.info("Changing password for user with id {}", id);
 
-  public UserSubscriptionView getUserSubscription() {
-    User user = getUser();
-    UserSubscription currentSubscription = userSubscriptionService.getCurrentSubscription(user);
-    return userSubscriptionViewMapper.toView(currentSubscription);
-  }
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
-  public List<UserDeviceInfo> getUserDeviceInfo() {
-    User user = getUser();
-    String username = user.getUsername();
+        String oldPasswordEncoded = user.getPassword();
+        if (!passwordEncoder.matches(oldPassword, oldPasswordEncoded)) {
+            throw new BadRequestException("Wrong password");
+        }
 
-    List<String> allDevices = userRepository.findAllUserDevices(username);
-    List<String> allActiveDevices = userRepository.findAllActiveUserDevices(username);
+        passwordService.setPassword(user, password);
+        userRepository.save(user);
 
-    return allDevices.stream()
-      .filter(StringUtils::isNoneBlank)
-      .map(s -> {
-        UserDeviceInfo userDeviceInfo = new UserDeviceInfo();
-        userDeviceInfo.setName(s);
-        userDeviceInfo.setActive(allActiveDevices.contains(s));
-        return userDeviceInfo;
-      }).collect(Collectors.toList());
-  }
+        return true;
+    }
 
-  public User getUserById(int id) {
-    return userRepository.findById(id)
-      .orElseThrow(() -> new NotFoundException(User.class, id));
-  }
+    /**
+     * Delete user and the whole dependant entities including:
+     * userProfile, reseller, resellerAddCredit, userSubscription, PasswordReset, Payment, radaacct, radcheck
+     * <p>
+     * these not finalized entities are not checked yet : StripeCustomer, Ticket, MoreLoginCount, OathToken, TicketReply
+     *
+     * @param user: user for deletion
+     */
+    public void deleteUser(User user) {
+        radiusService.deleteUserRadChecks(user);
+        radiusService.deleteUserRadAcct(user);
+        resellerService.deleteAllByUser(user);
+        userRepository.delete(user);
+    }
 
-  public User getUserByEmail(String email) {
-    return userRepository.findByEmail(email)
-      .orElseThrow(() -> new NotFoundException(User.class, email));
-  }
+    public User deleteOauthUser(String oauthId) {
+        User user = userRepository.findByOauthId(oauthId)
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
-  public User getUserByUsername(String username) {
-    return userRepository.findByUsername(username)
-      .orElseThrow(() -> new NotFoundException(User.class, username));
-  }
+        deleteUser(user);
 
-  public User getUser() {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    return (User) authentication.getPrincipal();
-  }
+        return user;
+    }
 
-  public Role getUserRole() {
-    User user = getUser();
-    return user.getRole();
-  }
+    public UserProfileView editProfile(UserProfileEdit userProfileEdit) {
+        User user = getUser();
 
-  public boolean isAdmin() {
-    User user = getUser();
-    return user.getRole().getName() == RoleName.ADMIN;
-  }
+        log.info("Editing user{} profile{}", user.getId(), userProfileEdit);
 
-  public UserView getUserView() {
-    User user = getUser();
+        UserProfile userProfile = userProfileRepository.findByUser(user).orElse(new UserProfile());
 
-    return getUserFullView(user);
-  }
+        UserProfile edited = userProfileEditMapper.edit(userProfile, userProfileEdit);
+        edited.setUser(user);
 
-  public UserView getUserFullView(User user) {
-    UserSubscription subscription = userSubscriptionService.getCurrentSubscription(user);
-    user.setSubscription(subscription);
+        userProfileRepository.save(edited);
 
-    UserView userView = userViewMapper.toView(user);
-    userView.setUserDevicesInfo(getUserDeviceInfo());
-    return userView;
-  }
+        return userProfileViewMapper.toView(edited);
+    }
 
-  public Boolean editAutoRenew(Boolean isActive) {
-    User user = getUser();
-    user.setAutoRenew(isActive);
-    userRepository.save(user);
+    public UserProfileView getProfile() {
+        User user = getUser();
 
-    return true;
-  }
+        UserProfile userProfile = userProfileRepository.findByUser(user).orElse(new UserProfile());
+
+        return userProfileViewMapper.toView(userProfile);
+    }
+
+    public UserSubscriptionView getUserSubscription() {
+        User user = getUser();
+        UserSubscription currentSubscription = userSubscriptionService.getCurrentSubscription(user);
+        return userSubscriptionViewMapper.toView(currentSubscription);
+    }
+
+    public List<UserDeviceInfo> getUserDeviceInfo() {
+        User user = getUser();
+        String username = user.getUsername();
+
+        List<String> allDevices = userRepository.findAllUserDevices(username);
+        List<String> allActiveDevices = userRepository.findAllActiveUserDevices(username);
+
+        return allDevices.stream()
+                .filter(StringUtils::isNoneBlank)
+                .map(s -> {
+                    UserDeviceInfo userDeviceInfo = new UserDeviceInfo();
+                    userDeviceInfo.setName(s);
+                    userDeviceInfo.setActive(allActiveDevices.contains(s));
+                    return userDeviceInfo;
+                }).collect(Collectors.toList());
+    }
+
+    public User getUserById(int id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(User.class, id));
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(User.class, email));
+    }
+
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException(User.class, username));
+    }
+
+    public User getUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (User) authentication.getPrincipal();
+    }
+
+    public Role getUserRole() {
+        User user = getUser();
+        return user.getRole();
+    }
+
+    public boolean isAdmin() {
+        User user = getUser();
+        return user.getRole().getName() == RoleName.ADMIN;
+    }
+
+    public UserView getUserView() {
+        User user = getUser();
+
+        return getUserFullView(user);
+    }
+
+    public UserView getUserFullView(User user) {
+        UserSubscription subscription = userSubscriptionService.getCurrentSubscription(user);
+        user.setSubscription(subscription);
+
+        UserView userView = userViewMapper.toView(user);
+        userView.setUserDevicesInfo(getUserDeviceInfo());
+        return userView;
+    }
+
+    public Boolean editAutoRenew(Boolean isActive) {
+        User user = getUser();
+        user.setAutoRenew(isActive);
+        userRepository.save(user);
+
+        return true;
+    }
 }

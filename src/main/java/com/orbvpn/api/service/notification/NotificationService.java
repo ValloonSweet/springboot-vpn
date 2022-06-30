@@ -71,9 +71,9 @@ public class NotificationService {
                         "or via " +
                         mailtoMessage("email",
                                 "Renew account order for available subscription",
-                            "Please renew my account that there is just " + dayCount + " " +
-                                (dayCount == 1 ? "day" : "days") +
-                                " left until my OrbVPN subscription expires.") + ".";
+                                "Please renew my account that there is just " + dayCount + " " +
+                                        (dayCount == 1 ? "day" : "days") +
+                                        " left until my OrbVPN subscription expires.") + ".";
 
                 sendSms(userProfile, smsMessage);
                 sendEmail(userProfile, emailTitle, emailMessage);
@@ -131,22 +131,22 @@ public class NotificationService {
         String emailTitle = "OrbVPN: Welcome!";
         String emailMessage = " Welcome to your new OrbVPN Account.<br><br>" +
                 "Sing in to your OrbVPN account to access the service.<br><br>" +
-                "<strong>Your username:</strong> " + user.getUsername().replace(".",".&#65279;") + "<br>" +
+                "<strong>Your username:</strong> " + user.getUsername().replace(".", ".&#65279;") + "<br>" +
                 "<strong>Password:</strong> Click <a href=\"https://orbvpn.xyz/panel/login/\"><b>Sign in</b></a> " +
                 "to set your password and sign in.<br><br>" +
                 "Your subscription is valid for " + deviceCount + (deviceCount == 1 ? " device" : " devices") +
-                " during next " + duration +  (duration == 1 ? " day" : " days") +
-                " and will be expired on " + subscription.getExpiresAt().toLocalDate() +"." ;
+                " during next " + duration + (duration == 1 ? " day" : " days") +
+                " and will be expired on " + subscription.getExpiresAt().toLocalDate() + ".";
 
 //style="pointer-events: none; cursor: default;"
         sendSms(user.getProfile(), smsMessage);
-        sendEmail(user.getProfile(), emailTitle, emailMessage);
+        sendEmail(user.getEmail(), user.getProfile(), emailTitle, emailMessage);
     }
 
     /**
      * Reset password notifications
      *
-     * @param user User to change password
+     * @param user  User to change password
      * @param token Generated token for user
      */
     public void resetPassword(User user, String token) {
@@ -159,11 +159,11 @@ public class NotificationService {
                 "<strong>Code:</strong> " + token + "<br><br>" +
                 "If you ignore this message your password won't be changed.<br>" +
                 "If you didn't request a password reset, please " +
-                mailtoMessage("let us know","wrong reset password request",
+                mailtoMessage("let us know", "wrong reset password request",
                         "this reset password reset request is not from me.") + ".";
 
         sendSms(user.getProfile(), smsMessage);
-        sendEmail(user.getProfile(), emailTitle, emailMessage);
+        sendEmail(user.getEmail(), user.getProfile(), emailTitle, emailMessage);
     }
 
     /**
@@ -180,7 +180,7 @@ public class NotificationService {
                         "Wrong Successful Reset Password",
                         "This reset password that has been done is not from me.") + ".";
         sendSms(user.getProfile(), smsMessage);
-        sendEmail(user.getProfile(), emailTitle, emailMessage);
+        sendEmail(user.getEmail(), user.getProfile(), emailTitle, emailMessage);
     }
 
     /**
@@ -193,14 +193,14 @@ public class NotificationService {
         String emailMessage = "Thank you for renewing your OrbVPN $subscriptionname subscription.<br><br>" +
                 "Your subscription is valid for $multi-login devices during next $days/month/years and will be expired on $expirationdate.";
         sendSms(user.getProfile(), smsMessage);
-        sendEmail(user.getProfile(), emailTitle, emailMessage);
+        sendEmail(user.getEmail(), user.getProfile(), emailTitle, emailMessage);
     }
 
     /**
      * Sending an SMS to the user
      *
      * @param userProfile User profile to send SMS
-     * @param message Message to be sent to the user
+     * @param message     Message to be sent to the user
      */
     private void sendSms(UserProfile userProfile, String message) {
         String starting;
@@ -216,18 +216,20 @@ public class NotificationService {
         }
     }
 
+    private void sendEmail(UserProfile userProfile, String title, String message) {
+        sendEmail(userProfile.getUser().getEmail(), userProfile, title, message);
+    }
+
     /**
      * Sending an e-mail to the user
      *
      * @param userProfile User profile to send e-mail
-     * @param title The title of the email to be sent
-     * @param message Message to be sent to the user
+     * @param title       The title of the email to be sent
+     * @param message     Message to be sent to the user
      */
-    private void sendEmail(UserProfile userProfile, String title, String message) {
-        if (userProfile == null)
-            return;
+    private void sendEmail(String email, UserProfile userProfile, String title, String message) {
         String starting;
-        if (userProfile.getFirstName() != null) {
+        if (userProfile != null && userProfile.getFirstName() != null) {
             starting = "Dear " + userProfile.getFirstName() + ",<br><br>";
         } else {
             starting = "Hello,<br><br>";
@@ -241,25 +243,25 @@ public class NotificationService {
                         "    <title>" + title + "</title>\n" +
                         "</head>\n" +
                         "<body>\n" +
-                            starting + message + "\n" +
-                            "<br>" +
-                            "<p>" +
-                            "We provide 24/7 support for you to enjoy our services.<br> " +
-                            "WhatsApp: https://wa.me/message/3NYJBB6MNCQPM1 <br>" +
-                            "Telegram: https://t.me/OrbVPN<br>" +
-                            "Instagram: https://www.instagram.com/orbvpn/" +
-                            "</p>" +
-                            "<p>" +
-                            "Kind regards,<br>" +
-                            "OrbVPN" +
-                            "</p><br><br>" +
-                            "<div style=\"text-align:center\"><small>©NIMA OÜ 2022.&nbsp; All rights reserved.</small></div>" +
-                            "<div style=\"text-align:center\"><small>OrbVPN.com &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href = \"mailto:info@orbvpn.com\">info@orbvpn.com</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+372 880 4441</small></div>" +
+                        starting + message + "\n" +
+                        "<br>" +
+                        "<p>" +
+                        "We provide 24/7 support for you to enjoy our services.<br> " +
+                        "WhatsApp: https://wa.me/message/3NYJBB6MNCQPM1 <br>" +
+                        "Telegram: https://t.me/OrbVPN<br>" +
+                        "Instagram: https://www.instagram.com/orbvpn/" +
+                        "</p>" +
+                        "<p>" +
+                        "Kind regards,<br>" +
+                        "OrbVPN" +
+                        "</p><br><br>" +
+                        "<div style=\"text-align:center\"><small>©NIMA OÜ 2022.&nbsp; All rights reserved.</small></div>" +
+                        "<div style=\"text-align:center\"><small>OrbVPN.com &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href = \"mailto:info@orbvpn.com\">info@orbvpn.com</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+372 880 4441</small></div>" +
                         "</body>\n" +
-                "</html>";
+                        "</html>";
         emailService.sendMail(
                 mailProperties.getUsername(),
-                userProfile.getUser().getEmail(),
+                email,
                 title,
                 emailHtml);
     }
@@ -267,14 +269,14 @@ public class NotificationService {
     /**
      * Method used to embed the mailto attribute
      *
-     * @param text The text that the mailto property will display
-     * @param title The title prepared by mailto feature
+     * @param text    The text that the mailto property will display
+     * @param title   The title prepared by mailto feature
      * @param message Message prepared by mailto feature
      */
     private String mailtoMessage(String text, String title, String message) {
         title = title.replace(" ", "%20");
         message = message.replace(" ", "%20");
         return "<a href = \"mailto:info@orbvpn.com?subject=" + title + "&body=" + message + "\">\n" +
-                 text + "</a>";
+                text + "</a>";
     }
 }
