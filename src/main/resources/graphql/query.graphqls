@@ -47,6 +47,7 @@ type Query {
     totalActiveUsers: Int
     activeUsers(page: Int, size: Int): UserPage
     inactiveUsers(page: Int, size: Int): UserPage
+    allUsers(page: Int, size: Int, param: String, query: String): UserPage
 
     #Connections and devices
     getConnectionHistory(userId: Int!): [ConnectionHistoryView]

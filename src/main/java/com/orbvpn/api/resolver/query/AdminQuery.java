@@ -11,17 +11,21 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AdminQuery implements GraphQLQueryResolver {
 
-  private final AdminService adminService;
+    private final AdminService adminService;
 
-  public Page<UserView> activeUsers(int page, int size) {
-    return adminService.getActiveUsers(page, size);
-  }
+    public Page<UserView> activeUsers(int page, int size) {
+        return adminService.getActiveUsers(page, size);
+    }
 
-  public Page<UserView> inactiveUsers(int page, int size) {
-    return adminService.getInactiveUsers(page, size);
-  }
+    public Page<UserView> inactiveUsers(int page, int size) {
+        return adminService.getInactiveUsers(page, size);
+    }
 
-  public int totalActiveUsers() {
-    return adminService.getTotalActiveUsers();
-  }
+    public Page<UserView> allUsers(int page, int size, String param, String query) {
+        return adminService.getAllUsers(page, size, param, query);
+    }
+
+    public int totalActiveUsers() {
+        return adminService.getTotalActiveUsers();
+    }
 }

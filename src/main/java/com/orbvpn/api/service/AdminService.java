@@ -16,26 +16,38 @@ import org.springframework.stereotype.Service;
 @Service
 public class AdminService {
 
-  private final UserRepository userRepository;
-  private final UserViewMapper userViewMapper;
+    private final UserRepository userRepository;
+    private final UserViewMapper userViewMapper;
 
-  public int getTotalActiveUsers() {
-    return userRepository.getTotalActiveUsers();
-  }
+    public int getTotalActiveUsers() {
+        return userRepository.getTotalActiveUsers();
+    }
 
-  public Page<UserView> getActiveUsers(int page, int size) {
-    Pageable pageable = PageRequest.of(page, size, Sort.by(DEFAULT_SORT_NATIVE));
+    public Page<UserView> getActiveUsers(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(DEFAULT_SORT_NATIVE));
 
-    return userRepository.findAllActiveUsers(pageable)
-      .map(userViewMapper::toView);
-  }
+        return userRepository.findAllActiveUsers(pageable)
+                .map(userViewMapper::toView);
+    }
 
-  public Page<UserView> getInactiveUsers(int page, int size) {
-    Pageable pageable = PageRequest.of(page, size, Sort.by(DEFAULT_SORT_NATIVE));
+    public Page<UserView> getInactiveUsers(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(DEFAULT_SORT_NATIVE));
 
-    return userRepository.findAllNotActiveUsers(pageable)
-      .map(userViewMapper::toView);
-  }
+        return userRepository.findAllNotActiveUsers(pageable)
+                .map(userViewMapper::toView);
+    }
 
+    public Page<UserView> getAllUsers(int page, int size, String param, String query) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(DEFAULT_SORT_NATIVE));
+        if (param == null)
+            return userRepository.findAllUsers(pageable)
+                    .map(userViewMapper::toView);
+        else if (param.equals("email"))
+            return userRepository.findAllUsers(query, pageable)
+                    .map(userViewMapper::toView);
+        else
+            return userRepository.findAllUsers(pageable)
+                    .map(userViewMapper::toView);
+    }
 
 }
