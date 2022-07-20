@@ -1,5 +1,7 @@
 package com.orbvpn.api.domain.dto;
 
+import com.orbvpn.api.domain.enums.ServerType;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,4 +22,5 @@ public class ServerView {
   private String rootCommand;
   private String description;
   private String continent;
+  private ServerType type;
 }
