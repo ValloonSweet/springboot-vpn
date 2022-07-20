@@ -30,7 +30,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
-@SQLDelete(sql = "UPDATE group_app SET deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE service_group SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
 public class ServiceGroup {
 
@@ -53,7 +53,7 @@ public class ServiceGroup {
   @DecimalMax(value = "100", inclusive = false)
   private BigDecimal discount;
 
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany(fetch = FetchType.LAZY)
   private List<Gateway> gateways;
 
   @ManyToMany
