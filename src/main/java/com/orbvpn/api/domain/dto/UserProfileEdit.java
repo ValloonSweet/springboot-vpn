@@ -1,6 +1,8 @@
 package com.orbvpn.api.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -10,6 +12,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @ToString
+@Builder
 public class UserProfileEdit {
     private String firstName;
     private String lastName;
