@@ -23,6 +23,7 @@ type ServerView {
     id: Int
     hostName: String
     publicIp: String
+    type: ServerType
     privateIp: String
     city: String
     country: String
