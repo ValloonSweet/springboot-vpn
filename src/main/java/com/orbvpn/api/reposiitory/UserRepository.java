@@ -46,11 +46,11 @@ public interface UserRepository extends JpaRepository<User, Integer> {
             nativeQuery = true)
     Page<User> findAllNotActiveUsers(Pageable pageable);
 
-    @Query(
-            value = "SELECT * FROM user_profile user_profile join user on user.id=user_profile.user_id where user.role_id=3",
-            countQuery = "SELECT count(*) FROM user join user_profile on user.id=user_profile.user_id where role_id=3",
-            nativeQuery = true)
-    Page<User> findAllUsers(Pageable pageable);
+//     @Query(
+//             value = "SELECT * FROM user_profile user_profile join user on user.id=user_profile.user_id where user.role_id=3",
+//             countQuery = "SELECT count(*) FROM user join user_profile on user.id=user_profile.user_id where role_id=3",
+//             nativeQuery = true)
+    Page<User> findByRoleId(int roleId, Pageable pageable);
 
     @Query(
             value = "SELECT * FROM user where role_id=3 and email like %?1",

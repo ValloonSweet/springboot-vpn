@@ -75,8 +75,8 @@ public class User implements UserDetails {
   @OneToMany(mappedBy = "creator", cascade = CascadeType.REMOVE)
   private List<Ticket> ticketList;
 
-  @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-  private List<UserSubscription> userSubscriptionList;
+  @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+  private UserSubscription userSubscription;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
   private List<Payment> paymentList;
