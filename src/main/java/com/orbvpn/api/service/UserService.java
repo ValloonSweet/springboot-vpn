@@ -107,11 +107,32 @@ public class UserService {
 
         assignTrialSubscription(user);
 
-        UserSubscription userSubscription = userSubscriptionService.getCurrentSubscription(user);
         UserView userView = userViewMapper.toView(user);
-        //notificationService.welcomingNewUsers(user, userSubscription);
         log.info("Created user {}", userView);
         return login(user);
+    }
+
+    public User createUserByAdmin(int resellerId, String email, String username, String password) {
+        Optional<User> userEntityOptional = userRepository.findByEmail(email);
+        if (userEntityOptional.isPresent()) {
+            throw new BadRequestException(Messages.getMessage("email_exists"));
+        }
+
+        var user = new User();
+        user.setEmail(email);
+        user.setPassword(password);
+        passwordService.setPassword(user, password);  
+        user.setUsername(username);
+        if(resellerId != 0) {
+            var reseller = resellerService.getResellerById(resellerId);
+            user.setReseller(reseller);
+        }
+        user.setRole(roleService.getByName(RoleName.USER));
+        var profile = new UserProfile();
+        profile.setUser(user);
+        user.setProfile(profile);
+
+        return userRepository.save(user);
     }
 
     public void assignTrialSubscription(User user) {
@@ -243,6 +264,15 @@ public class UserService {
 
         userProfileRepository.save(edited);
 
+        return userProfileViewMapper.toView(edited);
+    }
+
+    public UserProfileView editProfileByAdmin(User user, UserProfileEdit userProfileEdit) {
+        log.info("Editing user{} profile{}", user.getId(), userProfileEdit);
+        UserProfile userProfile = userProfileRepository.findByUser(user).orElse(new UserProfile());
+        UserProfile edited = userProfileEditMapper.edit(userProfile, userProfileEdit);
+        edited.setUser(user);
+        userProfileRepository.save(edited);
         return userProfileViewMapper.toView(edited);
     }
 

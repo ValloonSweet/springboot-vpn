@@ -45,6 +45,26 @@ public class UserSubscriptionService {
         return userSubscription;
     }
 
+    public UserSubscription createSubscriptionByAdmin(User user, Group group) {
+
+        log.info("Creating subscription for user with id {} for group {}", user.getId(), group.getId());
+        UserSubscription userSubscription = new UserSubscription();
+        int duration = group.getDuration();
+
+        userSubscription.setUser(user);
+        userSubscription.setGroup(group);
+        userSubscription.setDuration(duration);
+        userSubscription.setDailyBandwidth(group.getDailyBandwidth());
+        userSubscription.setDownloadUpload(group.getDownloadUpload());
+        userSubscription.setMultiLoginCount(group.getMultiLoginCount());
+        userSubscription.setExpiresAt(LocalDateTime.now().plusDays(duration));
+
+        userSubscriptionRepository.save(userSubscription);
+        radiusService.deleteUserRadChecks(user);
+        radiusService.createUserRadChecks(userSubscription);
+        return userSubscription;
+    }
+
     public void deleteUserSubscriptions(User user) {
         userSubscriptionRepository.deleteByUser(user);
     }

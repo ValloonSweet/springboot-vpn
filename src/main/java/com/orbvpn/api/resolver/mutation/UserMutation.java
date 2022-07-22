@@ -5,14 +5,21 @@ import com.orbvpn.api.domain.dto.AuthenticatedUser;
 import com.orbvpn.api.domain.dto.UserCreate;
 import com.orbvpn.api.domain.dto.UserProfileEdit;
 import com.orbvpn.api.domain.dto.UserProfileView;
+import com.orbvpn.api.domain.dto.UserView;
 import com.orbvpn.api.domain.entity.User;
+import com.orbvpn.api.mapper.UserViewMapper;
+import com.orbvpn.api.service.GroupService;
 import com.orbvpn.api.service.UserService;
+import com.orbvpn.api.service.UserSubscriptionService;
+import com.orbvpn.api.utils.Utilities;
+
 import graphql.kickstart.tools.GraphQLMutationResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -20,6 +27,7 @@ import javax.validation.constraints.Pattern;
 
 import static com.orbvpn.api.domain.ValidationProperties.BAD_PASSWORD_MESSAGE;
 import static com.orbvpn.api.domain.ValidationProperties.PASSWORD_PATTERN;
+import static com.orbvpn.api.domain.enums.RoleName.Constants.ADMIN;
 
 @Component
 @RequiredArgsConstructor
@@ -27,6 +35,9 @@ import static com.orbvpn.api.domain.ValidationProperties.PASSWORD_PATTERN;
 public class UserMutation implements GraphQLMutationResolver {
 
     private final UserService userService;
+    private final UserSubscriptionService userSubscriptionService;
+    private final GroupService groupService;
+    private final UserViewMapper userViewMapper;
 
     @Unsecured
     public AuthenticatedUser register(@Valid UserCreate userCreate) {
@@ -68,4 +79,33 @@ public class UserMutation implements GraphQLMutationResolver {
     public Boolean editAutoRenew(Boolean isActive) {
         return userService.editAutoRenew(isActive);
     }
+
+//////// ADMIN FUNCTION //////////////////
+
+    @RolesAllowed(ADMIN)
+    public UserView createNewUserByAdmin(int groupId, int resellerId, String firstName, String lastName, String userName, String email, String devices, String country, String phone) {
+
+        // 1. create user
+        // 1A) generate random password
+        var randomPassword = Utilities.getRandomPassword(10);
+
+        // 1B) register new user
+        var user = userService.createUserByAdmin(resellerId, email, userName, randomPassword);
+
+        // 2. profile
+        var userProfile = UserProfileEdit.builder()
+            .firstName(firstName)
+            .lastName(lastName)
+            .country(country)
+            .phone(phone)
+            .build();
+        userService.editProfileByAdmin(user, userProfile);
+
+        // group
+        var group = groupService.getById(groupId);
+        userSubscriptionService.createSubscriptionByAdmin(user, group);
+        var userView = userViewMapper.toView(user);
+        return userView;
+    }
+
 }

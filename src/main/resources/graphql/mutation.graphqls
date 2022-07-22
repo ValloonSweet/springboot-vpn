@@ -19,6 +19,9 @@ type Mutation {
     editServer(id: Int!, server: ServerEdit): ServerView
     deleteServer(id: Int!): ServerView
 
+    # admin users
+    createNewUserByAdmin(groupId: Int, resellerId: Int, firstName: String, lastName: String, userName: String, email: String, devices: String, country: String, phone: String): UserView
+
     # resellers
     createReseller(reseller: ResellerCreate): ResellerView!
     setResellerLevel(resellerId: Int!, level: ResellerLevelName!): ResellerView!
