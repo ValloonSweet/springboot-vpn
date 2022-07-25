@@ -116,7 +116,7 @@ public class NotificationService {
      *
      * @param user New created user
      */
-    public void welcomingNewUsers(User user, UserSubscription subscription) {
+    public void welcomingNewUsers(User user, UserSubscription subscription, String password) {
 
         int duration = subscription.getDuration();
         int deviceCount = subscription.getMultiLoginCount();
@@ -132,8 +132,7 @@ public class NotificationService {
         String emailMessage = " Welcome to your new OrbVPN Account.<br><br>" +
                 "Sing in to your OrbVPN account to access the service.<br><br>" +
                 "<strong>Your username:</strong> " + user.getUsername().replace(".", ".&#65279;") + "<br>" +
-                "<strong>Password:</strong> Click <a href=\"https://orbvpn.xyz/panel/login/\"><b>Sign in</b></a> " +
-                "to set your password and sign in.<br><br>" +
+                "<strong>Password:</strong> " + password + "<br>" + 
                 "Your subscription is valid for " + deviceCount + (deviceCount == 1 ? " device" : " devices") +
                 " during next " + duration + (duration == 1 ? " day" : " days") +
                 " and will be expired on " + subscription.getExpiresAt().toLocalDate() + ".";

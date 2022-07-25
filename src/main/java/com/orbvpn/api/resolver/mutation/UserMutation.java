@@ -11,6 +11,7 @@ import com.orbvpn.api.mapper.UserViewMapper;
 import com.orbvpn.api.service.GroupService;
 import com.orbvpn.api.service.UserService;
 import com.orbvpn.api.service.UserSubscriptionService;
+import com.orbvpn.api.service.notification.NotificationService;
 import com.orbvpn.api.utils.Utilities;
 
 import graphql.kickstart.tools.GraphQLMutationResolver;
@@ -38,6 +39,7 @@ public class UserMutation implements GraphQLMutationResolver {
     private final UserSubscriptionService userSubscriptionService;
     private final GroupService groupService;
     private final UserViewMapper userViewMapper;
+    private final NotificationService notificationService;
 
     @Unsecured
     public AuthenticatedUser register(@Valid UserCreate userCreate) {
@@ -103,8 +105,12 @@ public class UserMutation implements GraphQLMutationResolver {
 
         // group
         var group = groupService.getById(groupId);
-        userSubscriptionService.createSubscriptionByAdmin(user, group);
+        var subscription = userSubscriptionService.createSubscriptionByAdmin(user, group);
         var userView = userViewMapper.toView(user);
+
+        // send welcome email
+        notificationService.welcomingNewUsers(user, subscription, randomPassword);
+
         return userView;
     }
 

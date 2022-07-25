@@ -7,9 +7,9 @@ spring:
     # username: root
     # password: bf{Y!{,q32n*JTL2
     
-    url: jdbc:mysql://orbnet.cyg6ao0nnff3.ap-south-1.rds.amazonaws.com:3306/radius
+    url: jdbc:mysql://localhost:3306/radius
     username: root
-    password: rYP3ZxDBBzFwC66T
+    password: mysqladmin
     
     # url: ${SPRING_DATASOURCE_URL}
     # username: ${SPRING_DATASOURCE_USERNAME}
