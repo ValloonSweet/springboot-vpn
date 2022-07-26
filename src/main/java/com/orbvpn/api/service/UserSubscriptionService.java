@@ -39,6 +39,8 @@ public class UserSubscriptionService {
         userSubscription.setMultiLoginCount(group.getMultiLoginCount());
         userSubscription.setExpiresAt(LocalDateTime.now().plusDays(duration));
 
+        userSubscriptionRepository.deleteByUserId(user.getId());
+        userSubscriptionRepository.flush();
         userSubscriptionRepository.save(userSubscription);
         radiusService.deleteUserRadChecks(user);
         radiusService.createUserRadChecks(userSubscription);
@@ -104,7 +106,7 @@ public class UserSubscriptionService {
         return getUsersExpireAt(localDate);
     }
 
-    public void save( UserSubscription userSubscription) {
+    public void save(UserSubscription userSubscription) {
         userSubscriptionRepository.save(userSubscription);
     }
 

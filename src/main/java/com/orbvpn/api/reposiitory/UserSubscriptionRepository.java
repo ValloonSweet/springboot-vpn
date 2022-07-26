@@ -15,6 +15,8 @@ public interface UserSubscriptionRepository extends JpaRepository<UserSubscripti
 
     long deleteByUser(User user);
 
+    long deleteByUserId(int id);
+
     UserSubscription findFirstByUserOrderByCreatedAtDesc(User user);
 
     @Query("select count(sub.id) from UserSubscription sub where sub.createdAt > :createdAt")
