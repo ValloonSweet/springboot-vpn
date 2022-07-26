@@ -61,6 +61,8 @@ public class UserSubscriptionService {
         userSubscription.setMultiLoginCount(group.getMultiLoginCount());
         userSubscription.setExpiresAt(LocalDateTime.now().plusDays(duration));
 
+        userSubscriptionRepository.deleteByUserId(user.getId());
+        userSubscriptionRepository.flush();
         userSubscriptionRepository.save(userSubscription);
         radiusService.deleteUserRadChecks(user);
         radiusService.createUserRadChecks(userSubscription);
