@@ -60,4 +60,5 @@ type Query {
 
     #ReferralCode
     getReferralCode: ReferralCodeView
+    getUserById(id: Int): UserView
 }
