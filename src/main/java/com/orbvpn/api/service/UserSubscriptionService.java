@@ -109,6 +109,8 @@ public class UserSubscriptionService {
     }
 
     public void save(UserSubscription userSubscription) {
+        userSubscriptionRepository.deleteByUserId(userSubscription.getUser().getId());
+        userSubscriptionRepository.flush();
         userSubscriptionRepository.save(userSubscription);
     }
 

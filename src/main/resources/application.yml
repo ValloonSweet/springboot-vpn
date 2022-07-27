@@ -6,10 +6,10 @@ spring:
     # url: jdbc:mysql://orbnetdev.cyg6ao0nnff3.ap-south-1.rds.amazonaws.com:3306/radius
     # username: root
     # password: bf{Y!{,q32n*JTL2
-    
-    url: jdbc:mysql://localhost:3306/radius
+
+    url: jdbc:mysql://orbnet.cyg6ao0nnff3.ap-south-1.rds.amazonaws.com:3306/radius
     username: root
-    password: mysqladmin
+    password: rYP3ZxDBBzFwC66T
     
     # url: ${SPRING_DATASOURCE_URL}
     # username: ${SPRING_DATASOURCE_USERNAME}
@@ -57,7 +57,7 @@ spring:
           linkedin:
             client-id: 786xac8z0s13fu
             client-secret: OIL0j8K7bsc7AN0K
-            scope:  r_liteprofile, r_emailaddress
+            scope: r_liteprofile, r_emailaddress
             authorization-grant-type: authorization_code
             redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
             client-name: LinkedIn
