@@ -75,5 +75,5 @@ type ResellerLevelCoefficientsView {
 }
 
 enum ResellerLevelName {
-    BRONZE, SILVER, GOLD, DIAMOND
+    BRONZE, SILVER, GOLD, DIAMOND, STARTER, OWNER
 }
