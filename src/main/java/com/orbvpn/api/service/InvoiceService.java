@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -40,6 +42,7 @@ public class InvoiceService {
                 .paymentDate(payment.getCreatedAt())
                 .paymentMethod(payment.getGateway())
                 .totalAmount(payment.getPrice())
+                .payment(payment)
                 .build();
 
         if (payment.getCategory().equals(PaymentCategory.GROUP)) {
@@ -58,7 +61,8 @@ public class InvoiceService {
     }
 
     public Invoice getById(Integer id) {
-        return invoiceRepository.getById(id);
+        return invoiceRepository.findById(id)
+                .orElse(null);
     }
 
     public Invoice getByPaymentId(int paymentId) {
@@ -67,13 +71,18 @@ public class InvoiceService {
     }
 
     public Invoice updateInvoice(InvoiceUpdate invoiceUpdate) {
-        Invoice invoice = invoiceRepository.getById(invoiceUpdate.getId());
+        Invoice invoice = invoiceRepository.findById(invoiceUpdate.getId())
+                .orElseThrow();
         invoice = invoiceUpdate.updateInvoice(invoice);
         invoiceRepository.save(invoice);
         return invoice;
     }
 
-    public List<Invoice> getByDateRange(LocalDate beginDate, LocalDate endDate) {
+    public List<Invoice> getByDateRange(String _beginDate, String _endDate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        LocalDateTime beginDate = LocalDate.parse(_beginDate, formatter).atStartOfDay();
+        LocalDateTime endDate = LocalDate.parse(_endDate, formatter).atStartOfDay();
         return invoiceRepository.getByDateRange(beginDate,endDate);
     }
 }

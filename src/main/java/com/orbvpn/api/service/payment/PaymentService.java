@@ -252,8 +252,9 @@ public class PaymentService {
       .renew(renew)
       .build();
 
+    payment = paymentRepository.save(payment);
     invoiceService.createInvoice(payment);
-    paymentRepository.save(payment);
+
     return payment;
   }
 

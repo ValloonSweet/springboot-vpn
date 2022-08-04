@@ -65,5 +65,6 @@ type Query {
     #Invoice
     allInvoices: [InvoiceResponse]
     getInvoiceById(invoiceId: Int!): InvoiceResponse
-    getByDateRange(beginDate: LocalDate, endDate: LocalDate): [InvoiceResponse]
+    getInvoiceByPaymentId(paymentId: Int!): InvoiceResponse
+    getInvoiceByDateRange(beginDate: String!, endDate: String!): [InvoiceResponse]
 }

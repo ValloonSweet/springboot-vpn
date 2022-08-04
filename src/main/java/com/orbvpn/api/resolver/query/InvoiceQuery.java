@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.security.RolesAllowed;
-import java.time.LocalDate;
 import java.util.List;
 
 import static com.orbvpn.api.domain.enums.RoleName.Constants.ADMIN;
@@ -19,22 +18,23 @@ public class InvoiceQuery implements GraphQLQueryResolver {
 
     private final InvoiceService invoiceService;
 
-    @RolesAllowed({ADMIN, RESELLER})
+   @RolesAllowed({ADMIN, RESELLER})
     public List<Invoice> allInvoices() {
         return invoiceService.getAll();
     }
 
     @RolesAllowed({ADMIN, RESELLER})
-    public Invoice getInvoiceById(Integer id) {
-        return invoiceService.getById(id);
+    public Invoice getInvoiceById(Integer invoiceId) {
+        return invoiceService.getById(invoiceId);
     }
 
     @RolesAllowed({ADMIN, RESELLER})
     public Invoice getInvoiceByPaymentId(Integer paymentId) {
-        return invoiceService.getById(paymentId);
+        return invoiceService.getByPaymentId(paymentId);
     }
 
-    public List<Invoice> getByDateRange(LocalDate beginDate, LocalDate endDate) {
-        return null;
+    @RolesAllowed({ADMIN, RESELLER})
+    public List<Invoice> getInvoiceByDateRange(String beginDate, String endDate) {
+        return invoiceService.getByDateRange(beginDate, endDate);
     }
 }
