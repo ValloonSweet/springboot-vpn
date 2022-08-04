@@ -88,4 +88,7 @@ type Mutation {
     resetUserSubscriptionWithNewGroup(username: String!, groupId: Int!) : UserSubscriptionView
     resellerRenewUserSubscriptionWithCurrentGroup(username: String!) : UserSubscriptionView
     resellerRenewUserSubscriptionWithNewGroup(username: String!, groupId: Int!) : UserSubscriptionView
+
+    #Invoice
+    updateInvoice(invoiceUpdate: InvoiceUpdate): InvoiceResponse
 }

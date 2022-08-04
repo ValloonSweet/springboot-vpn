@@ -14,13 +14,13 @@ import com.orbvpn.api.service.payment.coinpayment.CoinPaymentService;
 import com.orbvpn.api.utils.ThirdAPIUtils;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
-import com.twilio.twiml.voice.Pay;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
@@ -28,8 +28,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import static java.time.temporal.ChronoUnit.DAYS;
-
-import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +44,7 @@ public class PaymentService {
   private final RadiusService radiusService;
   private final GroupService groupService;
   private final ParspalService parspalService;
+  private final InvoiceService invoiceService;
   private final ThirdAPIUtils apiUtil;
 
   @Setter
@@ -253,6 +252,7 @@ public class PaymentService {
       .renew(renew)
       .build();
 
+    invoiceService.createInvoice(payment);
     paymentRepository.save(payment);
     return payment;
   }
@@ -269,6 +269,7 @@ public class PaymentService {
       .moreLoginCount(number)
       .build();
 
+    invoiceService.createInvoice(payment);
     paymentRepository.save(payment);
     return payment;
   }
@@ -285,6 +286,7 @@ public class PaymentService {
             .moreLoginCount(number)
             .build();
 
+    invoiceService.createInvoice(payment);
     paymentRepository.save(payment);
     return payment;
   }

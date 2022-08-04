@@ -61,4 +61,9 @@ type Query {
     #ReferralCode
     getReferralCode: ReferralCodeView
     getUserById(id: Int): UserView
+
+    #Invoice
+    allInvoices: [InvoiceResponse]
+    getInvoiceById(invoiceId: Int!): InvoiceResponse
+    getByDateRange(beginDate: LocalDate, endDate: LocalDate): [InvoiceResponse]
 }
