@@ -114,4 +114,10 @@ public class UserMutation implements GraphQLMutationResolver {
         return userView;
     }
 
+    @RolesAllowed(ADMIN)
+    public boolean deleteUser(int id) {
+        userService.deleteUser(userService.getUserById(id));
+        return true;
+    }
+
 }

@@ -74,7 +74,7 @@ public class OauthService {
     User user = userRepository.findByUsername(tokenData.getEmail())
       .orElseGet(() -> createUser(tokenData));
 
-    return userService.login(user);
+    return userService.loginInfo(user);
   }
 
   public AuthenticatedUser getTokenAndLogin(String code, SocialMedia socialMedia){
@@ -303,7 +303,7 @@ public class OauthService {
     User user = userRepository.findByUsername(email)
             .orElseGet(() -> createUser(tokenData));
 
-    return userService.login(user);
+    return userService.loginInfo(user);
 
   }
 

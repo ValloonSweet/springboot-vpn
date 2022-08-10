@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -47,10 +48,14 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Page<User> findAllNotActiveUsers(Pageable pageable);
 
 //     @Query(
-//             value = "SELECT * FROM user_profile user_profile join user on user.id=user_profile.user_id where user.role_id=3",
-//             countQuery = "SELECT count(*) FROM user join user_profile on user.id=user_profile.user_id where role_id=3",
-//             nativeQuery = true)
-    Page<User> findByRoleId(int roleId, Pageable pageable);
+//             value = "select u from User u where u.role.id = 3 and ",
+//             countQuery = "SELECT count(*) FROM User where role_id=3"
+//         )
+    Page<User> findByRoleIdAndEmailContaining(int roleId, String email, Pageable pageable);
+    Page<User> findByRoleIdAndUsernameContaining(int roleId, String username, Pageable pageable);
+
+    @Query("select u from User u where u.role.id = 3 and :param like '%:query%'")
+    Page<User> findByParam(@Param("param") String param, @Param("query") String query, Pageable pageable);
 
     @Query(
             value = "SELECT * FROM user where role_id=3 and email like %?1",
