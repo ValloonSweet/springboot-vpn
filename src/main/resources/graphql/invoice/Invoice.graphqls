@@ -31,3 +31,8 @@ input InvoiceUpdate {
     taxId: String
     companyRegistrationNumber: String
 }
+
+input InvoicePDF {
+    invoiceId: Int!
+    emailsToSend: [String]!
+}

@@ -86,4 +86,8 @@ public class Invoice {
     @Column
     @LastModifiedDate
     private LocalDateTime updateDate;
+
+    public String getCustomerName() {
+        return this.firstName + " " + this.lastName;
+    }
 }

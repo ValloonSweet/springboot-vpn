@@ -92,4 +92,5 @@ type Mutation {
 
     #Invoice
     updateInvoice(invoiceUpdate: InvoiceUpdate): InvoiceResponse
+    emailInvoicePDF(invoicePdf: InvoicePDF): Boolean
 }

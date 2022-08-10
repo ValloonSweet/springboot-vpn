@@ -9,6 +9,7 @@ import com.orbvpn.api.domain.enums.PaymentCategory;
 import com.orbvpn.api.exception.NotFoundException;
 import com.orbvpn.api.reposiitory.InvoiceRepository;
 import com.orbvpn.api.reposiitory.UserProfileRepository;
+import com.orbvpn.api.utils.PDFUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
     private final UserProfileRepository userProfileRepository;
+    private final PDFUtils pdfUtils;
 
     public void createInvoice(Payment payment) {
         User user = payment.getUser();
