@@ -109,7 +109,7 @@ public class UserService {
 
         UserView userView = userViewMapper.toView(user);
         log.info("Created user {}", userView);
-        return login(user);
+        return loginInfo(user);
     }
 
     public User createUserByAdmin(int resellerId, String email, String username, String password) {
@@ -170,10 +170,10 @@ public class UserService {
         }
 
         User user = (User) authentication.getPrincipal();
-        return login(user);
+        return loginInfo(user);
     }
 
-    public AuthenticatedUser login(User user) {
+    public AuthenticatedUser loginInfo(User user) {
         UserView userView = userViewMapper.toView(user);
         String token = jwtTokenUtil.generateAccessToken(user);
 

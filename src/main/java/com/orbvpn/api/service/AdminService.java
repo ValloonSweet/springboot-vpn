@@ -43,18 +43,30 @@ public class AdminService {
 
     public Page<UserView> getAllUsers(int page, int size, String param, String query) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id"));
-        if (param == null) {
 
-            return userRepository.findByRoleId(3, pageable)
-                    .map(userViewMapper::toView);
+        if (param.equals("email")) {
+            
+            return userRepository.findByRoleIdAndEmailContaining(3, query, pageable)
+                        .map(userViewMapper::toView);
+        } else {
+            return userRepository.findByRoleIdAndUsernameContaining(3, query, pageable)
+                        .map(userViewMapper::toView);
         }
 
-        else if (param.equals("email"))
-            return userRepository.findAllUsers(query, pageable)
-                    .map(userViewMapper::toView);
-        else
-            return userRepository.findAll(pageable)
-                    .map(userViewMapper::toView);
+
+        // return userRepository.findByRoleIdAndEmailContaining(3, query, pageable)
+        //             .map(userViewMapper::toView);
+        // if (param == null) {
+
+            
+        // }
+
+        // else if (param.equals("email"))
+        //     return userRepository.findAllUsers(query, pageable)
+        //             .map(userViewMapper::toView);
+        // else
+        //     return userRepository.findAll(pageable)
+        //             .map(userViewMapper::toView);
     }
 
 }

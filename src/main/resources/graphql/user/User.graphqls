@@ -6,7 +6,9 @@ input UserCreate {
 type UserView {
     id: Int!
     email: String!
+    username: String
     role: String!
+    enabled: Boolean
     radAccess: String!
     radAccessClear: String
     profile: UserProfileView

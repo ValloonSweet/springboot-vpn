@@ -12,9 +12,11 @@ import lombok.Setter;
 public class UserView {
   private int id;
   private String email;
+  private String username;
   private RoleName role;
   private String radAccess;
   private String radAccessClear;
+  private boolean enabled;
   private UserProfileView profile;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
