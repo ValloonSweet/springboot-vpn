@@ -27,7 +27,12 @@ public class InvoicePDFService {
     */
     public String createPDF(int invoiceId) {
         Invoice invoice = invoiceService.getById(invoiceId);
-        return pdfUtils.createPDF(invoice, INVOICES_FOLDER);
+        try {
+            return pdfUtils.createPDF(invoice, INVOICES_FOLDER);
+        } catch (Exception e) {
+            log.error("Error creating PDF for the invoice {}.",invoiceId);
+        }
+        return null;
     }
 
     /*

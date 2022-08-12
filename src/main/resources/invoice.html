@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Invoice</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .invoice-box {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+            font-size: 16px;
+            line-height: 24px;
+            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+            color: #555;
+            box-sizing: border-box;
+            height: 100vh;
+        }
+
+        .title {
+            font-size: 56px;
+            align-items: center;
+        }
+
+        .total_price {
+            color: #3d7be1;
+            font-weight: bold;
+            font-size: 40px;
+        }
+
+        .default {
+            flex: 1;
+            font-size: 16px;
+            line-height: 24px;
+            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+            color: #555;
+        }
+
+        .date-of-issue {
+            flex: 2;
+            flex-direction: column;
+        }
+
+        .invoice-box table tr.details td {
+            padding-bottom: 20px;
+        }
+
+        .invoice-box table tr.item td {
+            border-bottom: 1px solid #eee;
+        }
+
+        .invoice-box table tr.item.last td {
+            border-bottom: none;
+        }
+
+        .invoice-box table tr.total td:nth-child(2) {
+            font-weight: bold;
+        }
+
+        .table-head {
+            flex: 4;
+
+            display: flex;
+            flex-direction: row;
+            padding: 48px 36px;
+            color: white;
+        }
+
+        .table-body {
+            flex: 4;
+            padding: 36px;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .background {
+            background-color: #0078d3;
+        }
+
+        .info {
+            flex: 2;
+            display: flex;
+
+        }
+
+        .contact {
+            flex: 1;
+            justify-content: center;
+            display: flex;
+        }
+
+        .address {
+            flex: 1;
+            justify-content: center;
+            display: flex;
+        }
+
+        .color {
+            color: #0078d3;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .content-seperator {
+            flex: 2;
+            border-top: 4px solid #0078d3;
+            margin: 0px 36px;
+        }
+
+        .content-body {
+            flex: 2;
+            flex-direction: row;
+            justify-content: space-between;
+            display: flex;
+            padding: 0px 36px;
+        }
+
+        .footer {
+            margin-top: 96px;
+            flex: 4;
+            align-self: flex-end;
+            display: flex;
+            justify-content: space-between;
+            padding: 0px 36px;
+        }
+
+        .terms {
+            flex: 2
+        }
+
+        .calculation {
+            flex: 2;
+        }
+
+        .calculation-item {
+            flex-direction: row;
+            justify-content: space-between;
+            display: flex;
+        }
+    </style>
+</head>
+
+<body>
+<div class="invoice-box">
+    <div class="table-head background">
+
+        <div class="info title">
+            INVOICE
+        </div>
+        <div class="contact">
+            +1 (725) 223 0569<br />
+            info@orbvpn.com<br />
+            orbvpn.com<br />
+        </div>
+        <div class="address">
+            24th Floor, The Shard<br />
+            London, England <br />
+            SE1 9SG, GB<br />
+        </div>
+    </div>
+    <div class="table-body">
+
+        <div class="default">
+            <h3>
+                Billed To
+            </h3>
+            <p th:text="${client_name}"></p><br/>
+            <p th:text="${client_address}"></p>
+        </div>
+        <div class="date-of-issue">
+            <h3>
+                Invoice Number
+            </h3>
+            <p th:text="${invoice_id}">
+            </p>
+            <h3>
+                Date Of Issue
+            </h3>
+            <p th:text="${invoice_date}">
+            </p>
+
+        </div>
+        <div class="default right">
+            <h3>
+                Invoice Total
+            </h3>
+            <p class="total_price">
+                $ <span th:text="${invoice_total}"></span>
+            </p>
+        </div>
+    </div>
+    <div class="content-head">
+        <div class="content-seperator"></div>
+        <div class="content-body">
+            <h3 class="color">
+                Description
+            </h3>
+            <h3 class="color">
+                Amount
+            </h3>
+        </div>
+        <div class="content-body">
+            <p class="context-text">
+                Group Subscription
+            </p>
+            <p class="context-text" th:text="${group_amount}">
+            </p>
+        </div>
+        <div class="content-body">
+            <p class="context-text">
+                Multi Login Count
+            </p>
+            <p class="context-text" th:text="${multi_login_amount}">
+            </p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="terms">
+            <h3>Invoice Terms</h3>
+            <p>
+                Ex. Please pay your invoice by...
+            </p>
+        </div>
+        <div class="calculation">
+            <div class="calculation-item">
+                <h3>Subtotal</h3>
+                <p th:text="${subtotal}"></p>
+            </div>
+            <div class="calculation-item">
+                <h3>Tax</h3>
+                <p th:text="${tax}"></p>
+            </div>
+            <div class="calculation-item">
+                <h3>Total</h3>
+                <p th:text="${invoice_total}"></p>
+            </div>
+            <div class="calculation-item">
+                <h3>Amount Due</h3>
+                <p th:text="${invoice_total}"></p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
