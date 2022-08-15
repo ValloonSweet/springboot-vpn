@@ -51,16 +51,18 @@ public class PDFUtils {
         Context context = new Context();
         String clientName = invoice.getClientCompanyName() != null ? invoice.getClientCompanyName() : "Client Name";
         String client_address = invoice.getAddress() != null ? invoice.getAddress() : "Client Address";
+        Double groupAmount = invoice.getAmountForGroup() != null ? invoice.getAmountForGroup().doubleValue() : new BigDecimal(0).doubleValue();
+        Double multiLoginAmount = invoice.getAmountForMultiLogin() != null ? invoice.getAmountForMultiLogin().doubleValue() : new BigDecimal(0).doubleValue();
 
         context.setVariable("client_name", clientName);
         context.setVariable("client_address",client_address);
         context.setVariable("invoice_id", invoice.getId());
         context.setVariable("invoice_date", invoice.getInvoiceDate().toLocalDate());
         context.setVariable("invoice_total", invoice.getTotalAmount().doubleValue());
-        context.setVariable("group_amount", invoice.getAmountForGroup());
-        context.setVariable("multi_login_amount", invoice.getAmountForMultiLogin());
+        context.setVariable("group_amount", groupAmount);
+        context.setVariable("multi_login_amount", multiLoginAmount);
         context.setVariable("subtotal", invoice.getTotalAmount().subtract(new BigDecimal(5)).doubleValue());
-        context.setVariable("tax", "$5.00");
+        context.setVariable("tax", "5.00");
 
         return templateEngine.process("invoice", context);
     }

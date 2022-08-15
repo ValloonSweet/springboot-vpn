@@ -35,6 +35,7 @@ public class InvoiceMutation implements GraphQLMutationResolver {
             return false;
         }
         invoicePDFService.emailPdf(pdfFilename, invoicePDF.getEmailsToSend());
+        invoicePDFService.deleteAttachedFile(pdfFilename);
         return true;
     }
 

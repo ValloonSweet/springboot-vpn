@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.List;
 
 @Service
@@ -56,4 +57,17 @@ public class InvoicePDFService {
                 )
         );
     }
+
+    /*
+        Deletes PDF file after sending the mail
+    */
+    public void deleteAttachedFile(String filename) {
+        File attachedFile = new File(filename);
+        if(attachedFile.delete())
+            log.info("Deleted the file {}.", filename);
+        else
+            log.error("Error deleting the file {}.", filename);
+
+    }
+
 }
