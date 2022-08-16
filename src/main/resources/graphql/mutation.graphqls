@@ -22,6 +22,7 @@ type Mutation {
     # admin users
     createNewUserByAdmin(groupId: Int, resellerId: Int, firstName: String, lastName: String, userName: String, email: String, devices: String, country: String, phone: String): UserView
     deleteUser(id: Int): Boolean
+    createUser(user: UserCreate, userProfile: UserProfileEdit): Boolean
 
     # resellers
     createReseller(reseller: ResellerCreate): ResellerView!
