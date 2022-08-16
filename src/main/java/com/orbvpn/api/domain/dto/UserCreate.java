@@ -21,4 +21,6 @@ public class UserCreate {
 
   @Pattern(regexp = PASSWORD_PATTERN, message = BAD_PASSWORD_MESSAGE)
   private String password;
+
+  private int resellerId;
 }

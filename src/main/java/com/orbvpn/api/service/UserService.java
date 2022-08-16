@@ -15,6 +15,8 @@ import com.orbvpn.api.mapper.*;
 import com.orbvpn.api.reposiitory.*;
 import com.orbvpn.api.service.notification.NotificationService;
 import com.orbvpn.api.service.payment.PaymentService;
+import com.orbvpn.api.utils.Utilities;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -110,6 +112,24 @@ public class UserService {
         UserView userView = userViewMapper.toView(user);
         log.info("Created user {}", userView);
         return loginInfo(user);
+    }
+
+    public User createUser(UserCreate user) {
+        
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            String password = Utilities.getRandomPassword(10);
+            user.setPassword(password);
+        } 
+
+        User newUser = new User();
+        newUser.setEmail(user.getEmail());
+        newUser.setPassword(user.getPassword());
+        passwordService.setPassword(newUser, newUser.getPassword());
+        newUser.setUsername(user.getEmail());
+        newUser.setReseller(resellerService.getResellerById(user.getResellerId()));
+        newUser.setRole(roleService.getByName(RoleName.USER));
+
+        return userRepository.save(newUser);
     }
 
     public User createUserByAdmin(int resellerId, String email, String username, String password) {
@@ -359,4 +379,6 @@ public class UserService {
 
         return true;
     }
+
+    
 }

@@ -85,6 +85,16 @@ public class UserMutation implements GraphQLMutationResolver {
 //////// ADMIN FUNCTION //////////////////
 
     @RolesAllowed(ADMIN)
+    public boolean createUser(UserCreate user, UserProfileEdit userProfile) {
+
+        User createdUser = userService.createUser(user);
+
+        userService.editProfileByAdmin(createdUser, userProfile);
+
+        return true;
+    }
+
+    @RolesAllowed(ADMIN)
     public UserView createNewUserByAdmin(int groupId, int resellerId, String firstName, String lastName, String userName, String email, String devices, String country, String phone) {
 
         // 1. create user

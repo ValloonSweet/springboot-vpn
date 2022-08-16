@@ -1,6 +1,7 @@
 input UserCreate {
     email: String!
-    password: String!
+    password: String
+    resellerId: Int
 }
 
 type UserView {
