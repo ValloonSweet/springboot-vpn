@@ -78,7 +78,7 @@ spring:
       org.quartz.jobStore.driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
 
 application:
-  website-url: http://orbnet.xyz
+  website-url: https://dev.orbnet.xyz
   secure-key: Gu4yDjzHYxqMc+q9uz5soZEsG0AtPDZi39bLPbLO4r0=
   default-timezone: Europe/London
   nginx:
@@ -112,7 +112,7 @@ stripe:
 coinpayment:
   merchant-id: 9fddb06e84bf319ec513a874924de7bc
   ipn:
-    url: https://orbnet.xyz/ipn
+    url: https://dev.orbnet.xyz/ipn
     secret: s^oQGj&6$*eC
   key:
     public: 510bdc1045030c9183b864aedeb791ece616da81983c65d6995b31f426ad317a
@@ -142,22 +142,22 @@ oauth:
     client-id: 903170896228-gkomrh8dvrk95ch62ere4i3a01jdlbgr.apps.googleusercontent.com
     client-secret: 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
     token-url: https://oauth2.googleapis.com/token
-    redirectUri: http://orbnet.xyz/oauth2/callback/google
+    redirectUri: http://dev.orbnet.xyz/oauth2/callback/google
   facebook:
     app-id: 2998455443765493
     app-secret: 57630025fb7dd1f42ca7e9c423d1b744
-    redirectUri: http://orbnet.xyz/oauth2/callback/facebook
+    redirectUri: http://dev.orbnet.xyz/oauth2/callback/facebook
   linkedin:
     client-id: 786xac8z0s13fu
     client-secret: OIL0j8K7bsc7AN0K
-    redirectUri: http://orbnet.xyz/oauth2/callback/linkedin
+    redirectUri: http://dev.orbnet.xyz/oauth2/callback/linkedin
     token-url: https://www.linkedin.com/oauth/v2/accessToken
     profile-url: https://api.linkedin.com/v2/me
     email- url: https://api.linkedin.com/v2/emailAddress
   twitter:
     client-id: mdkwQazRJCIGkbEuepby6gio1
     client-secret: wP7RZbTU8S5VDpYurqW19JVIV7vKc5DhBKMeH8FSOMJJwYSpBV
-    callbackUrl: http://orbnet.xyz/oauth2/callback/twitter
+    callbackUrl: http://dev.orbnet.xyz/oauth2/callback/twitter
     userInfoUrl: https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true
 
 
